@@ -37,7 +37,7 @@ CakePHP is an elegant and expressive PHP framework that emphasizes convention ov
 - Has powerful baking tools (`bin/cake bake`)
 - Easy to learn, yet powerful enough for enterprise
 
-BakeKit takes these strengths and adds a CMS layer on top — without sacrificing flexibility.
+BakeKit takes these strengths and adds a CMS layer, without sacrificing flexibility.
 
 ## Who is it for?
 
@@ -55,9 +55,8 @@ git clone https://github.com/bakewizard/BakeKit.git
 cd BakeKit
 curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
 bin/composer.phar install
+bin/cake install
 ```
-
-> (Detailed installation docs coming soon.)
 
 ## License
 
