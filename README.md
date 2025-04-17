@@ -53,7 +53,8 @@ Clone the repository:
 ```bash
 git clone https://github.com/bakewizard/BakeKit.git
 cd BakeKit
-composer install
+curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
+bin/composer.phar install
 ```
 
 > (Detailed installation docs coming soon.)
