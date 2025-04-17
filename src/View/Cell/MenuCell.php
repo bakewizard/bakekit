@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\View\Cell;
+
+use App\View\Cell\BlockCell as Cell;
+
+/**
+ * Menu cell
+ */
+class MenuCell extends Cell
+{
+
+    /**
+     * Menu
+     * 
+     * Displays menu
+     *
+     * @return void
+     */
+    public function display($helper = 'Menu')
+    {
+        $menuId = $this->block->params['menu'] ?? [];
+        $options = $this->block->params;
+        $menuItems = [];
+
+        $lang = $this->request->getParam('lang');
+        $prefix = $this->request->getParam('prefix');
+
+        if (!empty($menuId)) {
+            $menuItems = $this->fetchTable('MenuLinks')->find('threaded')
+                    ->matching('Menus', function ($q) {
+                        return $q->where(['enabled' => true]);
+                    })
+                    ->where(['menu_id is' => $menuId])
+                    ->orderByAsc('lft')
+                    ->cache(function () use ($menuId, $prefix, $lang) {
+                        return ($prefix ? $prefix . '_' : '') . $menuId . ($lang ? '_' . $lang : '');
+                    }, 'menus')
+                    ->toArray();
+        }
+
+        $this->set(compact('menuItems', 'options', 'helper'));
+    }
+
+}

@@ -1,0 +1,44 @@
+{% set fields = Bake.filterFields(fields, schema, modelObject) %}
+<div class="card card-success card-outline">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fa-solid fa-edit me-2"></i> <?= __('{{ action|humanize }} {{ singularHumanName }}') ?></h3>
+    </div>
+    <?= $this->Form->create(${{ singularVar }}, ['align' => 'horizontal']) ?>
+    <div class="card-body">
+        {% for field in fields %}
+            {%- if field not in primaryKey %}
+                {%- if keyFields[field] %}
+                    {%- set fieldData = Bake.columnData(field, schema) %}
+                    {%- if fieldData.null %}
+                        <?= $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}, 'empty' => true]); ?>
+                        {{- "\n" }}
+                    {%- else %}
+                        <?= $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}]); ?>
+                        {{- "\n" }}
+                    {%- endif %}
+                {%- elseif field not in ['created', 'modified', 'updated'] %}
+                    {%- set fieldData = Bake.columnData(field, schema) %}
+                    {%- if fieldData.type in ['date', 'datetime', 'time'] and fieldData.null %}
+                        <?= $this->Form->control('{{ field }}', ['empty' => true]);?>
+                        {{- "\n" }}
+                    {%- else %}
+                        <?= $this->Form->control('{{ field }}'); ?>
+                        {{- "\n" }}
+                    {%- endif %}
+                {%- endif %}
+            {%- endif %}
+        {%- endfor %}
+
+        {%- if associations.BelongsToMany %}
+            {%- for assocName, assocData in associations.BelongsToMany %}
+                <?= $this->Form->control('{{ assocData.property }}._ids', ['options' => ${{ assocData.variable }}]); ?>
+                {{- "\n" }}
+            {%- endfor %}
+        {% endif %}
+    </div>
+    <div class="card-footer">
+        <?= $this->element('form/save_buttons') ?>
+        <?= $this->Html->link('<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'), ['action' => 'index', '?' => $this->request->getQueryParams()], ['class' => 'btn btn-outline-danger', 'escape' => false]) ?>
+    </div>
+    <?= $this->Form->end() ?>
+</div>

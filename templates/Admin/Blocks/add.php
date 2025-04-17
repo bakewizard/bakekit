@@ -1,0 +1,38 @@
+<?= $this->Html->script(['/backend/js/blocks'], ['block' => true]) ?>
+
+<?= $this->element('form/cell_select_modal') ?>
+
+<div class="card card-success card-outline">
+    <div class="card-header">
+        <div class="card-title"><i class="fa-solid fa-edit me-2"></i><?= __('Add Block') ?></div>
+    </div>
+    <?= $this->Form->create($block, ['align' => 'horizontal']) ?>
+    <div class="card-body">
+        <?= $this->Form->control('alias'); ?>
+        <?= $this->Form->control('title'); ?>
+        <?= $this->Form->control('description'); ?>
+        <?= $this->Form->control('region_id', ['type' => 'hidden']); ?>
+        <?=
+        $this->Form->control('cell', [
+            'append' => $this->Form->button('...', [
+                'type' => 'button',
+                'class' => 'btn btn-primary',
+                'id' => 'cell-select-button',
+                'title' => __('Select Cell'),
+                'data-url' => $this->Url->build(['controller' => 'Blocks', 'action' => 'getCells'])
+            ]),
+            'readonly' => true]);
+        ?>
+        <?= $this->Form->control('template'); ?>
+        <?= $this->Form->control('enabled', ['switch' => true]); ?>
+    </div>
+    <div class="card-footer">
+        <?= $this->element('form/save_buttons') ?>
+        <?php if (isset($block->region_id)): ?>
+            <?= $this->Html->link('<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'), ['controller' => 'Regions', 'action' => 'view', $block->region_id, '?' => $this->request->getQueryParams()], ['class' => 'btn btn-outline-danger', 'escape' => false]) ?>
+        <?php else: ?>
+            <?= $this->Html->link('<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'), $this->request->referer(), ['class' => 'btn btn-outline-danger', 'escape' => false]) ?>
+        <?php endif; ?>
+    </div>
+    <?= $this->Form->end() ?>
+</div>

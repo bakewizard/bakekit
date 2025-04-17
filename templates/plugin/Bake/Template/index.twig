@@ -1,0 +1,76 @@
+{% set fields = Bake.filterFields(fields, schema, modelObject, indexColumns, ['binary', 'text']) %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fa-solid fa-list me-2"></i> <?= __('{{ pluralHumanName }} list') ?></h3>
+        <div class="card-tools">
+            <?= $this->Html->link('<i class="fa-solid fa-plus-circle"></i>', ['action' => 'add'], ['class' => 'btn btn-sm btn-outline-success', 'escape' => false]) ?>
+            <?= $this->Form->button('<i class="fa-solid fa-minus-circle"></i> ', ['form' => 'index-form', 'class' => 'btn btn-sm btn-outline-danger', 'escapeTitle' => false]) ?>
+        </div>
+    </div>
+
+    <?= $this->element('form/pager_top') ?>            
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <?= $this->Form->create(null, ['id' => 'index-form', 'url' => ['action' => 'deleteMany', '?' => $this->request->getQueryParams()]]); ?>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center"><?= $this->Form->checkbox('check-all', ['id' => 'toggle-checkbox', 'hiddenField' => false]) ?></th>
+                            {% for field in fields %}
+                            <th scope="col"><?= $this->Paginator->sort('{{ field }}') ?></th>
+                            {% endfor %}
+                        <th scope="col" class="actions"><?= __('Actions') ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach (${{ pluralVar }} as ${{ singularVar }}): ?>
+                    <tr>
+                        {% set pk = '$' ~ singularVar ~ '->' ~ primaryKey[0] %}
+                        <td class="text-center align-middle"><?= $this->Form->checkbox('ids[]', ['hiddenField' => false, 'value' => {{ pk|raw }}]) ?></td>
+                        {% for field in fields %}
+                            {% set isKey = false %}
+                            {% if associations.BelongsTo is defined %}
+                                {% for alias, details in associations.BelongsTo %} 
+                                    {% if field == details.foreignKey %}
+                                        {% set isKey = true %}
+                                        <td><?= ${{ singularVar }}->has('{{ details.property }}') ? $this->Html->link(${{ singularVar }}->{{ details.property }}->{{ details.displayField }}, ['controller' => '{{ details.controller }}', 'action' => 'view', ${{ singularVar }}->{{ details.property }}->{{ details.primaryKey[0] }}]) : '' ?></td>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            {% if isKey is not same as(true) %}
+                                {% set columnData = Bake.columnData(field, schema) %}
+                                {% if columnData.type not in ['integer', 'float', 'decimal', 'biginteger', 'smallinteger', 'tinyinteger'] %}
+                                    <td><?= h(${{ singularVar }}->{{ field }}) ?></td>
+                                {% else %}
+                                    <td><?= $this->Number->format(${{ singularVar }}->{{ field }}) ?></td>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% set pk = '$' ~ singularVar ~ '->' ~ primaryKey[0] %}
+                        <td class="text-center actions">                                   
+                            <?= $this->Html->link('<i class="fa-solid fa-eye"></i>', ['action' => 'view', {{ pk|raw }}], ['escape' => false, 'class' => 'btn btn-outline-primary']) ?>
+                            <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['action' => 'edit', {{ pk|raw }}, '?' => $this->request->getQueryParams()], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
+                            <?= $this->Form->postLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', {{ pk|raw }}, '?' => $this->request->getQueryParams()], 
+                                    [
+                                        'method' => 'delete', 
+                                        'block' => true, 
+                                        'escape' => false,
+                                        'confirm' => __('Are you sure you want to delete # {0}?', {{ pk|raw }}),
+                                        'class' => 'btn btn-outline-danger',
+                                        'data-bs-toggle' => 'modal',
+                                        'data-bs-target' => '#confirm-modal'
+                                    ]
+                            ) 
+                            ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?= $this->Form->end(); ?>
+        </div>
+    </div>
+
+    <?= $this->element('form/pager_bottom') ?>
+</div>
