@@ -9,6 +9,8 @@
 /webroot/media/*
 /plugins/*
 /themes/*
+!plugins/.gitkeep
+!themes/.gitkeep
 /bin/composer.phar
 
 # OS generated files #

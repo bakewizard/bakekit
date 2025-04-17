@@ -1,53 +1,71 @@
-# CakePHP Application Skeleton
+# BakeKit
 
-![Build Status](https://github.com/cakephp/app/actions/workflows/ci.yml/badge.svg?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
-[![PHPStan](https://img.shields.io/badge/PHPStan-level%207-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
+> **If you can make it, bake it!**
 
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 5.x.
+BakeKit is a fully-featured CMS foundation built with [CakePHP 5](https://cakephp.org/). Designed for developers who want to rapidly build web applications without reinventing the wheel, BakeKit offers everything a modern CMS should — including authentication, authorization, user roles, menus, widgets, settings, plugins, themes, and more — right out of the oven.
 
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+## Why BakeKit?
 
-## Installation
+As developers, we often start a project by building a core application — a blog, a store, a dashboard. Then comes the realization: an admin panel needs to be created. Then user management, roles, permissions, settings, menus... The list never ends. So we look into CMS platforms, only to find ourselves wrestling with monoliths, rigid structures, or systems that don't respect the MVC pattern or don't feel like true frameworks.
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+That’s where BakeKit comes in.
 
-If Composer is installed globally, run
+## BakeKit is:
+
+- 🍰 **CakePHP-powered**: Built on the fast, clean, and extensible CakePHP 5 framework.
+- 🧩 **Modular**: Plugins and themes are first-class citizens.
+- 🎛️ **Customizable**: Tweak everything from menus and permissions to layouts and widgets.
+- 🔐 **Secure**: Leverages CakePHP's battle-tested security features, including CSRF, form tampering protection, hashed passwords, and more.
+- 🛠️ **Developer-Friendly**: BakeKit uses CakePHP conventions and structure. If you know CakePHP, you already know BakeKit.
+
+## Core Features
+
+- ✅ Admin panel (based on AdminLTE)
+- ✅ Authentication and authorization
+- ✅ Role and permission system
+- ✅ Menu and action management
+- ✅ Plugin and theme system
+- ✅ Widgets and settings system
+- ✅ Built-in CMS plugins: Shop, Blogger, Pages, Slideshow, FileManager, and more
+
+## Why CakePHP?
+
+CakePHP is an elegant and expressive PHP framework that emphasizes convention over configuration. Unlike Symfony, which favors complexity and configuration-heavy design, CakePHP allows for rapid development with clean structure and robust defaults. It's also:
+
+- Lightweight and fast
+- Backed by strong ORM
+- Has powerful baking tools (`bin/cake bake`)
+- Easy to learn, yet powerful enough for enterprise
+
+BakeKit takes these strengths and adds a CMS layer on top — without sacrificing flexibility.
+
+## Who is it for?
+
+- Developers who want to **build custom web apps** fast
+- Agencies looking for a **reliable CMS foundation**
+- CakePHP fans who want **a full-featured backend without starting from scratch**
+- Anyone tired of forcing WordPress, Symfony, or Laravel-based systems into things they were never meant to be
+
+## Get Started
+
+Clone the repository:
 
 ```bash
-composer create-project --prefer-dist cakephp/app
+git clone https://github.com/bakewizard/BakeKit.git
+cd BakeKit
+composer install
 ```
 
-In case you want to use a custom app dir name (e.g. `/myapp/`):
+> (Detailed installation docs coming soon.)
 
-```bash
-composer create-project --prefer-dist cakephp/app myapp
-```
+## License
 
-You can now either use your machine's webserver to view the default home page, or start
-up the built-in webserver with:
+MIT License
 
-```bash
-bin/cake server -p 8765
-```
+---
 
-Then visit `http://localhost:8765` to see the welcome page.
+### 🔥 Ready to Bake?
 
-## Update
+With BakeKit, you're not starting from zero — you're starting with a warm, extensible CakePHP base, full of tools ready to power your next idea.
 
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
-
-## Configuration
-
-Read and edit the environment specific `config/app_local.php` and set up the
-`'Datasources'` and any other configuration relevant for your application.
-Other environment agnostic settings can be changed in `config/app.php`.
-
-## Layout
-
-The app skeleton uses [Milligram](https://milligram.io/) (v1.3) minimalist CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+> If you can make it, **bake it**.
