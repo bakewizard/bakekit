@@ -45,7 +45,7 @@ class InstallCommand extends Command
             $io->hr();
 
             Cache::clearAll();
-            $io->out('Congratulations, CakeCMS has been installed successfully!');
+            $io->out('Congratulations, BakeKit CMS has been installed successfully!');
 
             return static::CODE_SUCCESS;
         } catch (Exception $e) {

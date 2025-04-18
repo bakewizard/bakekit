@@ -205,7 +205,7 @@ class Installer
             $io->write('Enter database settings:');
 
             $dbHost = $io->ask('<info>host (Default to localhost)</info>: ', 'localhost');
-            $dbName = $io->ask('<info>name (Default to cakecms)</info>: ', 'cakecms');
+            $dbName = $io->ask('<info>name (Default to bakekit)</info>: ', 'bakekit');
             $dbUser = $io->ask('<info>user (Default to root)</info>: ', 'root');
             $dbPass = $io->ask('<info>password (Default to root)</info>: ', 'root');
 
