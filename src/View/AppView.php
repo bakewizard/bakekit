@@ -71,7 +71,7 @@ class AppView extends View
     public function region($alias, array $arguments = [])
     {
         if (!isset($this->_regions[$alias])) {
-            return $this->request->getSession()->check('Auth.User') ? '<span class="fw-bold text-info">[{$alias}]</span>' : '';
+            return $this->request->getSession()->check('Auth.User') ? '<span class="fw-bold text-info">[' . $alias . ']</span>' : '';
         }
 
         $html = '';
