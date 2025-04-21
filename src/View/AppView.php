@@ -71,7 +71,7 @@ class AppView extends View
     public function region($alias, array $arguments = [])
     {
         if (!isset($this->_regions[$alias])) {
-            return $this->request->getSession()->check('Auth.User') ? "<strong>[{$alias}]</strong>" : '';
+            return $this->request->getSession()->check('Auth.User') ? '<span class="fw-bold text-info">[' . $alias . ']</span>' : '';
         }
 
         $html = '';
@@ -101,7 +101,7 @@ class AppView extends View
                     $this->prepend('script', $script);
                 }
             } catch (MissingCellException | MissingCellTemplateException $e) {
-                $html .= '<strong>' . $e->getMessage() . '</strong>';
+                $html .= '<span class="fw-bold text-danger">' . $e->getMessage() . '</span>';
             }
         }
         return $html;
