@@ -18,6 +18,7 @@ use Cake\Event\EventInterface;
 class RolesController extends AppController
 {
 
+    #[\Override]
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);

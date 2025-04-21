@@ -18,6 +18,7 @@ use Cake\Event\EventInterface;
 class MenuLinksController extends AppController
 {
 
+    #[\Override]
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);

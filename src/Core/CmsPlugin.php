@@ -48,9 +48,11 @@ class CmsPlugin extends BasePlugin
             $return = require $path;
             if (is_callable($return)) {
                 $languages = $this->app->getConfig('I18n.languages');
-                foreach ($languages as $i => $lang) {
-                    if ($i !== 0) {
-                        $routes->plugin($this->name, ['path' => ('/' . $lang . '/' . $this->alias), 'lang' => $lang], $return($routes));
+                if ($languages) {
+                    foreach ($languages as $i => $lang) {
+                        if ($i !== 0) {
+                            $routes->plugin($this->name, ['path' => ('/' . $lang . '/' . $this->alias), 'lang' => $lang], $return($routes));
+                        }
                     }
                 }
                 $routes->plugin($this->name, ['path' => '/' . $this->alias], $return($routes));

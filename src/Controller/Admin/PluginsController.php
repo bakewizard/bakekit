@@ -21,6 +21,7 @@ class PluginsController extends AppController
 
     private $pluginsDir;
 
+    #[\Override]
     public function initialize(): void
     {
         parent::initialize();
@@ -28,6 +29,7 @@ class PluginsController extends AppController
         $this->pluginsDir = current(App::path('plugins'));
     }
 
+    #[\Override]
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);

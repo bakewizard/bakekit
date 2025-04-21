@@ -181,11 +181,13 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
         $routes->scope('/', ['controller' => 'Index'], function (RouteBuilder $builder) {
             $languages = $this->getConfig('I18n.languages');
-            foreach ($languages as $i => $lang) {
-                if ($i !== 0) {
-                    $builder->scope('/' . $lang, ['lang' => $lang], function (RouteBuilder $builder) {
-                        $builder->connect('/', ['action' => 'index']);
-                    });
+            if ($languages) {
+                foreach ($languages as $i => $lang) {
+                    if ($i !== 0) {
+                        $builder->scope('/' . $lang, ['lang' => $lang], function (RouteBuilder $builder) {
+                            $builder->connect('/', ['action' => 'index']);
+                        });
+                    }
                 }
             }
 

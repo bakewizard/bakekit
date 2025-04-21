@@ -208,7 +208,7 @@ ServerRequest::addDetector('tablet', function ($request) {
  * @link https://book.cakephp.org/5/en/core-libraries/internationalization-and-localization.html#parsing-localized-datetime-data
  */
 // \Cake\Database\TypeFactory::build('time')->useLocaleParser();
-// \Cake\Database\TypeFactory::build('date')->useLocaleParser();
+\Cake\Database\TypeFactory::build('date')->useLocaleParser();
 // \Cake\Database\TypeFactory::build('datetime')->useLocaleParser();
 // \Cake\Database\TypeFactory::build('timestamp')->useLocaleParser();
 // \Cake\Database\TypeFactory::build('datetimefractional')->useLocaleParser();
@@ -227,10 +227,7 @@ ServerRequest::addDetector('tablet', function ($request) {
 // set a custom date and time format
 // see https://book.cakephp.org/5/en/core-libraries/time.html#setting-the-default-locale-and-format-string
 // and https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
-// \Cake\I18n\Date::setToStringFormat('dd.MM.yyyy');
-// \Cake\I18n\Time::setToStringFormat('dd.MM.yyyy HH:mm');
-
-\Cake\Database\TypeFactory::build('date')->useLocaleParser();
 \Cake\I18n\Date::setToStringFormat('dd-MM-yyyy');
+// \Cake\I18n\Time::setToStringFormat('dd.MM.yyyy HH:mm');
 
 Configure::write('I18n.languages', ['uk', 'ru']);

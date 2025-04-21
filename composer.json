@@ -1,9 +1,10 @@
 {
-    "name": "cakephp/app",
-    "description": "CakePHP skeleton app",
+    "name": "bakewizard/bakekit",
+    "description": "A CakePHP 5-based CMS and app starter kit",
     "license": "MIT",
     "type": "project",
-    "homepage": "https://cakephp.org",
+    "homepage": "https://github.com/bakewizard/bakekit",
+    "keywords": ["php", "cakephp", "cms", "starter", "boilerplate", "admin-panel", "bake"],
     "require": {
         "php": ">=8.1",
         "admad/cakephp-sequence": "^4.0",

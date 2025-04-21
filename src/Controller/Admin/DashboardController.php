@@ -29,6 +29,7 @@ class DashboardController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
+    #[\Override]
     public function settings()
     {
         parent::settings();
