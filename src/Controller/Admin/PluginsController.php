@@ -63,7 +63,7 @@ class PluginsController extends AppController
                     $json = json_decode($content, true);
                     $plugins[$name] = [
                         'id' => isset($installedPlugins[$name]) ? $installedPlugins[$name]->id : null,
-                        'name' => strpos($json['name'], '/') ? substr($json['name'], strpos($json['name'], '/') + 1) : $json['name'],
+                        'name' => $name,
                         'alias' => isset($installedPlugins[$name]) ? $installedPlugins[$name]->alias : '',
                         'description' => $json['description'],
                         'parent_plugin' => $json['extra']['parent-plugin'] ?? null,
@@ -75,7 +75,7 @@ class PluginsController extends AppController
 
         ksort($plugins);
 
-        $this->set(compact('plugins', 'installedPlugins'));
+        $this->set(compact('plugins'));
     }
 
     /**
