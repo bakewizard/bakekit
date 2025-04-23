@@ -208,7 +208,7 @@ class PluginsController extends AppController
                 $config = $this->getConfigData($this->pluginsDir . $name);
 
                 $entity = $this->Plugins->newEntity([
-                    'name' => $config['name'],
+                    'name' => $name,
                     'alias' => Inflector::dasherize($config['name']),
                     'description' => $config['description'],
                     'parent_plugin' => $config['extra']['parent-plugin'] ?? null,
