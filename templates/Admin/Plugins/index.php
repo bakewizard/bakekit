@@ -34,7 +34,17 @@
                                         <?= $this->Form->postLink('Deactivate', ['action' => 'deactivate', $plugin['id']], ['block' => true, 'class' => 'btn btn-sm btn-warning']) ?>
                                     <?php else: ?>
                                         <?= $this->Form->postLink('Activate', ['action' => 'activate', $plugin['name']], ['block' => true, 'class' => 'btn btn-sm btn-success']) ?>
-                                        <?= $this->Form->postLink('Uninstall', ['action' => 'uninstall', $plugin['name']], ['method' => 'delete', 'block' => true, 'class' => 'btn btn-sm btn-danger', 'confirm' => __('Are you sure you want to uninstall "{0}"?', $plugin['name'])]) ?>
+                                        <?=
+                                        $this->Form->deleteLink('Uninstall', ['action' => 'uninstall', $plugin['name']],
+                                                [
+                                                    'block' => true,
+                                                    'confirm' => __('Are you sure you want to uninstall "{0}"?', $plugin['name']),
+                                                    'class' => 'btn btn-sm btn-danger',
+                                                    'data-bs-toggle' => 'modal',
+                                                    'data-bs-target' => '#confirm-modal'
+                                                ]
+                                        )
+                                        ?>
                                     <?php endif; ?>
                                 </div>
                             </td>

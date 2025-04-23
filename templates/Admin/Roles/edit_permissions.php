@@ -4,8 +4,7 @@
         <?php if (!$role->isRoot()): ?>
             <div class="card-tools">
                 <?=
-                $this->Form->postLink('<i class="fa-solid fa-trash-alt"></i> ' . __('Reset permissions'), ['action' => 'resetPermissions', $role->id], [
-                    'method' => 'delete',
+                $this->Form->deleteLink('<i class="fa-solid fa-trash-alt"></i> ' . __('Reset permissions'), ['action' => 'resetPermissions', $role->id], [
                     'block' => true,
                     'confirm' => __('Do you really want to reset all permissions?'),
                     'escape' => false,

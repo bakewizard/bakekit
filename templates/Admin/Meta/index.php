@@ -30,9 +30,8 @@
                             <td class="text-center actions">
                                 <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['action' => 'edit', $metum->id, '?' => $this->request->getQueryParams()], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
                                 <?=
-                                $this->Form->postLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', $metum->id, '?' => $this->request->getQueryParams()],
+                                $this->Form->deleteLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', $metum->id, '?' => $this->request->getQueryParams()],
                                         [
-                                            'method' => 'delete',
                                             'block' => true,
                                             'escape' => false,
                                             'confirm' => __('Are you sure you want to delete # {0}?', $metum->id),

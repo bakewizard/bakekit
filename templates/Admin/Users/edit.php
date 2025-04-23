@@ -23,7 +23,16 @@
                     $this->Form->file('uploads[]', [
                         'accept' => 'image/*',
                         'id' => 'users-images-input',
-                        'append' => $this->Form->postLink('<i class="fa-solid fa-lg fa-eraser"></i>', ['action' => 'deleteFiles', $user->id], ['method' => 'delete', 'block' => true, 'escape' => false, 'class' => 'text-danger'])
+                        'append' => $this->Form->deleteLink('<i class="fa-solid fa-lg fa-eraser"></i>', ['action' => 'deleteFiles', $user->id],
+                                [
+                                    'block' => true,
+                                    'escape' => false,
+                                    'confirm' => __('Are you sure you want to delete {0}?', $user->full_name),
+                                    'class' => 'text-danger',
+                                    'data-bs-toggle' => 'modal',
+                                    'data-bs-target' => '#confirm-modal'
+                                ]
+                        )
                     ]);
                     ?>
                 </div>

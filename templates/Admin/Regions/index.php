@@ -31,9 +31,8 @@
                                 <?= $this->Html->link('<i class="fa-solid fa-cubes"></i>', ['action' => 'view', $region->id], ['escape' => false, 'class' => 'btn btn-outline-primary']) ?>
                                 <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['action' => 'edit', $region->id, '?' => $this->request->getQueryParams()], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
                                 <?=
-                                $this->Form->postLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', $region->id, '?' => $this->request->getQueryParams()],
+                                $this->Form->deleteLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', $region->id, '?' => $this->request->getQueryParams()],
                                         [
-                                            'method' => 'delete',
                                             'block' => true,
                                             'escape' => false,
                                             'confirm' => __('Are you sure you want to delete {0}?', $region->alias),

@@ -42,9 +42,8 @@
                                 <?php if ($theme['name'] !== $activeTheme): ?>
                                     <?= $this->Form->postLink('Activate', ['action' => 'activate', $theme['name']], ['class' => 'btn btn-sm btn-success']) ?>
                                     <?=
-                                    $this->Form->postLink('Delete', ['action' => 'uninstall', $theme['name']],
+                                    $this->Form->deleteLink('Delete', ['action' => 'uninstall', $theme['name']],
                                             [
-                                                'method' => 'delete',
                                                 'block' => true,
                                                 'confirm' => __('Are you sure you want to uninstall {0} theme?', $theme['name']),
                                                 'class' => 'btn btn-sm btn-danger',

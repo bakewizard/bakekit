@@ -40,9 +40,8 @@
                             <?php endif; ?>
                             <?= $this->Html->link('<i class="fas fa-edit"></i>', ['controller' => 'Blocks', 'action' => 'edit', $block->id], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
                             <?=
-                            $this->Form->postLink('<i class="fa-solid fa-trash"></i>', ['controller' => 'Blocks', 'action' => 'delete', $block->id],
+                            $this->Form->deleteLink('<i class="fa-solid fa-trash"></i>', ['controller' => 'Blocks', 'action' => 'delete', $block->id],
                                     [
-                                        'method' => 'delete',
                                         'block' => true,
                                         'escape' => false,
                                         'confirm' => __('Are you sure you want to delete {0}?', $block->title),

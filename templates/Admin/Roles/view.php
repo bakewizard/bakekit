@@ -23,9 +23,8 @@
                         <td class="text-center actions">
                             <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['controller' => 'Users', 'action' => 'edit', $user->id], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
                             <?=
-                            $this->Form->postLink('<i class="fa-solid fa-trash"></i>', ['controller' => 'Users', 'action' => 'delete', $user->id],
+                            $this->Form->deleteLink('<i class="fa-solid fa-trash"></i>', ['controller' => 'Users', 'action' => 'delete', $user->id],
                                     [
-                                        'method' => 'delete',
                                         'block' => true,
                                         'escape' => false,
                                         'confirm' => __('Are you sure you want to delete {0}?', $user->full_name),

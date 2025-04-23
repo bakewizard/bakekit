@@ -3,8 +3,7 @@
         <div class="card-title"><i class="fa-solid fa-list me-2"></i><?= __('Roles list') ?></div>
         <div class="card-tools">
             <?=
-            $this->Form->postLink('<i class="fa-solid fa-redo-alt"></i> ' . __('Reload resources'), ['action' => 'reloadResources'], [
-                'method' => 'delete',
+            $this->Form->deleteLink('<i class="fa-solid fa-redo-alt"></i> ' . __('Reload resources'), ['action' => 'reloadResources'], [
                 'block' => true,
                 'confirm' => __('This action will recreate all resources and clear all permissions. Do you want to proceed?'),
                 'escape' => false,
@@ -34,9 +33,8 @@
                                 <?= $this->Html->link('<i class="fa-solid fa-users"></i>', ['action' => 'view', $id], ['escape' => false, 'class' => 'btn btn-outline-primary']) ?>
                                 <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['action' => 'edit', $id, '?' => $this->request->getQueryParams()], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
                                 <?=
-                                $this->Form->postLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', $id, '?' => $this->request->getQueryParams()],
+                                $this->Form->deleteLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', $id, '?' => $this->request->getQueryParams()],
                                         [
-                                            'method' => 'delete',
                                             'block' => true,
                                             'escape' => false,
                                             'confirm' => __('Are you sure you want to delete {0} role?', trim($role, '-')),

@@ -56,9 +56,8 @@
                                 <?= $this->Html->link('<i class="fa-solid fa-list"></i>', ['action' => 'view', $menu->id], ['escape' => false, 'class' => 'btn btn-outline-primary']) ?>
                                 <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['action' => 'edit', $menu->id, '?' => $this->request->getQueryParams()], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
                                 <?=
-                                $this->Form->postLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', $menu->id, '?' => $this->request->getQueryParams()],
+                                $this->Form->deleteLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', $menu->id, '?' => $this->request->getQueryParams()],
                                         [
-                                            'method' => 'delete',
                                             'block' => true,
                                             'confirm' => __('Are you sure you want to delete {0}?', $menu->name),
                                             'escape' => false,
