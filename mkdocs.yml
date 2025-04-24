@@ -1,0 +1,56 @@
+site_name: BakeKit
+# site_url: https://yourdomain.com/
+repo_url: https://github.com/bakewizard/bakekit
+repo_name: bakewizard/bakekit
+# edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: images/logo.png
+  favicon: images/favicon.ico
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: install.md
+      - Quick Start: quick-start.md
+  - Guide:
+      - Plugins: plugins.md
+      - Themes: themes.md
+  #     - Regions & Blocks: regions-blocks.md
+  #     - Settings: settings.md
+  #     - Access control: access-control.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - footnotes
+  - tables
+  - codehilite:
+      guess_lang: false
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.highlight
+  - pymdownx.emoji
