@@ -29,9 +29,9 @@ To begin configuring your site, click the ⚙️ **cogs icon** in the top-right 
 
 To enable features like static pages, blog posts, or slideshows, you need to install and activate plugins.
 
-👉 **Tip:** Start by installing the **FileManager** plugin—it’s often required by other plugins for image handling.
+👉 **Tip:** Start by installing the **FileManager** plugin — it’s required by other plugins for image handling.
 
-### Install via Git:
+Install via Git:
 
 ```bash
 git clone https://github.com/bakewizard/FileManager.git
@@ -135,13 +135,13 @@ To install and activate a new theme:
 
 ---
 
-### 🛠️ Next Steps
+## 🛠️ Next Steps
 
 BakeKit CMS is now set up!
 
 You can now:
 
-- Customize layouts
+- Install [plugins](plugins.md)
+- Install [themes](themes.md)
 - Create dynamic content
 - Tweak advanced settings
-- Install additional plugins

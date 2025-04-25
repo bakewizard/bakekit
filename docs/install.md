@@ -33,6 +33,6 @@ curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
 # 5. Install PHP dependencies
 bin/composer.phar install
 
-# 6. Run the CakePHP installation script
+# 6. Run the installation script
 bin/cake install
 ```

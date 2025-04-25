@@ -11,11 +11,6 @@ use Migrations\Migrations;
 use ReflectionClass;
 use ReflectionMethod;
 
-/**
- * PluginManager
- *
- * @author mintik
- */
 class PluginManager
 {
 
@@ -69,7 +64,7 @@ class PluginManager
                 continue;
             }
 
-            $files = array_diff(scandir($path), [".", "..", "BlockCell.php"]);
+            $files = array_diff(scandir($path), ['.', '..', 'BlockCell.php']);
 
             foreach ($files as $file) {
                 if (is_dir($path . $file) || !str_ends_with($file, 'Cell.php')) {
@@ -114,7 +109,7 @@ class PluginManager
                 continue;
             }
 
-            $files = array_diff(scandir($path), [".", "..", "AppController.php"]);
+            $files = array_diff(scandir($path), ['.', '..', 'AppController.php']);
 
             foreach ($files as $file) {
                 if (is_dir($path . $file) || !str_ends_with($file, 'Controller.php')) {
@@ -169,7 +164,7 @@ class PluginManager
                 continue;
             }
 
-            $files = array_diff(scandir($path), [".", "..", "AppController.php"]);
+            $files = array_diff(scandir($path), ['.', '..', 'AppController.php', 'ErrorController.php']);
 
             foreach ($files as $file) {
                 if (is_dir($path . $file) || !str_ends_with($file, 'Controller.php')) {
@@ -257,7 +252,7 @@ class PluginManager
                 continue;
             }
 
-            $files = array_diff(scandir($path), [".", "..", 'AppController.php', 'ErrorController.php', 'UsersController.php', 'RolesController.php']);
+            $files = array_diff(scandir($path), ['.', '..', 'AppController.php', 'ErrorController.php', 'UsersController.php', 'RolesController.php']);
 
             foreach ($files as $file) {
                 if (is_dir($path . $file)) {

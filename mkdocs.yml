@@ -1,4 +1,4 @@
-site_name: BakeKit
+site_name: BakeKit CMS
 # site_url: https://yourdomain.com/
 repo_url: https://github.com/bakewizard/bakekit
 repo_name: bakewizard/bakekit
@@ -20,7 +20,7 @@ theme:
         icon: material/weather-sunny
         name: Switch to light mode
   features:
-    - navigation.tabs
+#    - navigation.tabs
     - navigation.sections
     - navigation.top
     - toc.integrate
@@ -35,9 +35,9 @@ nav:
   - Guide:
       - Plugins: plugins.md
       - Themes: themes.md
-  #     - Regions & Blocks: regions-blocks.md
-  #     - Settings: settings.md
+      - Regions & Blocks: regions-blocks.md
   #     - Access control: access-control.md
+  #     - Settings: settings.md
 
 plugins:
   - search
