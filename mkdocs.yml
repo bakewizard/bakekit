@@ -36,7 +36,8 @@ nav:
       - Plugins: plugins.md
       - Themes: themes.md
       - Regions & Blocks: regions-blocks.md
-  #     - Access control: access-control.md
+      - Menus: menus.md
+      - Access control: access-control.md
   #     - Settings: settings.md
 
 plugins:

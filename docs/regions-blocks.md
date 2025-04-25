@@ -1,6 +1,7 @@
 # 🧩 Regions & Blocks
 
-In **BakeKit CMS**, themes use region placeholders to mark where dynamic content should appear. These placeholders are defined using:
+Regions & Blocks are the foundation for dynamic content in **BakeKit CMS** themes.
+Themes use region placeholders to mark where dynamic content should appear. These placeholders are defined using:
 
 ```php
 <?= $this->region('region-name'); ?>
@@ -8,13 +9,17 @@ In **BakeKit CMS**, themes use region placeholders to mark where dynamic content
 
 A region outputs no content by default. To make it functional, you must define it in the admin panel and assign blocks to it.
 
+---
+
 ## 🗂️ What are Regions?
 
 A **region** is simply a named container for **blocks**. It does not render anything on its own until it has one or more blocks assigned. You create regions to correspond with placeholders in your theme.
 
-- The region **alias** must match the placeholder name.
+- The region **Alias** must match the placeholder name.
 - Use lowercase letters (`a-z`), digits (`0-9`), and hyphens (`-`) for aliases.
-- The **description** appears in the admin list for reference.
+- The **Description** only appears in the admin panel for clarity.
+
+---
 
 ## 🧱 What are Blocks?
 
@@ -25,7 +30,9 @@ Blocks are the actual content rendered in regions. A block can either:
 
 Blocks act as wrappers for CakePHP cells. This makes it easy to drop in CMS widgets like menus, article listings, or custom features.
 
-## ⚙️ Managing Regions and Blocks
+---
+
+## ⚙️ Managing Regions & Blocks
 
 1. Go to: `SITE MANAGEMENT` → **Regions & Blocks**
 
@@ -46,11 +53,9 @@ Blocks act as wrappers for CakePHP cells. This makes it easy to drop in CMS widg
 - You'll see a list of **plugins**, each collapsible.
 - Expand a plugin section to view its available cells with descriptions (e.g. _"Recent articles – Displays a recent articles list"_).
 - Click a cell to select it. The modal closes and fills in the cell field with its name (e.g. `Blogger.Article::recent`).
-
-You may optionally:
-
-- Provide a **template name** (if left blank, `display.php` is used).
 - Check **Enabled** to activate the block.
+
+> 💡 You may optionally enter a template name. If left blank, the system will automatically use the default template corresponding to the cell’s action name (e.g., `recent.php` for the `recent` action).
 
 Finally, click **Save & Close**.
 
@@ -62,7 +67,7 @@ If you leave the **cell field empty**, you can manually fill in the **Content** 
 
 If a block uses a cell that supports settings:
 
-- A **cog button** ⚙️ appears in the blocks list.
+- A **cog button ⚙️** appears in the blocks list.
 - Clicking it opens a settings form (if the cell's plugin includes one, e.g. `PluginName/src/Form/Cell/ArticleCellConfigForm.php`).
 - The cell may also use a custom template (e.g. `PluginName/templates/cell/Article/recent.php`).
 
@@ -70,4 +75,4 @@ This gives you full flexibility for widget-style content management, while keepi
 
 ---
 
-That's it! Regions & Blocks are the foundation for dynamic content in your BakeKit CMS themes. 🎉
+> “That's it!  🎉. Now go ahead and define your first region — your layout is about to get a lot more dynamic.”

@@ -1,4 +1,4 @@
-# Welcome to BakeKit
+# 🎉 Welcome to BakeKit CMS
 
 **BakeKit** is a modern CMS boilerplate built with **CakePHP 5**, featuring a clean Admin Panel and everything you need to get started fast.
 
@@ -11,9 +11,11 @@ Core features include:
 - ⚙️ Settings, Menus, Slideshow, Pages, Blog
 - 📄 Fully open-source (MIT Licensed)
 
-**Start fast. Build with structure. Customize deeply.**
+> **Start fast. Build easily. Customize deeply.**
 
-## 📚 Documentation
+---
+
+# 📚 Documentation
 
 Here’s a quick overview to help you get started:
 
@@ -21,3 +23,6 @@ Here’s a quick overview to help you get started:
 - **[Quick Start](quick-start.md)** — Learn the basics in minutes
 - **[Plugins](plugins.md)** — Extend functionality with ZIP-powered plugins
 - **[Themes](themes.md)** — Customize the frontend look and feel
+- **[Regions & Blocks](regions-blocks.md)** — Control dynamic content placement in your themes
+- **[Menus](menus.md)** - Build and manage site navigation with ease
+- **[Access control](access-control.md)** - Manage users, roles, and permissions easily
