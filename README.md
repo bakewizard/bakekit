@@ -1,7 +1,5 @@
 # BakeKit
 
-> **If you can make it, bake it!**
-
 BakeKit is a fully-featured CMS foundation built with [CakePHP 5](https://cakephp.org/). Designed for developers who want to rapidly build web applications without reinventing the wheel, BakeKit offers everything a modern CMS should — including authentication, authorization, user roles, menus, widgets, settings, plugins, themes, and more — right out of the oven.
 
 ## Why BakeKit?
@@ -30,21 +28,21 @@ That’s where BakeKit comes in.
 
 ## Why CakePHP?
 
-CakePHP is an elegant and expressive PHP framework that emphasizes convention over configuration. Unlike Symfony, which favors complexity and configuration-heavy design, CakePHP allows for rapid development with clean structure and robust defaults. It's also:
+CakePHP is an elegant and expressive PHP framework that emphasizes convention over configuration. Unlike Symfony, which is complex and configuration-heavy, CakePHP allows for rapid development with a clean structure and robust defaults. It's also:
 
 - Lightweight and fast
-- Backed by strong ORM
-- Has powerful baking tools (`bin/cake bake`)
-- Easy to learn, yet powerful enough for enterprise
+- Backed by a powerful ORM
+- Includes powerful baking tools (`bin/cake bake`)
+- Easy to learn but powerful enough for enterprise-level projects
 
 BakeKit takes these strengths and adds a CMS layer, without sacrificing flexibility.
 
 ## Who is it for?
 
-- Developers who want to **build custom web apps** fast
+- Developers who want to **build custom web apps** quickly
 - Agencies looking for a **reliable CMS foundation**
-- CakePHP fans who want **a full-featured backend without starting from scratch**
-- Anyone tired of forcing WordPress, Symfony, or Laravel-based systems into things they were never meant to be
+- CakePHP enthusiasts who want **a full-featured backend without starting from scratch**
+- Anyone tired of forcing WordPress, Symfony, or Laravel-based systems into things they were never meant to handle
 
 ## Get Started
 
@@ -58,14 +56,21 @@ bin/composer.phar install
 bin/cake install
 ```
 
+## Licenses
+
+BakeKit includes third-party libraries, each under their respective open-source licenses:
+
+- [AdminLTE](licenses/AdminLTE-LICENSE.txt) — MIT License
+- [TinyMCE](licenses/TinyMCE-LICENSE.txt) — LGPL 2.1 License
+
+Full license texts are available in the [licenses](licenses/) folder.
+
 ## License
 
-MIT License
+[MIT License](LICENSE)
 
----
-
-### 🔥 Ready to Bake?
+## 🔥 Ready to Bake?
 
 With BakeKit, you're not starting from zero — you're starting with a warm, extensible CakePHP base, full of tools ready to power your next idea.
 
-> If you can make it, **bake it**.
+> **If you can make it, bake it with BakeKit!**

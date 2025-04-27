@@ -63,16 +63,96 @@ Finally, click **Save & Close**.
 
 If you leave the **cell field empty**, you can manually fill in the **Content** field to create a basic HTML/text block.
 
-### 🔧 Block Settings
+---
 
-If a block uses a cell that supports settings:
+## 🔧 Block Settings
 
-- A **cog button ⚙️** appears in the blocks list.
-- Clicking it opens a settings form (if the cell's plugin includes one, e.g. `PluginName/src/Form/Cell/ArticleCellConfigForm.php`).
-- The cell may also use a custom template (e.g. `PluginName/templates/cell/Article/recent.php`).
+If a block uses a cell that supports settings, a **cog button ⚙️** appears in the blocks list. Clicking it opens a settings form.
 
-This gives you full flexibility for widget-style content management, while keeping everything dynamic and reusable.
+You can add the settings support by creating a settings form and a view.
+
+### 1. 🧩 Settings Form
+
+Create a form class at `plugins/YourPluginName/src/Form/Cell/ArticleCellConfigForm.php`
+
+Example:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Blogger\Form\Cell;
+
+use Cake\Form\Form;
+use Cake\Form\Schema;
+use Cake\Validation\Validator;
+
+/**
+ * CellConfig Form.
+ */
+class ArticleCellConfigForm extends Form
+{
+
+    /**
+     * Builds the schema for the modelless form
+     *
+     * @param \Cake\Form\Schema $schema From schema
+     * @return \Cake\Form\Schema
+     */
+    #[\Override]
+    protected function _buildSchema(Schema $schema): Schema
+    {
+        return $schema->addField('numberOfArticlesToShow', ['type' => 'integer', 'default' => 5]);
+    }
+
+    /**
+     * Form validation builder
+     *
+     * @param \Cake\Validation\Validator $validator to use against the form
+     * @return \Cake\Validation\Validator
+     */
+    #[\Override]
+    public function validationDefault(Validator $validator): Validator
+    {
+        return $validator->nonNegativeInteger('numberOfArticlesToShow')->requirePresence('numberOfArticlesToShow');
+    }
+}
+```
+
+This form handles validation.
+
+### 2. 🖼️ Settings Template
+
+Add the template view at `plugins/YourPluginName/templates/Admin/CellConfig/Article/recent.php`
+
+Example:
+
+```php
+<div class="card card-success card-outline">
+    <div class="card-header">
+        <div class="card-title"><i class="fa-solid fa-edit me-2"></i><?= __('Article cell') ?></div>
+    </div>
+    <?= $this->Form->create($settings, ['align' => 'horizontal']) ?>
+    <div class="card-body">
+        <?= $this->Form->control('numberOfArticlesToShow'); ?>
+    </div>
+    <div class="card-footer">
+        <?= $this->Form->button('<i class="fa-solid fa-save"></i> ' . __('Save'), ['class' => 'btn-success float-end', 'escapeTitle' => false]) ?>
+        <?= $this->Html->link('<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'), ['controller' => 'Regions', 'action' => 'view', $block->region_id], ['class' => 'btn btn-outline-danger', 'escape' => false]) ?>
+    </div>
+    <?= $this->Form->end() ?>
+</div>
+```
 
 ---
+
+## 📚 Learn More
+
+More about CakePHP 5 themes and forms can be found in the official CakePHP Cookbook:
+
+🔗 [https://book.cakephp.org/5/en/views/themes.html](https://book.cakephp.org/5/en/views/themes.html)
+
+🔗 [https://book.cakephp.org/5/en/core-libraries/form.html](https://book.cakephp.org/5/en/core-libraries/form.html)
 
 > “That's it!  🎉. Now go ahead and define your first region — your layout is about to get a lot more dynamic.”

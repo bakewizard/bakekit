@@ -88,24 +88,51 @@ class ThemesController extends AppController
         $error = $file->getError();
 
         if ($error) {
-            $this->Flash->error(UploadedFile::ERROR_MESSAGES[$error]);
+            $message = UploadedFile::ERROR_MESSAGES[$error] ?? 'Unknown upload error.';
+            $this->Flash->error($message);
+            return $this->redirect(['action' => 'index']);
+        }
+
+        // 1. Check MIME type
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file->getStream()->getMetadata('uri'));
+        finfo_close($finfo);
+
+        if ($mimeType !== 'application/zip') {
+            $this->Flash->error(__('Uploaded file is not a valid ZIP archive.'));
             return $this->redirect(['action' => 'index']);
         }
 
         $theme = basename($file->getClientFilename(), '.zip');
 
-        if (is_dir($this->themesDir . $theme)) {
-            $this->Flash->error(__('Folder with the name "{0}" already exists', $theme));
+        // 2. Validate theme name
+        if (!preg_match('/^[A-Z][a-zA-Z0-9]+$/', $theme)) {
+            $this->Flash->error(__('Invalid theme name.'));
             return $this->redirect(['action' => 'index']);
         }
 
+        // 3. Prevent overwriting existing folders
+        if (is_dir($this->themesDir . $theme)) {
+            $this->Flash->error(__('Folder with the name "{0}" already exists.', $theme));
+            return $this->redirect(['action' => 'index']);
+        }
+
+        // 4. Move uploaded file to a safe temporary location
+        $tempPath = TMP . uniqid('theme_', true) . '.zip';
+        $file->moveTo($tempPath);
+
+        // 5. Extracting
         try {
-            $this->unpack($file->getStream()->getMetadata('uri'), $this->themesDir);
+            $this->unpack($tempPath, $this->themesDir);
             $this->Flash->success(__('The theme has been installed.'));
         } catch (Exception $e) {
             $this->Flash->error($e->getMessage());
+        } finally {
+            // Always delete temp file
+            if (file_exists($tempPath)) {
+                unlink($tempPath);
+            }
         }
-
         return $this->redirect(['action' => 'index']);
     }
 
@@ -158,10 +185,19 @@ class ThemesController extends AppController
      */
     private function unpack(string $input, string $output): void
     {
-        $archive = new ZipArchive();
+        if (!is_dir($output)) {
+            throw new Exception(__('Themes directory does not exist.'));
+        }
 
-        if (!$archive->open($input)) {
-            throw new Exception(__('Error occured while opening the archive.'));
+        if (!is_writable($output)) {
+            throw new Exception(__('Themes directory is not writable.'));
+        }
+
+        $archive = new ZipArchive();
+        $result = $archive->open($input);
+
+        if ($result !== true) {
+            throw new Exception(__('Failed to open archive. Error code: {0}', $result));
         }
 
         if (!$archive->extractTo($output)) {

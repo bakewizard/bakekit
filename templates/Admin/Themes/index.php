@@ -31,7 +31,7 @@
                 </thead>
                 <tbody>
                     <?php foreach ($themes as $theme): ?>
-                        <tr>
+                        <tr class="<?= $theme['name'] === $activeTheme ? 'table-active' : '' ?>">
                             <td>
                                 <h5>
                                     <?= $this->Html->link($theme['name'], ['action' => 'view', $theme['name']], ['class' => 'text-decoration-none']) ?>
