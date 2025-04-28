@@ -119,7 +119,7 @@ class ImageUploadHandler implements UploadHandlerInterface
     private function createWatermark(int $width, int $height): ImageInterface
     {
         $scale = $this->_config['watermark']['scale'];
-        $watermarkPath = ROOT . $this->_config['watermark']['image'];
+        $watermarkPath = WWW_ROOT . ltrim($this->_config['watermark']['image'], DS);
 
         return $this->imagine
                         ->open($watermarkPath)
