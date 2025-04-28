@@ -37,8 +37,9 @@ class ThemesController extends AppController
                     $content = file_get_contents($configFile);
                     $json = json_decode($content, true);
                     $themes[$name] = [
-                        'name' => strpos($json['name'], '/') ? substr($json['name'], strpos($json['name'], '/') + 1) : $json['name'],
-                        'description' => $json['description']
+                        'name' => $name,
+                        'description' => $json['description'] ?? '--- No description ---',
+                        'license' => $json['license'] ?? '--- No license ---'
                     ];
                 }
             }
@@ -66,9 +67,9 @@ class ThemesController extends AppController
         $content = file_get_contents($themePath . 'composer.json');
         $json = json_decode($content, true);
         $theme = [
-            'name' => strpos($json['name'], '/') ? substr($json['name'], strpos($json['name'], '/') + 1) : $json['name'],
-            'description' => $json['description'],
-            'license' => $json['license']
+            'name' => $name,
+            'description' => $json['description'] ?? '--- No description ---',
+            'license' => $json['license'] ?? '--- No license ---'
         ];
 
         $this->set([

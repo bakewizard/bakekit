@@ -26,6 +26,7 @@
                     <tr>
                         <th><?= __('Theme') ?></th>
                         <th><?= __('Description') ?></th>
+                        <th><?= __('License') ?></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -38,6 +39,7 @@
                                 </h5>
                             </td>
                             <td><?= h($theme['description']) ?></td>
+                            <td><?= h($theme['license']) ?></td>
                             <td class="text-center">
                                 <?php if ($theme['name'] !== $activeTheme): ?>
                                     <?= $this->Form->postLink('Activate', ['action' => 'activate', $theme['name']], ['class' => 'btn btn-sm btn-success']) ?>
