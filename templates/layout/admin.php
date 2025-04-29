@@ -92,7 +92,7 @@
                     <!--begin::Brand Link--> 
                     <a href="/admin/" class="brand-link">
                         <!--begin::Brand Image-->
-                        <img src="/img/cake.icon.png" alt="Logo" class="brand-image opacity-75 shadow"> 
+                        <img src="/img/logo.png" alt="Logo" class="brand-image opacity-75 shadow"> 
                         <!--end::Brand Image-->
                         <!--begin::Brand Text--> 
                         <span class="brand-text fw-light">BakeKit CMS</span>

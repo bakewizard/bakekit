@@ -111,7 +111,7 @@ class AppController extends Controller
 
     private function _setLocale()
     {
-        $languages = $this->getConfig('I18n.languages');
+        $languages = $this->getConfig('App.languages');
         $defaultLanguage = explode('_', I18n::getDefaultLocale())[0] ?? 'en';
         $currentLanguage = ($this->request->getAttribute('params'))['lang'] ?? null;
 

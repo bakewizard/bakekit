@@ -255,7 +255,7 @@ class AppController extends Controller
         $locale = $this->request->getQuery('locale');
         $modelClass = pluginSplit($this->name)[1];
 
-        $languages = $this->getConfig('I18n.languages');
+        $languages = $this->getConfig('App.languages');
         $defaultLanguage = explode('_', I18n::getDefaultLocale())[0] ?? 'en';
         $currentLanguage = ($this->request->getAttribute('params'))['lang'] ?? null;
 

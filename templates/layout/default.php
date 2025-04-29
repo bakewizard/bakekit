@@ -15,7 +15,7 @@
 
         <footer class="mt-auto py-2 bg-dark fixed-bottom">
             <div class="container text-center">
-                <img src="/img/cake.power.gif" alt="CakePHP">
+                <img src="/img/cake.power.png" alt="CakePHP">
             </div>
         </footer>
     </body>

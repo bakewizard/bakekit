@@ -21,7 +21,7 @@
                             <a class="nav-link" target="_blank" href="https://book.cakephp.org/5/">Documentation</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" target="_blank" href="https://api.cakephp.org/5.1/">API</a>
+                            <a class="nav-link" target="_blank" href="https://api.cakephp.org/5.2/">API</a>
                         </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0">
@@ -39,7 +39,7 @@
 
         <footer class="mt-auto py-2 bg-dark fixed-bottom">
             <div class="container text-center">
-                <img src="/img/cake.power.gif" alt="CakePHP">
+                <img src="/img/cake.power.png" alt="CakePHP">
             </div>
         </footer>
     </body>

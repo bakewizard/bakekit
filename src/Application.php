@@ -180,7 +180,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $routes->middlewareGroup('auth', ['authentication', 'authorization', 'request_authorization']);
 
         $routes->scope('/', ['controller' => 'Index'], function (RouteBuilder $builder) {
-            $languages = $this->getConfig('I18n.languages');
+            $languages = $this->getConfig('App.languages');
             if ($languages) {
                 foreach ($languages as $i => $lang) {
                     if ($i !== 0) {
