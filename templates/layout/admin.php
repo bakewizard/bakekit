@@ -178,7 +178,7 @@
                     </a>  
                 </div>
                 <strong>
-                    &copy; 2014-<?= date("Y") ?>
+                    &copy; 2015-<?= date("Y") ?>
                 </strong>
             </footer>
             <!--end::Footer-->
