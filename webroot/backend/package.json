@@ -1,9 +1,9 @@
 {
-    "name": "Backend theme",
+    "name": "Admin",
     "version": "1.0.0",
-    "description": "Theme building",
-    "author": "Yurii Martynenko <yura_m436@ukr.net>",
-    "license": "ISC",
+    "description": "BakeKit CMS backend theme",
+    "author": "bakewizard <207716455+bakewizard@users.noreply.github.com>",
+    "license": "MIT",
     "type": "module",
     "devDependencies": {
         "@rollup/plugin-commonjs": "^28.0.3",
