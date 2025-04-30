@@ -64,12 +64,15 @@ class Installer
 
         $rootDir = $rootDir = dirname(__DIR__, 2);
 
-        static::createAppLocalConfig($rootDir, $io);
+        if (!static::createAppLocalConfig($rootDir, $io)) {
+            return;
+        }
+
         static::createWritableDirectories($rootDir, $io);
 
         static::setFolderPermissions($rootDir, $io);
         static::setSecuritySalt($rootDir, $io);
-        
+
         static::setDatabaseSettings($rootDir, $io);
 
         if (class_exists(CodeceptionInstaller::class)) {
@@ -82,16 +85,20 @@ class Installer
      *
      * @param string $dir The application's root directory.
      * @param \Composer\IO\IOInterface $io IO interface to write to console.
-     * @return void
+     * @return bool
      */
-    public static function createAppLocalConfig($dir, $io): void
+    public static function createAppLocalConfig($dir, $io): bool
     {
         $appLocalConfig = $dir . '/config/app_local.php';
         $appLocalConfigTemplate = $dir . '/config/app_local.example.php';
-        if (!file_exists($appLocalConfig)) {
-            copy($appLocalConfigTemplate, $appLocalConfig);
-            $io->write('Created `config/app_local.php` file');
+
+        if (file_exists($appLocalConfig)) {
+            return false;
         }
+
+        copy($appLocalConfigTemplate, $appLocalConfig);
+        $io->write('Created `config/app_local.php` file');
+        return true;
     }
 
     /**

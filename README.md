@@ -47,11 +47,11 @@ BakeKit takes these strengths and adds a CMS layer, without sacrificing flexibil
 ## Get Started
 
 ```bash
-git clone https://github.com/bakewizard/BakeKit.git
-cd BakeKit
+composer create-project bakewizard/bakekit myapp
+cd myapp
 curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
-bin/composer.phar install
 bin/cake install
+bin/cake server
 ```
 
 ## 🤝 Contributing
