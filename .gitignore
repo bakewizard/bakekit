@@ -1,3 +1,14 @@
+# BakeKit specific files #
+##########################
+/plugins/*
+/themes/*
+/site/
+/webroot/uploads/*
+/webroot/media/*
+!plugins/.gitkeep
+!themes/.gitkeep
+/bin/composer.phar
+
 # CakePHP specific files #
 ##########################
 /config/app_local.php
@@ -5,13 +16,6 @@
 /logs/*
 /tmp/*
 /vendor/*
-/webroot/uploads/*
-/webroot/media/*
-/plugins/*
-/themes/*
-!plugins/.gitkeep
-!themes/.gitkeep
-/bin/composer.phar
 
 # OS generated files #
 ######################
@@ -22,6 +26,7 @@
 .Trashes
 # Icon must end with two \r
 Icon
+
 ehthumbs.db
 Thumbs.db
 .directory
