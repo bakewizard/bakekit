@@ -578,23 +578,11 @@
 </ul>
 <hr />
 <h2 id="installation">🚀 Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="c1"># 1. Clone the repository</span>
-git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="w"> </span><span class="m">1</span><span class="w"> </span>https://github.com/bakewizard/BakeKit.git
-
-<span class="c1"># 2. Change directory</span>
-<span class="nb">cd</span><span class="w"> </span>BakeKit
-
-<span class="c1"># 3. Remove local Git history</span>
-rm<span class="w"> </span>-rf<span class="w"> </span>.git
-
-<span class="c1"># 4. Download Composer into /bin folder</span>
+<div class="highlight"><pre><span></span><code>composer<span class="w"> </span>create-project<span class="w"> </span>bakewizard/bakekit<span class="w"> </span>myapp
+<span class="nb">cd</span><span class="w"> </span>myapp
 curl<span class="w"> </span>-sS<span class="w"> </span>https://getcomposer.org/installer<span class="w"> </span><span class="p">|</span><span class="w"> </span>php<span class="w"> </span>--<span class="w"> </span>--install-dir<span class="o">=</span>bin
-
-<span class="c1"># 5. Install PHP dependencies</span>
-bin/composer.phar<span class="w"> </span>install
-
-<span class="c1"># 6. Run the installation script</span>
 bin/cake<span class="w"> </span>install
+bin/cake<span class="w"> </span>server
 </code></pre></div>
 
 
