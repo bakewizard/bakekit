@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\View\Helper;
@@ -12,10 +11,17 @@ use Cake\View\Helper;
  */
 class MediaHelper extends Helper
 {
-
     protected array $helpers = ['Url'];
 
-    public function getImageUrl(?Entity $entity, $size = 'md', $index = 0): string
+    /**
+     * Returns an image url
+     *
+     * @param \Cake\ORM\Entity|null $entity Entity
+     * @param string $size Size
+     * @param int $index Index
+     * @return string Url
+     */
+    public function getImageUrl(?Entity $entity, string $size = 'md', int $index = 0): string
     {
         $image = null;
 

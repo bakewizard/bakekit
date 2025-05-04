@@ -1,10 +1,10 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
 use Cake\Event\EventInterface;
+use Override;
 
 /**
  * Users Controller
@@ -13,8 +13,8 @@ use Cake\Event\EventInterface;
  */
 class UsersController extends AppController
 {
-
-    #[\Override]
+    /** @inheritDoc */
+    #[Override]
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
@@ -54,7 +54,7 @@ class UsersController extends AppController
 
         $this->Users->getUploadHandler()->setConfig([
             'format' => $images['format'],
-            'quality' => $images['quality']
+            'quality' => $images['quality'],
         ]);
 
         $user = $this->Users->newEmptyEntity();
@@ -62,6 +62,7 @@ class UsersController extends AppController
             $user = $this->Users->patchEntity($user, $this->request->getData());
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
+
                 return $this->redirect(['action' => 'index']);
             } else {
                 $this->Flash->error(__('The user could not be saved. Please, try again.'));
@@ -79,13 +80,13 @@ class UsersController extends AppController
      * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $images = $this->getConfig('Cms.images');
 
         $this->Users->getUploadHandler()->setConfig([
             'format' => $images['format'],
-            'quality' => $images['quality']
+            'quality' => $images['quality'],
         ]);
 
         $user = $this->Users->get($id);
@@ -93,6 +94,7 @@ class UsersController extends AppController
             $user = $this->Users->patchEntity($user, $this->request->getData());
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
+
                 return $this->redirect(['action' => 'index']);
             } else {
                 $this->Flash->error(__('The user could not be saved. Please, try again.'));
@@ -110,7 +112,7 @@ class UsersController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         $user = $this->Users->get($id);
@@ -120,9 +122,15 @@ class UsersController extends AppController
         } else {
             $this->Flash->error(__('The user could not be deleted. Please, try again.'));
         }
+
         return $this->redirect(['action' => 'index']);
     }
 
+    /**
+     * Login action.
+     *
+     * @return \Cake\Http\Response|null Redirects the user to the dashboard upon successful login.
+     */
     public function login()
     {
         $this->request->allowMethod(['get', 'post']);
@@ -131,8 +139,9 @@ class UsersController extends AppController
 
         if ($result->isValid()) {
             $plugin = $this->getConfig('Cms.defaultDashboard', 'System');
-            $defaultDashboard = ['plugin' => ($plugin == 'System') ? null : $plugin, 'prefix' => 'Admin', 'controller' => 'Dashboard'];
+            $defaultDashboard = ['plugin' => $plugin == 'System' ? null : $plugin, 'prefix' => 'Admin', 'controller' => 'Dashboard'];
             $target = $this->Authentication->getLoginRedirect() ?? $defaultDashboard;
+
             return $this->redirect($target);
         }
 
@@ -141,6 +150,11 @@ class UsersController extends AppController
         }
     }
 
+    /**
+     * Logout action.
+     *
+     * @return \Cake\Http\Response|null Redirects the user to the login page after logout.
+     */
     public function logout()
     {
         $result = $this->Authentication->getResult();

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -10,6 +9,7 @@ use Cake\ORM\Behavior\Translate\ShadowTableStrategy;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Override;
 
 /**
  * MenuLinks Model
@@ -18,7 +18,6 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\MenuLinksTable|\Cake\ORM\Association\BelongsTo $ParentMenuLinks
  * @property \App\Model\Table\MenuLinksTable|\Cake\ORM\Association\HasMany $ChildMenuLinks
  * @property |\Cake\ORM\Association\BelongsToMany $I18n
- *
  * @method \App\Model\Entity\MenuLink get($primaryKey, $options = [])
  * @method \App\Model\Entity\MenuLink newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\MenuLink[] newEntities(array $data, array $options = [])
@@ -27,19 +26,14 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\MenuLink patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \App\Model\Entity\MenuLink[] patchEntities($entities, array $data, array $options = [])
  * @method \App\Model\Entity\MenuLink findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TreeBehavior
  */
 class MenuLinksTable extends Table
 {
-
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -50,22 +44,22 @@ class MenuLinksTable extends Table
 
         $this->belongsTo('Menus', [
             'foreignKey' => 'menu_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
         $this->belongsTo('ParentMenuLinks', [
             'className' => 'MenuLinks',
-            'foreignKey' => 'parent_id'
+            'foreignKey' => 'parent_id',
         ]);
         $this->hasMany('ChildMenuLinks', [
             'className' => 'MenuLinks',
-            'foreignKey' => 'parent_id'
+            'foreignKey' => 'parent_id',
         ]);
 
         $this->addBehavior('Tree');
         $this->addBehavior('Translate', [
             'strategyClass' => ShadowTableStrategy::class,
             'fields' => ['title'],
-            'translationTable' => 'MenuLinksI18n'
+            'translationTable' => 'MenuLinksI18n',
         ]);
     }
 
@@ -75,7 +69,7 @@ class MenuLinksTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -113,7 +107,7 @@ class MenuLinksTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    #[\Override]
+    #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['menu_id'], 'Menus'));
@@ -128,7 +122,7 @@ class MenuLinksTable extends Table
      * @param int $menuId menu id
      * @return void
      */
-    public function setTreeScope($menuId)
+    public function setTreeScope(int $menuId): void
     {
         $settings = [
             'scope' => ['menu_id' => $menuId],
@@ -144,8 +138,13 @@ class MenuLinksTable extends Table
 
     /**
      * Calls TreeBehavior::recover when we are changing scope
+     *
+     * @param \Cake\Event\EventInterface $event
+     * @param \Cake\Datasource\EntityInterface $entity
+     * @param array $options
+     * @return void
      */
-    public function afterSave(EventInterface $event, EntityInterface $entity, $options = [])
+    public function afterSave(EventInterface $event, EntityInterface $entity, array $options = []): void
     {
         if ($entity->isNew()) {
             return;

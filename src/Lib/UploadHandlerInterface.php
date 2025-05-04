@@ -1,13 +1,23 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Lib;
 
 interface UploadHandlerInterface
 {
+    /**
+     * Handle the upload of files.
+     *
+     * @param array $files An array of file data to be uploaded.
+     * @return void
+     */
+    public function handle(array $files): void;
 
-    public function handle(array $files);
-
-    public function remove(array $files);
+    /**
+     * Remove specified files.
+     *
+     * @param array $files An array of file data to be removed.
+     * @return void
+     */
+    public function remove(array $files): void;
 }

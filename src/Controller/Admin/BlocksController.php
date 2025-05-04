@@ -1,29 +1,27 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use Cake\Core\App;
 use App\Lib\PluginManager;
+use Cake\Core\App;
+use Cake\Http\Response;
 
 /**
  * Blocks Controller
  *
  * @property \App\Model\Table\BlocksTable $Blocks
- *
  * @method \App\Model\Entity\Block[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class BlocksController extends AppController
 {
-
     /**
      * Add method
      *
      * @param string|null $id Region id.
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add($id = null)
+    public function add(?string $id = null)
     {
         $block = $this->Blocks->newEmptyEntity();
         $block->region_id = $id;
@@ -31,6 +29,7 @@ class BlocksController extends AppController
             $block = $this->Blocks->patchEntity($block, $this->request->getData());
             if ($this->Blocks->save($block)) {
                 $this->Flash->success(__('The block has been saved.'));
+
                 return $this->redirect(['controller' => 'Regions', 'action' => 'view', $id]);
             }
 
@@ -46,13 +45,14 @@ class BlocksController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $block = $this->Blocks->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $block = $this->Blocks->patchEntity($block, $this->request->getData());
             if ($this->Blocks->save($block)) {
                 $this->Flash->success(__('The block has been saved.'));
+
                 return $this->redirect(['controller' => 'Regions', 'action' => 'view', $block->region_id]);
             }
             $this->Flash->error(__('The block could not be saved. Please, try again.'));
@@ -68,7 +68,7 @@ class BlocksController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         $block = $this->Blocks->get($id);
@@ -81,7 +81,13 @@ class BlocksController extends AppController
         return $this->redirect(['controller' => 'Regions', 'action' => 'view', $block->region_id]);
     }
 
-    public function moveUp($id = null)
+    /**
+     * Moves block up
+     *
+     * @param string $id
+     * @return void
+     */
+    public function moveUp(?string $id = null)
     {
         $this->request->allowMethod(['post', 'put']);
         $block = $this->Blocks->get($id);
@@ -91,10 +97,17 @@ class BlocksController extends AppController
         } else {
             $this->Flash->error('The Block could not be moved up. Please, try again.');
         }
+
         return $this->redirect(['controller' => 'Regions', 'action' => 'view', $block->region_id]);
     }
 
-    public function moveDown($id = null)
+    /**
+     * Moves block down
+     *
+     * @param string $id
+     * @return void
+     */
+    public function moveDown(?string $id = null)
     {
         $this->request->allowMethod(['post', 'put']);
         $block = $this->Blocks->get($id);
@@ -104,21 +117,29 @@ class BlocksController extends AppController
         } else {
             $this->Flash->error('The Block could not be moved down. Please, try again.');
         }
+
         return $this->redirect(['controller' => 'Regions', 'action' => 'view', $block->region_id]);
     }
 
-    public function config($id)
+    /**
+     * Handles the configuration of a block's cell form.
+     *
+     * @param string $id
+     * @return \Cake\Http\Response|null A redirect response or null on GET render.
+     */
+    public function config(string $id): ?Response
     {
         $block = $this->Blocks->get($id);
         $pluginAndName = $block->cellPlugin ? "{$block->cellPlugin}.{$block->cellName}" : $block->cellName;
         $cellSettingsFormClass = App::classname($pluginAndName . 'CellConfig', 'Form/Cell', 'Form');
-        $settings = new $cellSettingsFormClass;
+        $settings = new $cellSettingsFormClass();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
             if ($settings->validate($data)) {
                 $block->params = $data;
                 if ($this->Blocks->save($block)) {
                     $this->Flash->success(__('Configuration saved'));
+
                     return $this->redirect(['controller' => 'Regions', 'action' => 'view', $block->region_id]);
                 }
                 $this->Flash->error(__('Configuration could not be saved. Please, try again.'));
@@ -140,8 +161,15 @@ class BlocksController extends AppController
         $this->setName('CellConfig');
 
         $this->render("{$pluginAndName}/{$block->cellAction}");
+
+        return null;
     }
 
+    /**
+     * Gets plugin cells
+     *
+     * @return void
+     */
     public function getCells()
     {
         $pm = new PluginManager();

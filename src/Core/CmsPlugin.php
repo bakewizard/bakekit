@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Core;
@@ -7,24 +6,29 @@ namespace App\Core;
 use Cake\Core\BasePlugin;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Routing\RouteBuilder;
+use Override;
 
 class CmsPlugin extends BasePlugin
 {
-
     /**
      * Application instance
-     * 
-     * @var App\Application
+     *
+     * @var \Cake\Core\Application
      */
-    protected $app;
+    protected PluginApplicationInterface $app;
 
     /**
      * The alias of this plugin
      *
      * @var string
      */
-    protected $alias;
+    protected string $alias;
 
+    /**
+     * Constructor for the plugin.
+     *
+     * @param array $options Array of options/configuration.
+     */
     public function __construct(array $options = [])
     {
         parent::__construct($options);
@@ -32,7 +36,10 @@ class CmsPlugin extends BasePlugin
         $this->alias = $options['alias'] ?? null;
     }
 
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function bootstrap(PluginApplicationInterface $app): void
     {
         $this->app = $app;
@@ -40,7 +47,10 @@ class CmsPlugin extends BasePlugin
         parent::bootstrap($app);
     }
 
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function routes(RouteBuilder $routes): void
     {
         $path = $this->getConfigPath() . 'routes.php';

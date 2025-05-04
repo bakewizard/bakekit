@@ -1,11 +1,11 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use DirectoryIterator;
 use Exception;
 use Laminas\Diactoros\UploadedFile;
 use Symfony\Component\Filesystem\Filesystem;
@@ -13,19 +13,31 @@ use ZipArchive;
 
 /**
  * Themes Controller
+ *
+ * @property \App\Model\Table\ThemesTable $Themes
+ * @method \App\Model\Entity\Theme[]|\Cake\Collection\CollectionInterface paginate($object = null, array $settings = [])
  */
 class ThemesController extends AppController
 {
+    /**
+     * Path to the themes directory.
+     *
+     * @var string
+     */
+    private string $themesDir = ROOT . DS . 'themes' . DS;
 
-    private $themesDir = ROOT . DS . 'themes' . DS;
-
+    /**
+     * Index method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
     public function index()
     {
         $activeTheme = $this->getConfig('Cms.theme');
         $themes = [];
 
         if (is_dir($this->themesDir)) {
-            $dir = new \DirectoryIterator($this->themesDir);
+            $dir = new DirectoryIterator($this->themesDir);
             foreach ($dir as $info) {
                 if (!$info->isDir() || $info->isDot()) {
                     continue;
@@ -39,7 +51,7 @@ class ThemesController extends AppController
                     $themes[$name] = [
                         'name' => $name,
                         'description' => $json['description'] ?? '--- No description ---',
-                        'license' => $json['license'] ?? '--- No license ---'
+                        'license' => $json['license'] ?? '--- No license ---',
                     ];
                 }
             }
@@ -49,7 +61,7 @@ class ThemesController extends AppController
 
         $this->set([
             'activeTheme' => $activeTheme,
-            'themes' => $themes
+            'themes' => $themes,
         ]);
     }
 
@@ -57,9 +69,10 @@ class ThemesController extends AppController
      * View method
      *
      * @param string $name Theme name.
-     * @return \Cake\Http\Response|void
+     * @return \Cake\Http\Response|null|void Renders view
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($name)
+    public function view(string $name)
     {
         $themePath = $this->themesDir . $name . DIRECTORY_SEPARATOR;
         $activeTheme = $this->getConfig('Cms.theme');
@@ -69,17 +82,20 @@ class ThemesController extends AppController
         $theme = [
             'name' => $name,
             'description' => $json['description'] ?? '--- No description ---',
-            'license' => $json['license'] ?? '--- No license ---'
+            'license' => $json['license'] ?? '--- No license ---',
         ];
 
         $this->set([
             'activeTheme' => $activeTheme,
-            'theme' => $theme
+            'theme' => $theme,
         ]);
     }
 
     /**
      * Install method
+     *
+     * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Exception
      */
     public function install()
     {
@@ -91,6 +107,7 @@ class ThemesController extends AppController
         if ($error) {
             $message = UploadedFile::ERROR_MESSAGES[$error] ?? 'Unknown upload error.';
             $this->Flash->error($message);
+
             return $this->redirect(['action' => 'index']);
         }
 
@@ -101,6 +118,7 @@ class ThemesController extends AppController
 
         if ($mimeType !== 'application/zip') {
             $this->Flash->error(__('Uploaded file is not a valid ZIP archive.'));
+
             return $this->redirect(['action' => 'index']);
         }
 
@@ -109,12 +127,14 @@ class ThemesController extends AppController
         // 2. Validate theme name
         if (!preg_match('/^[A-Z][a-zA-Z0-9]+$/', $theme)) {
             $this->Flash->error(__('Invalid theme name.'));
+
             return $this->redirect(['action' => 'index']);
         }
 
         // 3. Prevent overwriting existing folders
         if (is_dir($this->themesDir . $theme)) {
             $this->Flash->error(__('Folder with the name "{0}" already exists.', $theme));
+
             return $this->redirect(['action' => 'index']);
         }
 
@@ -134,16 +154,18 @@ class ThemesController extends AppController
                 unlink($tempPath);
             }
         }
+
         return $this->redirect(['action' => 'index']);
     }
 
     /**
      * Uninstall method
      *
-     * @param string Theme name.
+     * @param string $name Theme name.
      * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function uninstall($name)
+    public function uninstall(string $name)
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -168,21 +190,29 @@ class ThemesController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    public function activate($name = null)
+    /**
+     * Activate method
+     *
+     * @param string|null $name Theme name.
+     * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function activate(?string $name = null)
     {
         Configure::write('theme', $name);
         Configure::dump('Cms', 'db', ['theme']);
         Cache::delete('settings', 'cms');
+
         return $this->redirect(['action' => 'index']);
     }
 
     /**
      * Extracts an archive to a folder.
-     * 
+     *
      * @param string $input Input path.
      * @param string $output Output path.
      * @return void
-     * @throws Exception
+     * @throws \Exception
      */
     private function unpack(string $input, string $output): void
     {

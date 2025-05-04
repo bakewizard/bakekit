@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -7,12 +6,12 @@ namespace App\Model\Table;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Override;
 
 /**
  * Plugins Model
  *
  * @property \App\Model\Table\MetaTable&\Cake\ORM\Association\HasMany $Meta
- *
  * @method \App\Model\Entity\Plugin newEmptyEntity()
  * @method \App\Model\Entity\Plugin newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Plugin[] newEntities(array $data, array $options = [])
@@ -29,14 +28,10 @@ use Cake\Validation\Validator;
  */
 class PluginsTable extends Table
 {
-
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -46,7 +41,7 @@ class PluginsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->hasMany('Meta', [
-            'foreignKey' => 'plugin_id'
+            'foreignKey' => 'plugin_id',
         ]);
     }
 
@@ -56,7 +51,7 @@ class PluginsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -100,7 +95,7 @@ class PluginsTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    #[\Override]
+    #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['alias']));

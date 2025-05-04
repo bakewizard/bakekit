@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Lib;
 
-use App\Lib\DocBlockParser;
 use Cake\Core\App;
 use Cake\Datasource\ModelAwareTrait;
 use Cake\Routing\Router;
@@ -13,11 +13,15 @@ use ReflectionMethod;
 
 class PluginManager
 {
-
     use ModelAwareTrait;
 
-    private $pluginsDir;
+    private string $pluginsDir;
 
+    /**
+     * PluginManager constructor
+     *
+     * Sets plugins dir
+     */
     public function __construct()
     {
         $this->pluginsDir = current(App::path('plugins'));
@@ -25,13 +29,14 @@ class PluginManager
 
     /**
      * Gets a list of loaded plugins.
-     * 
+     *
      * @param bool $includeSystem Include System plugin if true.
      * @param bool $includeSubPlugins Include sub plugins if true.
      * @return array
      */
     public function getPlugins(bool $includeSystem = false, bool $includeSubPlugins = false): array
     {
+        /** @var \App\Model\Table\PluginsTable $table */
         $table = $this->fetchModel('Plugins');
         $query = $table->find()->select('name')->where(['enabled' => true])->orderByAsc('name');
 
@@ -44,12 +49,13 @@ class PluginManager
         if ($includeSystem) {
             array_unshift($plugins, 'System');
         }
+
         return $plugins;
     }
 
     /**
      * Gets all available cells from all loaded plugins.
-     * 
+     *
      * @return array
      */
     public function getCells(): array
@@ -76,8 +82,8 @@ class PluginManager
                 $className = App::className($pluginAndCell, 'View/Cell', 'Cell');
                 $reflection = new ReflectionClass($className);
                 $declaredMethods = array_filter(
-                        $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
-                        fn($method) => $method->getDeclaringClass()->getName() === $className && $method->name !== 'initialize'
+                    $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
+                    fn($method) => $method->getDeclaringClass()->getName() === $className && $method->name !== 'initialize',
                 );
 
                 foreach ($declaredMethods as $method) {
@@ -85,17 +91,18 @@ class PluginManager
                     $data[$plugin][] = [
                         'summary' => $docBlock->getSummary(),
                         'description' => $docBlock->getDescription(),
-                        'path' => $method->name === 'display' ? $pluginAndCell : "$pluginAndCell::{$method->name}"
+                        'path' => $method->name === 'display' ? $pluginAndCell : "$pluginAndCell::{$method->name}",
                     ];
                 }
             }
         }
+
         return $data;
     }
 
     /**
      * Gets all available links from all loaded plugins.
-     * 
+     *
      * @return array
      */
     public function getLinks(): array
@@ -120,8 +127,8 @@ class PluginManager
                 $className = App::className("{$plugin}.{$controller}", 'Controller', 'Controller');
                 $reflection = new ReflectionClass($className);
                 $declaredMethods = array_filter(
-                        $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
-                        fn($method) => $method->getDeclaringClass()->getName() === $className && !in_array($method->name, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter'])
+                    $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
+                    fn($method) => $method->getDeclaringClass()->getName() === $className && !in_array($method->name, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter']),
                 );
 
                 foreach ($declaredMethods as $method) {
@@ -137,20 +144,21 @@ class PluginManager
                                 'plugin' => $plugin,
                                 'prefix' => $showModal ? 'Admin' : false,
                                 'controller' => $showModal ? $docBlock->getTag('items') : $controller,
-                                'action' => $showModal ? 'index' : $method->name
+                                'action' => $showModal ? 'index' : $method->name,
                             ]),
-                            'target' => $showModal ? '_blank' : '_self'
+                            'target' => $showModal ? '_blank' : '_self',
                         ];
                     }
                 }
             }
         }
+
         return $data;
     }
 
     /**
      * Gets all available admin links from all loaded plugins.
-     * 
+     *
      * @return array
      */
     public function getAdminLinks(): array
@@ -180,8 +188,8 @@ class PluginManager
                 }
 
                 $declaredMethods = array_filter(
-                        $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
-                        fn($method) => $method->getDeclaringClass()->getName() === $className && !in_array($method->name, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter'])
+                    $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
+                    fn($method) => $method->getDeclaringClass()->getName() === $className && !in_array($method->name, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter']),
                 );
 
                 foreach ($declaredMethods as $method) {
@@ -193,17 +201,24 @@ class PluginManager
                                 'summary' => $docBlock->getSummary(),
                                 'description' => $docBlock->getDescription(),
                                 'url' => Router::url(['plugin' => $plugin, 'controller' => $controller, 'action' => $method->name]),
-                                'target' => '_self'
+                                'target' => '_self',
                             ];
                         }
                     }
                 }
             }
         }
+
         return $data;
     }
 
-    public function addMigrations($plugin)
+    /**
+     * Adds migrations for the plugin
+     *
+     * @param string $plugin
+     * @return void
+     */
+    public function addMigrations(string $plugin): void
     {
         if (is_dir($this->pluginsDir . $plugin . DS . 'config' . DS . 'Migrations')) {
             $migration = new Migrations(['plugin' => $plugin]);
@@ -212,7 +227,13 @@ class PluginManager
         }
     }
 
-    public function deleteMigrations($plugin)
+    /**
+     * Deletes migrations for the plugin
+     *
+     * @param string $plugin
+     * @return void
+     */
+    public function deleteMigrations(string $plugin): void
     {
         if (is_dir($this->pluginsDir . $plugin . DS . 'config' . DS . 'Migrations')) {
             $migration = new Migrations(['plugin' => $plugin]);
@@ -223,18 +244,18 @@ class PluginManager
     /**
      * Scans plugin for resources (controllers, actions).
      * Adds every found resource into db.
-     * 
-     * @param null|string $plugin Plugin name, null if all plugins are needed.
+     *
+     * @param string|null $plugin Plugin name, null if all plugins are needed.
      * @return void
      */
-    public function addResources($plugin = null): void
+    public function addResources(?string $plugin = null): void
     {
         if (is_null($plugin)) {
             $plugins = $this->getPlugins(true, true);
         } else {
             $plugins = [$plugin];
         }
-
+        /** @var \App\Model\Table\ResourcesTable $table */
         $table = $this->fetchModel('Resources');
 
         $rootNode = $table->checkNode('Site', null) ?? $table->createNode('Site', null);
@@ -259,7 +280,7 @@ class PluginManager
                     continue;
                 }
 
-                $controller = substr(substr($file, 0, strrpos($file, ".")), 0, -10);
+                $controller = substr(substr($file, 0, strrpos($file, '.')), 0, -10);
                 $className = App::className($plugin ? "{$plugin}.{$controller}" : $controller, 'Controller/Admin', 'Controller');
                 $reflection = new ReflectionClass($className);
                 $actions = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
@@ -277,11 +298,11 @@ class PluginManager
 
     /**
      * Deletes plugin resources.
-     * 
+     *
      * @param string Plugin name.
      * @return void
      */
-    public function deleteResources($plugin): void
+    public function deleteResources(string $plugin): void
     {
         $table = $this->fetchModel('Resources');
 
@@ -296,16 +317,16 @@ class PluginManager
 
     /**
      * Saves plugin default settings into db.
-     * 
+     *
      * @param string|null $plugin Plugin name or null if it's a System plugin.
      * @return void
      */
-    public function addSettings(string $plugin = null): void
+    public function addSettings(?string $plugin = null): void
     {
-        $class = isset($plugin) ? ($plugin . '.Config') : 'Config';
+        $class = isset($plugin) ? $plugin . '.Config' : 'Config';
         $configClass = App::className($class, 'Form', 'Form');
         if ($configClass) {
-            $config = new $configClass;
+            $config = new $configClass();
             $fields = $config->getSchema()->fields();
             $data = [];
             foreach ($fields as $fieldName) {
@@ -318,7 +339,7 @@ class PluginManager
 
     /**
      * Removes plugin settings from db.
-     * 
+     *
      * @param string $plugin Plugin name.
      */
     public function deleteSettings(string $plugin): void

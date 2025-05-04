@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Entity;
@@ -21,7 +20,6 @@ use Cake\Utility\Inflector;
  */
 class Plugin extends Entity
 {
-
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -37,12 +35,17 @@ class Plugin extends Entity
         'description' => true,
         'parent_plugin' => true,
         'enabled' => true,
-        'meta' => true
+        'meta' => true,
     ];
 
-    protected function _setAlias($alias)
+    /**
+     * Setter for the alias property, which automatically generates a URL-friendly slug.
+     *
+     * @param string $alias The alias value to set.
+     * @return string The generated slug.
+     */
+    protected function _setAlias(string $alias): string
     {
         return Inflector::dasherize($alias);
     }
-
 }

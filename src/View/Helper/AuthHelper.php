@@ -1,71 +1,88 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\View\Helper;
 
-use Cake\View\Helper;
 use App\Model\Entity\User;
+use Cake\Http\ServerRequest;
+use Cake\Http\Session;
+use Cake\View\Helper;
+use Override;
 
 /**
  * Auth helper
  */
 class AuthHelper extends Helper
 {
-
     /**
      * Request object
-     * 
-     * @var null|\Cake\Http\Client\Request 
+     *
+     * @var \Cake\Http\ServerRequest|null
      */
-    protected $_request;
+    protected ?ServerRequest $_request = null;
 
     /**
      * Session object
      *
-     * @var null|\Cake\Http\Session
+     * @var \Cake\Http\Session|null
      */
-    protected $_session;
+    protected ?Session $_session = null;
 
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function initialize(array $config): void
     {
         $this->_request = $this->getView()->getRequest();
         $this->_session = $this->_request->getSession();
     }
 
-    public function isRoot()
+    /**
+     * Checks if the user is root
+     *
+     * @return bool
+     */
+    public function isRoot(): bool
     {
         return $this->_request->getAttribute('identity')->getIdentifier() === 1;
     }
 
     /**
      * Checks if current user is logged in.
-     * 
-     * @param type $model Model name
+     *
+     * @param string $model Model name
      * @return bool
      */
-    public function isLoggedIn($model = 'User')
+    public function isLoggedIn(string $model = 'User'): bool
     {
         return $this->_session->check("Auth.$model");
     }
 
     /**
      * Checks if given user is logged in.
-     * 
-     * @param User $entity User entity
-     * @param type $model Model name
+     *
+     * @param \App\Model\Entity\User $entity User entity
+     * @param string $model Model name
      * @return bool
      */
-    public function isUserLoggedIn(?User $entity, $model = 'User')
+    public function isUserLoggedIn(?User $entity, string $model = 'User'): bool
     {
         if (is_null($entity)) {
             return false;
         }
+
         return $this->_session->check("Auth.$model") && $this->get('id', $model) === $entity->id;
     }
 
-    public function get($key, $model = 'User')
+    /**
+     * Returns given session variable
+     *
+     * @param string $key Session key
+     * @param string $model Model name
+     * @return mixed|null The value of the session variable
+     */
+    public function get(string $key, string $model = 'User'): mixed
     {
         return $this->_session->read("Auth.$model.$key");
     }

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -9,13 +8,13 @@ use Cake\Collection\CollectionInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Override;
 
 /**
  * Permissions Model
  *
  * @property \App\Model\Table\RolesTable&\Cake\ORM\Association\BelongsTo $Roles
  * @property \App\Model\Table\ResourcesTable&\Cake\ORM\Association\BelongsTo $Resources
- *
  * @method \App\Model\Entity\Permission newEmptyEntity()
  * @method \App\Model\Entity\Permission newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Permission[] newEntities(array $data, array $options = [])
@@ -32,14 +31,10 @@ use Cake\Validation\Validator;
  */
 class PermissionsTable extends Table
 {
-
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -63,7 +58,7 @@ class PermissionsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -81,7 +76,7 @@ class PermissionsTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    #[\Override]
+    #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['role_id'], 'Roles'), ['errorField' => 'role_id']);
@@ -90,37 +85,72 @@ class PermissionsTable extends Table
         return $rules;
     }
 
-    public function allow($role, $resource, $value = 1): bool
+    /**
+     * Allows a role to access a resource
+     *
+     * @param int $role
+     * @param int $resource
+     * @param int $value
+     * @return bool
+     */
+    public function allow(int $role, int $resource, int $value = 1): bool
     {
         $entity = $this->newEntity([
             'role_id' => $role,
             'resource_id' => $resource,
-            'allowed' => $value
+            'allowed' => $value,
         ]);
 
-        return ($this->save($entity) !== false);
+        return $this->save($entity) !== false;
     }
 
-    public function deny($role, $resource): bool
+    /**
+     * Denies a role to access a resource
+     *
+     * @param int $role
+     * @param int $resource
+     * @return bool
+     */
+    public function deny(int $role, int $resource): bool
     {
         return $this->allow($role, $resource, 0);
     }
 
-    public function inherit($role, $resource): bool
+    /**
+     * Inherits role permission
+     *
+     * @param int $role
+     * @param int $resource
+     * @return bool
+     */
+    public function inherit(int $role, int $resource): bool
     {
         $entity = $this->find()->where(['role_id' => $role, 'resource_id' => $resource])->first();
 
-        return ($this->delete($entity) !== false);
+        return $this->delete($entity) !== false;
     }
 
-    public function check($role, $resource): bool
+    /**
+     * Checks if a role can access a resource
+     *
+     * @param int $role
+     * @param int $resource
+     * @return bool
+     */
+    public function check(int $role, int $resource): bool
     {
         $perms = $this->getPermissions($role);
 
-        return (isset($perms[$resource]) ? $perms[$resource]['permissions'][0] : true);
+        return isset($perms[$resource]) ? $perms[$resource]['permissions'][0] : true;
     }
 
-    public function getPermissions($role)
+    /**
+     * Receives role permissions
+     *
+     * @param int $role
+     * @return mixed
+     */
+    public function getPermissions(int $role): mixed
     {
         $permissions = function () use ($role) {
 
@@ -140,6 +170,7 @@ class PermissionsTable extends Table
                             if (!empty($row['resources'])) {
                                 $row['resources'] = collection($row['resources'])->indexBy('id')->toArray();
                             }
+
                             return $row;
                         });
                     })
@@ -162,9 +193,9 @@ class PermissionsTable extends Table
 
                 foreach ($roles as $i => $r) {
                     if (isset($r['resources'][$resource['id']])) {
-                        $inherited = ($i === 0) ? false : true;
+                        $inherited = $i === 0 ? false : true;
                         $allowed = $r['resources'][$resource['id']]['_joinData']['allowed'];
-                        $blocked = ($i === 0) ? false : !$allowed;
+                        $blocked = $i === 0 ? false : !$allowed;
                         break;
                     }
                 }
@@ -178,13 +209,13 @@ class PermissionsTable extends Table
                 $perms[$paths[$resource['id']]] = [
                     'id' => $resource['id'],
                     'alias' => $resource['alias'],
-                    'permissions' => [$allowed, $inherited, $blocked]
+                    'permissions' => [$allowed, $inherited, $blocked],
                 ];
             }
 
             return $perms;
         };
 
-        return Cache::remember((string) $role, $permissions, 'permissions');
+        return Cache::remember((string)$role, $permissions, 'permissions');
     }
 }

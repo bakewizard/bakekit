@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -9,6 +8,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Override;
 
 /**
  * Settings Model
@@ -21,19 +21,14 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Setting patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \App\Model\Entity\Setting[] patchEntities($entities, array $data, array $options = [])
  * @method \App\Model\Entity\Setting findOrCreate($search, callable $callback = null, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class SettingsTable extends Table
 {
-
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -51,7 +46,7 @@ class SettingsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -78,9 +73,12 @@ class SettingsTable extends Table
         return $validator;
     }
 
-    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options)
+    /**
+     * @inheritDoc
+     */
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
-        if (!is_null($entity->value) && trim($entity->value) == "") {
+        if (!is_null($entity->value) && trim($entity->value) == '') {
             $entity->value = null;
         }
     }

@@ -1,11 +1,10 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Lib\PluginManager;
 use App\Lib\ComposerManager;
+use App\Lib\PluginManager;
 use Cake\Cache\Cache;
 use Cake\Core\App;
 use Cake\Event\EventInterface;
@@ -13,15 +12,18 @@ use Cake\Utility\Inflector;
 use DirectoryIterator;
 use Exception;
 use Laminas\Diactoros\UploadedFile;
+use Override;
 use Symfony\Component\Filesystem\Filesystem;
 use ZipArchive;
 
 class PluginsController extends AppController
 {
+    private string $pluginsDir;
 
-    private $pluginsDir;
-
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function initialize(): void
     {
         parent::initialize();
@@ -29,7 +31,10 @@ class PluginsController extends AppController
         $this->pluginsDir = current(App::path('plugins'));
     }
 
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
@@ -67,7 +72,7 @@ class PluginsController extends AppController
                         'alias' => isset($installedPlugins[$name]) ? $installedPlugins[$name]->alias : '',
                         'description' => $json['description'],
                         'parent_plugin' => $json['extra']['parent-plugin'] ?? null,
-                        'enabled' => isset($installedPlugins[$name]) && $installedPlugins[$name]->enabled
+                        'enabled' => isset($installedPlugins[$name]) && $installedPlugins[$name]->enabled,
                     ];
                 }
             }
@@ -85,13 +90,14 @@ class PluginsController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $plugin = $this->Plugins->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $plugin = $this->Plugins->patchEntity($plugin, $this->request->getData());
             if ($this->Plugins->save($plugin)) {
                 $this->Flash->success(__('The plugin has been saved.'));
+
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The plugin could not be saved. Please, try again.'));
@@ -102,7 +108,7 @@ class PluginsController extends AppController
 
     /**
      * Installs a plugin.
-     * 
+     *
      * @return \Cake\Http\Response Redirects to index.
      * @throws \Exception When error is encountered.
      */
@@ -115,6 +121,7 @@ class PluginsController extends AppController
 
         if ($error) {
             $this->Flash->error(UploadedFile::ERROR_MESSAGES[$error]);
+
             return $this->redirect(['action' => 'index']);
         }
 
@@ -122,6 +129,7 @@ class PluginsController extends AppController
 
         if (is_dir($this->pluginsDir . $plugin)) {
             $this->Flash->error(__('Folder with the name "{0}" already exists', $plugin));
+
             return $this->redirect(['action' => 'index']);
         }
 
@@ -143,7 +151,7 @@ class PluginsController extends AppController
      * @return \Cake\Http\Response Redirects to index.
      * @throws \Exception When error is encountered.
      */
-    public function uninstall($name)
+    public function uninstall(string $name)
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -153,6 +161,7 @@ class PluginsController extends AppController
             if ($plugin) {
                 if ($plugin->name == $this->getConfig('Cms.defaultDashboard')) {
                     $this->Flash->error(__('The plugin could not be uninstalled. Its dashboard is set as the default one.'));
+
                     return $this->redirect(['action' => 'index']);
                 }
 
@@ -181,12 +190,13 @@ class PluginsController extends AppController
     }
 
     /**
-     * 
-     * @param type $name Plugin name
+     * Activates a plugin
+     *
+     * @param string $name Plugin name
      * @return \Cake\Http\Response|null Redirects on successful activation, renders view otherwise.
-     * @throws Exception
+     * @throws \Exception
      */
-    public function activate($name)
+    public function activate(string $name)
     {
         $this->request->allowMethod(['post', 'put']);
 
@@ -212,7 +222,7 @@ class PluginsController extends AppController
                     'alias' => Inflector::dasherize($name),
                     'description' => $config['description'],
                     'parent_plugin' => $config['extra']['parent-plugin'] ?? null,
-                    'enabled' => true
+                    'enabled' => true,
                 ]);
 
                 if (!$this->Plugins->save($entity)) {
@@ -229,7 +239,13 @@ class PluginsController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    public function deactivate($id)
+    /**
+     * Deactivates a plugin
+     *
+     * @param string|int $id Plugin id
+     * @return void
+     */
+    public function deactivate(string|int $id)
     {
         $this->request->allowMethod(['post', 'put']);
 
@@ -237,6 +253,7 @@ class PluginsController extends AppController
 
         if ($plugin->name == $this->getConfig('Cms.defaultDashboard')) {
             $this->Flash->error(__('The plugin could not be deactivated. Its dashboard is set as the default one.'));
+
             return $this->redirect(['action' => 'index']);
         }
 
@@ -254,7 +271,7 @@ class PluginsController extends AppController
 
     /**
      * Removes plugin files and cleans cache.
-     * 
+     *
      * @param string $plugin Plugin name.
      * @return void
      */
@@ -271,11 +288,11 @@ class PluginsController extends AppController
 
     /**
      * Extracts an archive to a folder.
-     * 
+     *
      * @param string $input Input path.
      * @param string $output Output path.
      * @return void
-     * @throws Exception
+     * @throws \Exception
      */
     private function unpack(string $input, string $output): void
     {
@@ -294,12 +311,12 @@ class PluginsController extends AppController
 
     /**
      * Reads composer.json into array.
-     * 
+     *
      * @param string $path
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
-    private function getConfigData(string $path = null): array
+    private function getConfigData(?string $path = null): array
     {
         if (!$path) {
             $path = ROOT;

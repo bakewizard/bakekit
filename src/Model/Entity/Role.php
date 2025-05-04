@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Entity;
@@ -23,7 +22,6 @@ use Cake\Utility\Text;
  */
 class Role extends Entity
 {
-
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -42,17 +40,27 @@ class Role extends Entity
         'created' => true,
         'modified' => true,
         'users' => true,
-        'permissions' => true
+        'permissions' => true,
     ];
 
+    /**
+     * Checks if the current role is the root role.
+     *
+     * @return bool True if the role ID is 1, false otherwise.
+     */
     public function isRoot(): bool
     {
         return $this->id === 1;
     }
 
-    protected function _setAlias($alias)
+    /**
+     * Setter for the alias property, which automatically generates a URL-friendly slug.
+     *
+     * @param string $alias The alias value to set.
+     * @return string The generated slug.
+     */
+    protected function _setAlias(string $alias): string
     {
         return strtolower(Text::slug($alias));
     }
-
 }

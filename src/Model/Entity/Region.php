@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Entity;
@@ -18,7 +17,6 @@ use Cake\Utility\Text;
  */
 class Region extends Entity
 {
-
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -31,12 +29,17 @@ class Region extends Entity
     protected array $_accessible = [
         'alias' => true,
         'description' => true,
-        'blocks' => true
+        'blocks' => true,
     ];
 
-    protected function _setAlias($alias)
+    /**
+     * Setter for the alias property, which automatically generates a URL-friendly slug.
+     *
+     * @param string $alias The alias value to set.
+     * @return string The generated slug.
+     */
+    protected function _setAlias(string $alias): string
     {
         return strtolower(Text::slug($alias));
     }
-
 }

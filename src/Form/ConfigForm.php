@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Form;
@@ -8,20 +7,17 @@ use Cake\Core\Configure;
 use Cake\Form\Form;
 use Cake\Form\Schema;
 use Cake\Validation\Validator;
+use Override;
 
 /**
  * Cms Config Form.
  */
 class ConfigForm extends Form
 {
-
     /**
-     * Builds the schema for the modelless form
-     *
-     * @param Schema $schema From schema
-     * @return $this
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     protected function _buildSchema(Schema $schema): Schema
     {
         return $schema
@@ -36,30 +32,26 @@ class ConfigForm extends Form
     }
 
     /**
-     * Form validation builder
-     *
-     * @param Validator $validator to use against the form
-     * @return Validator
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         return $validator
                         ->addNested('images', (new Validator())->add('quality', [
                                     'not-blank' => ['rule' => 'notBlank'],
-                                    'btw-1-100' => ['rule' => ['range', 1, 100]]
+                                    'btw-1-100' => ['rule' => ['range', 1, 100]],
         ]));
     }
 
     /**
-     * Defines what to execute once the From is being processed
-     *
-     * @return bool
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     protected function _execute(array $data): bool
     {
         Configure::write($data);
+
         return Configure::dump('Cms', 'db', array_keys($data));
     }
 }

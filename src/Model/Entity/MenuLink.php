@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Entity;
@@ -25,7 +24,6 @@ use Cake\ORM\Entity;
  */
 class MenuLink extends Entity
 {
-
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -46,7 +44,6 @@ class MenuLink extends Entity
         'rght' => true,
         'menu' => true,
         'parent_menu_link' => true,
-        'child_menu_links' => true
+        'child_menu_links' => true,
     ];
-
 }

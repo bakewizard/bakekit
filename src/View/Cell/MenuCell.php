@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\View\Cell;
@@ -11,15 +10,13 @@ use App\View\Cell\BlockCell as Cell;
  */
 class MenuCell extends Cell
 {
-
     /**
-     * Menu
-     * 
      * Displays menu
      *
+     * @param string $helper Menu helper
      * @return void
      */
-    public function display($helper = 'Menu')
+    public function display(string $helper = 'Menu'): void
     {
         $menuId = $this->block->params['menu'] ?? [];
         $options = $this->block->params;
@@ -43,5 +40,4 @@ class MenuCell extends Cell
 
         $this->set(compact('menuItems', 'options', 'helper'));
     }
-
 }

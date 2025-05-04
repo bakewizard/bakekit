@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /**
@@ -36,7 +35,6 @@ use PDOException;
  */
 class Installer
 {
-
     /**
      * An array of directories to be made writable
      */
@@ -62,7 +60,7 @@ class Installer
     {
         $io = $event->getIO();
 
-        $rootDir = $rootDir = dirname(__DIR__, 2);
+        $rootDir = dirname(__DIR__, 2);
 
         if (!static::createAppLocalConfig($rootDir, $io)) {
             return;
@@ -87,7 +85,7 @@ class Installer
      * @param \Composer\IO\IOInterface $io IO interface to write to console.
      * @return bool
      */
-    public static function createAppLocalConfig($dir, $io): bool
+    public static function createAppLocalConfig(string $dir, IOInterface $io): bool
     {
         $appLocalConfig = $dir . '/config/app_local.php';
         $appLocalConfigTemplate = $dir . '/config/app_local.example.php';
@@ -98,6 +96,7 @@ class Installer
 
         copy($appLocalConfigTemplate, $appLocalConfig);
         $io->write('Created `config/app_local.php` file');
+
         return true;
     }
 
@@ -139,10 +138,10 @@ class Installer
                 throw new Exception('This is not a valid answer. Please choose Y or n.');
             };
             $setFolderPermissions = $io->askAndValidate(
-                    '<info>Set Folder Permissions ? (Default to Y)</info> [<comment>Y,n</comment>]? ',
-                    $validator,
-                    10,
-                    'Y'
+                '<info>Set Folder Permissions ? (Default to Y)</info> [<comment>Y,n</comment>]? ',
+                $validator,
+                10,
+                'Y',
             );
 
             if (in_array($setFolderPermissions, ['n', 'N'])) {
@@ -201,12 +200,12 @@ class Installer
 
     /**
      * Set database settings values in a given file
-     * 
+     *
      * @param string $dir The application's root directory.
      * @param \Composer\IO\IOInterface $io IO interface to write to console.
      * @return void
      */
-    public static function setDatabaseSettings($dir, $io): void
+    public static function setDatabaseSettings(string $dir, IOInterface $io): void
     {
         do {
             $io->write('Enter database settings:');
@@ -242,6 +241,7 @@ class Installer
 
         if ($count < 4) {
             $io->writeError('Not all placeholders were replaced.');
+
             return;
         }
 

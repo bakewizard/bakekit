@@ -1,14 +1,17 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\View\Cell;
 
+use App\Model\Entity\Block;
+use App\View\AppView;
 use BadMethodCallException;
 use Cake\Cache\Cache;
 use Cake\View\Cell;
 use Cake\View\Exception\MissingCellTemplateException;
 use Cake\View\Exception\MissingTemplateException;
+use Cake\View\View;
+use Override;
 use ReflectionException;
 use ReflectionMethod;
 
@@ -17,7 +20,6 @@ use ReflectionMethod;
  */
 class BlockCell extends Cell
 {
-
     /**
      * List of valid options that can be passed into this
      * cell's constructor.
@@ -28,24 +30,24 @@ class BlockCell extends Cell
 
     /**
      * Block entity
-     * 
-     * @var \App\Model\Entity\Block 
+     *
+     * @var \App\Model\Entity\Block
      */
-    protected $block;
+    protected Block $block;
 
     /**
      * Parent view instance.
-     * 
+     *
      * @var \App\View\AppView
      */
-    protected $parentView;
+    protected AppView $parentView;
 
     /**
      * Initialization logic run at the end of object construction.
      *
      * @return void
      */
-    #[\Override]
+    #[Override]
     public function initialize(): void
     {
         $this->set(['block' => $this->block ?? null, 'parentView' => $this->parentView ?? null, 'config' => $this->parentView->get('config') ?? null]);
@@ -60,7 +62,7 @@ class BlockCell extends Cell
      * @throws \Cake\View\Exception\MissingCellTemplateException
      *   When a MissingTemplateException is raised during rendering.
      */
-    #[\Override]
+    #[Override]
     public function render(?string $template = null): string
     {
         $cache = [];
@@ -74,10 +76,10 @@ class BlockCell extends Cell
                 $reflect->invokeArgs($this, $this->args);
             } catch (ReflectionException $e) {
                 throw new BadMethodCallException(sprintf(
-                                        'Class %s does not have a "%s" method.',
-                                        static::class,
-                                        $this->action
-                                ));
+                    'Class %s does not have a "%s" method.',
+                    static::class,
+                    $this->action,
+                ));
             }
 
             $builder = $this->viewBuilder();
@@ -93,7 +95,7 @@ class BlockCell extends Cell
             $name = substr($name, 0, -4);
             if (!$builder->getTemplatePath()) {
                 $builder->setTemplatePath(
-                        static::TEMPLATE_FOLDER . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $name)
+                    static::TEMPLATE_FOLDER . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $name),
                 );
             }
             $template = $builder->getTemplate();
@@ -104,12 +106,12 @@ class BlockCell extends Cell
             } catch (MissingTemplateException $e) {
                 $attributes = $e->getAttributes();
                 throw new MissingCellTemplateException(
-                                $name,
-                                basename($attributes['file']),
-                                $attributes['paths'],
-                                null,
-                                $e
-                        );
+                    $name,
+                    basename($attributes['file']),
+                    $attributes['paths'],
+                    null,
+                    $e,
+                );
             }
         };
 
@@ -120,7 +122,12 @@ class BlockCell extends Cell
         return $render();
     }
 
-    public function getView()
+    /**
+     * Returns view instance
+     *
+     * @return \Cake\View\View View instance
+     */
+    public function getView(): View
     {
         return $this->View;
     }

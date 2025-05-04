@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Entity;
@@ -19,7 +18,6 @@ use Cake\ORM\Entity;
  */
 class Menu extends Entity
 {
-
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -34,7 +32,6 @@ class Menu extends Entity
         'description' => true,
         'prefix' => true,
         'enabled' => true,
-        'menu_links' => true
+        'menu_links' => true,
     ];
-
 }

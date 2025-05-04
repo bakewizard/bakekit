@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -7,12 +6,12 @@ namespace App\Model\Table;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Override;
 
 /**
  * Users Model
  *
  * @property \App\Model\Table\RolesTable&\Cake\ORM\Association\BelongsTo $Roles
- *
  * @method \App\Model\Entity\User newEmptyEntity()
  * @method \App\Model\Entity\User newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\User[] newEntities(array $data, array $options = [])
@@ -26,19 +25,14 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class UsersTable extends Table
 {
-
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -49,17 +43,17 @@ class UsersTable extends Table
 
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('Upload', [
             'uploadHandler' => [
                 'class' => '\\App\\Lib\\ImageUploadHandler',
-                'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40]
+                'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40],
             ],
             'dirDepth' => 0,
-            'tablePostfix' => 'images'
+            'tablePostfix' => 'images',
         ]);
     }
 
@@ -69,7 +63,7 @@ class UsersTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -110,7 +104,7 @@ class UsersTable extends Table
                     'rule' => function ($value, $context) {
                         return !($value == 1);
                     },
-                    'message' => __('Only one root is allowed!')
+                    'message' => __('Only one root is allowed!'),
         ]);
 
         return $validator;
@@ -123,7 +117,7 @@ class UsersTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    #[\Override]
+    #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['email']));

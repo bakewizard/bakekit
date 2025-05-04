@@ -1,16 +1,15 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Entity;
 
 use ArrayAccess;
+use Authentication\IdentityInterface as AuthenticationIdentity;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authorization\AuthorizationServiceInterface;
+use Authorization\IdentityInterface as AuthorizationIdentity;
 use Authorization\Policy\ResultInterface;
 use Cake\ORM\Entity;
-use Authentication\PasswordHasher\DefaultPasswordHasher;
-use Authentication\IdentityInterface as AuthenticationIdentity;
-use Authorization\IdentityInterface as AuthorizationIdentity;
 
 /**
  * User Entity
@@ -29,7 +28,6 @@ use Authorization\IdentityInterface as AuthorizationIdentity;
  */
 class User extends Entity implements AuthenticationIdentity, AuthorizationIdentity
 {
-
     protected array $_accessible = [
         'first_name' => true,
         'last_name' => true,
@@ -40,62 +38,99 @@ class User extends Entity implements AuthenticationIdentity, AuthorizationIdenti
         'created' => true,
         'modified' => true,
         'role' => true,
-        'files' => true
+        'files' => true,
     ];
     protected array $_hidden = [
-        'password'
+        'password',
     ];
     protected array $_virtual = [
-        'full_name'
+        'full_name',
     ];
 
+    /**
+     * Checks if the user has the root role.
+     *
+     * @return bool True if the user is a root user, false otherwise.
+     */
     public function isRoot(): bool
     {
         return $this->role_id === 1;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function can(string $action, mixed $resource): bool
     {
         return $this->authorization->can($this, $action, $resource);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function canResult(string $action, mixed $resource): ResultInterface
     {
         return $this->authorization->canResult($this, $action, $resource);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function applyScope(string $action, mixed $resource, mixed ...$optionalArgs): mixed
     {
         return $this->authorization->applyScope($this, $action, $resource, ...$optionalArgs);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getOriginalData(): ArrayAccess|array
     {
         return $this;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getIdentifier(): array|string|int|null
     {
         return $this->id;
     }
 
-    public function setAuthorization(AuthorizationServiceInterface $service)
+    /**
+     * Sets the authorization service for the entity.
+     *
+     * @param \Authorization\AuthorizationServiceInterface $service The authorization service.
+     * @return self
+     */
+    public function setAuthorization(AuthorizationServiceInterface $service): self
     {
         $this->authorization = $service;
 
         return $this;
     }
 
+    /**
+     * Sets the password after hashing it.
+     *
+     * @param string $password The plain password.
+     * @return string|null The hashed password or the existing password if the input is empty.
+     */
     protected function _setPassword(string $password): ?string
     {
         if (strlen($password) > 0) {
-            return (new DefaultPasswordHasher)->hash($password);
+            return (new DefaultPasswordHasher())->hash($password);
         }
 
         return $this->password;
     }
 
-    protected function _getFullName(): string|null
+    /**
+     * Gets the user's full name by concatenating the first and last names.
+     *
+     * @return string|null The full name of the user or null if either first or last name is not set.
+     */
+    protected function _getFullName(): ?string
     {
         return isset($this->_fields['first_name'], $this->_fields['last_name']) ? $this->_fields['first_name'] . '  ' . $this->_fields['last_name'] : null;
     }

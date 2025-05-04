@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Entity;
@@ -21,7 +20,6 @@ use Cake\ORM\Entity;
  */
 class Resource extends Entity
 {
-
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -38,7 +36,6 @@ class Resource extends Entity
         'rght' => true,
         'parent_resource' => true,
         'child_resources' => true,
-        'permissions' => true
+        'permissions' => true,
     ];
-
 }

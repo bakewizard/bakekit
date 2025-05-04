@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Form\Cell;
@@ -8,29 +7,29 @@ use Cake\Datasource\FactoryLocator;
 use Cake\Form\Form;
 use Cake\Form\Schema;
 use Cake\Validation\Validator;
+use Override;
 
 /**
  * Product cell config Form.
  */
 class MenuCellConfigForm extends Form
 {
+    private array $menus;
 
-    private $menus;
-
+    /**
+     * MenuCellConfigForm constructor
+     */
     public function __construct()
     {
         parent::__construct();
         $labels = FactoryLocator::get('Table')->get('menus');
-        $this->menus = $labels->find('list');
+        $this->menus = $labels->find('list')->toArray();
     }
 
     /**
-     * Builds the schema for the modelless form
-     *
-     * @param \Cake\Form\Schema $schema From schema
-     * @return \Cake\Form\Schema
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     protected function _buildSchema(Schema $schema): Schema
     {
         return $schema
@@ -46,12 +45,9 @@ class MenuCellConfigForm extends Form
     }
 
     /**
-     * Form validation builder
-     *
-     * @param \Cake\Validation\Validator $validator to use against the form
-     * @return \Cake\Validation\Validator
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         return $validator
@@ -66,7 +62,12 @@ class MenuCellConfigForm extends Form
                         ->array('dropdownMenuItemLink');
     }
 
-    public function getMenus()
+    /**
+     * Returns menus
+     *
+     * @return array
+     */
+    public function getMenus(): array
     {
         return $this->menus;
     }

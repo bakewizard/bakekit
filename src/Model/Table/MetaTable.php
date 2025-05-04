@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -8,12 +7,12 @@ use Cake\ORM\Behavior\Translate\ShadowTableStrategy;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Override;
 
 /**
  * Meta Model
  *
  * @property \App\Model\Table\PluginsTable&\Cake\ORM\Association\BelongsTo $Plugins
- *
  * @method \App\Model\Entity\Metum newEmptyEntity()
  * @method \App\Model\Entity\Metum newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Metum[] newEntities(array $data, array $options = [])
@@ -30,14 +29,10 @@ use Cake\Validation\Validator;
  */
 class MetaTable extends Table
 {
-
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -48,13 +43,13 @@ class MetaTable extends Table
 
         $this->belongsTo('Plugins', [
             'foreignKey' => 'plugin_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
 
         $this->addBehavior('Translate', [
             'strategyClass' => ShadowTableStrategy::class,
             'fields' => ['title', 'description', 'seo_title', 'seo_description', 'seo_keywords'],
-            'translationTable' => 'MetaI18n'
+            'translationTable' => 'MetaI18n',
         ]);
     }
 
@@ -64,7 +59,7 @@ class MetaTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -105,12 +100,11 @@ class MetaTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    #[\Override]
+    #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['plugin_id'], 'Plugins'));
 
         return $rules;
     }
-
 }

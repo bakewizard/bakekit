@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -7,12 +6,12 @@ namespace App\Model\Table;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Override;
 
 /**
  * Regions Model
  *
  * @property \App\Model\Table\BlocksTable|\Cake\ORM\Association\HasMany $Blocks
- *
  * @method \App\Model\Entity\Region get($primaryKey, $options = [])
  * @method \App\Model\Entity\Region newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\Region[] newEntities(array $data, array $options = [])
@@ -24,14 +23,10 @@ use Cake\Validation\Validator;
  */
 class RegionsTable extends Table
 {
-
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -41,7 +36,7 @@ class RegionsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->hasMany('Blocks', [
-            'foreignKey' => 'region_id'
+            'foreignKey' => 'region_id',
         ]);
     }
 
@@ -51,7 +46,7 @@ class RegionsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -80,12 +75,11 @@ class RegionsTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    #[\Override]
+    #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['alias']));
 
         return $rules;
     }
-
 }

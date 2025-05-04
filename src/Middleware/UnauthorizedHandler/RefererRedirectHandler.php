@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Middleware\UnauthorizedHandler;
@@ -9,6 +8,7 @@ use Authorization\Exception\ForbiddenException;
 use Authorization\Exception\MissingIdentityException;
 use Authorization\Middleware\UnauthorizedHandler\HandlerInterface;
 use Cake\Http\Response;
+use Override;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -17,7 +17,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class RefererRedirectHandler implements HandlerInterface
 {
-
     /**
      * Default config:
      *
@@ -27,13 +26,13 @@ class RefererRedirectHandler implements HandlerInterface
      *
      * @var array
      */
-    protected $defaultOptions = [
+    protected array $defaultOptions = [
         'exceptions' => [
             MissingIdentityException::class,
-            ForbiddenException::class
+            ForbiddenException::class,
         ],
         'queryParam' => 'redirect',
-        'statusCode' => 302
+        'statusCode' => 302,
     ];
 
     /**
@@ -44,7 +43,7 @@ class RefererRedirectHandler implements HandlerInterface
      * @param array $options Options array.
      * @return \Psr\Http\Message\ResponseInterface
      */
-    #[\Override]
+    #[Override]
     public function handle(Exception $exception, ServerRequestInterface $request, array $options = []): ResponseInterface
     {
         $options += $this->defaultOptions;

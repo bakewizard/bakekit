@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Event;
@@ -10,20 +9,34 @@ use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\I18n\I18n;
 use Cake\ORM\Query\SelectQuery;
+use Override;
 
 class RegionChangeListener implements EventListenerInterface
 {
-
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function implementedEvents(): array
     {
         return [
             'Model.afterSave' => 'createCache',
-            'Model.afterDelete' => 'createCache'
+            'Model.afterDelete' => 'createCache',
         ];
     }
 
-    public function createCache(EventInterface $event)
+    /**
+     * Creates or updates the regions cache.
+     *
+     * This method is triggered after a save or delete operation on a model.
+     * It fetches all regions with their enabled and ordered blocks (with translations)
+     * and stores them in the cache. It specifically sets the default locale for
+     * the 'Blocks' table to ensure correct translation retrieval.
+     *
+     * @param \Cake\Event\EventInterface $event The event object.
+     * @return void
+     */
+    public function createCache(EventInterface $event): void
     {
         $regions = FactoryLocator::get('Table')->get('Regions');
 

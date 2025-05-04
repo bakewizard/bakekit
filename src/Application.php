@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /**
@@ -22,35 +21,38 @@ use App\Core\Configure\Engine\DbConfig;
 use App\Middleware\MaintenanceMiddleware;
 use App\Policy\RequestPolicy;
 use Authentication\AuthenticationService;
-use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\AuthenticationServiceInterface;
+use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authorization\AuthorizationService;
-use Authorization\AuthorizationServiceProviderInterface;
 use Authorization\AuthorizationServiceInterface;
-use Authorization\Policy\ResolverCollection;
+use Authorization\AuthorizationServiceProviderInterface;
 use Authorization\Middleware\AuthorizationMiddleware;
 use Authorization\Middleware\RequestAuthorizationMiddleware;
-use Authorization\Policy\OrmResolver;
 use Authorization\Policy\MapResolver;
+use Authorization\Policy\OrmResolver;
+use Authorization\Policy\ResolverCollection;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Core\Exception\MissingPluginException;
+use Cake\Database\TypeFactory;
 use Cake\Datasource\FactoryLocator;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
-use Cake\Http\ServerRequest;
-use Cake\Http\MiddlewareQueue;
 use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\Middleware\CsrfProtectionMiddleware;
+use Cake\Http\MiddlewareQueue;
+use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\TableLocator;
-use Cake\Routing\Router;
-use Cake\Routing\RouteBuilder;
-use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
+use Cake\Routing\Route\DashedRoute;
+use Cake\Routing\RouteBuilder;
+use Cake\Routing\Router;
+use Exception;
+use Override;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -61,8 +63,14 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class Application extends BaseApplication implements AuthenticationServiceProviderInterface, AuthorizationServiceProviderInterface
 {
-
-    public function getConfig(?string $var = null, $default = null)
+    /**
+     * Config helper
+     *
+     * @param string|null $var Variable to obtain. Use '.' to access array elements.
+     * @param mixed $default The return value when the configure does not exist
+     * @return mixed Value stored in configure, or null.
+     */
+    public function getConfig(?string $var = null, mixed $default = null): mixed
     {
         if ($var === null) {
             return Configure::read();
@@ -72,9 +80,9 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function bootstrap(): void
     {
         // Call parent to load bootstrap from files.
@@ -88,20 +96,27 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             'className' => 'File',
             'prefix' => 'cms_',
             'path' => CACHE . 'cms' . DS,
-            'duration' => '+999 days'
+            'duration' => '+999 days',
         ]);
         try {
             Configure::config('db', new DbConfig(null, 'cms'));
             Configure::load('Cms', 'db');
 
-            $this->_loadTheme();
-            $this->_loadPlugins();
-        } catch (\Exception $e) {
-            
+            $this->loadTheme();
+            $this->loadPlugins();
+
+            TypeFactory::map('textandjson', 'App\Database\Type\TextAndJsonType');
+        } catch (Exception $e) {
         }
     }
 
-    #[\Override]
+    /**
+     * Returns a service provider instance.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request
+     * @return \Authentication\AuthenticationServiceInterface
+     */
+    #[Override]
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $loginUrl = Router::url([
@@ -118,13 +133,13 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
         $fields = [
             AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
-            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password'
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
         ];
 
         // Put form authentication first so that users can re-login via the login form if necessary.
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
-            'loginUrl' => $loginUrl
+            'loginUrl' => $loginUrl,
         ]);
 
         // Then use sessions if they are active.
@@ -135,7 +150,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         // If the user is on the login page, check for a cookie as well.
         $service->loadAuthenticator('Authentication.Cookie', [
             'fields' => $fields,
-            'loginUrl' => $loginUrl
+            'loginUrl' => $loginUrl,
         ]);
 
         // Load identifiers
@@ -144,7 +159,13 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         return $service;
     }
 
-    #[\Override]
+    /**
+     * Returns a service provider instance.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request
+     * @return \Authorization\AuthorizationServiceInterface
+     */
+    #[Override]
     public function getAuthorizationService(ServerRequestInterface $request): AuthorizationServiceInterface
     {
         $orm = new OrmResolver();
@@ -162,7 +183,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      * @param \Cake\Routing\RouteBuilder $routes A route builder to add routes into.
      * @return void
      */
-    #[\Override]
+    #[Override]
     public function routes(RouteBuilder $routes): void
     {
         $routes->setRouteClass(DashedRoute::class);
@@ -173,18 +194,18 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                         return $user->setAuthorization($auth);
                     },
                     'unauthorizedHandler' => [
-                        'className' => 'RefererRedirect'
-                    ]
+                        'className' => 'RefererRedirect',
+                    ],
         ]));
         $routes->registerMiddleware('request_authorization', new RequestAuthorizationMiddleware());
         $routes->middlewareGroup('auth', ['authentication', 'authorization', 'request_authorization']);
 
-        $routes->scope('/', ['controller' => 'Index'], function (RouteBuilder $builder) {
+        $routes->scope('/', ['controller' => 'Index'], function (RouteBuilder $builder): void {
             $languages = $this->getConfig('App.languages');
             if ($languages) {
                 foreach ($languages as $i => $lang) {
                     if ($i !== 0) {
-                        $builder->scope('/' . $lang, ['lang' => $lang], function (RouteBuilder $builder) {
+                        $builder->scope('/' . $lang, ['lang' => $lang], function (RouteBuilder $builder): void {
                             $builder->connect('/', ['action' => 'index']);
                         });
                     }
@@ -194,7 +215,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             $builder->connect('/', ['action' => 'index']);
         });
 
-        $routes->prefix('Admin', function (RouteBuilder $builder) {
+        $routes->prefix('Admin', function (RouteBuilder $builder): void {
             $builder->applyMiddleware('auth');
             $defaultDashboard = $this->getConfig('Cms.defaultDashboard');
             $plugin = $defaultDashboard == 'System' ? null : $defaultDashboard;
@@ -206,6 +227,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             if ($request->getParam('lang') && !isset($params['lang'])) {
                 $params['lang'] = $request->getParam('lang');
             }
+
             return $params;
         });
     }
@@ -216,7 +238,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to setup.
      * @return \Cake\Http\MiddlewareQueue The updated middleware queue.
      */
-    #[\Override]
+    #[Override]
     public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
     {
         $middlewareQueue
@@ -256,13 +278,17 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      * @return void
      * @link https://book.cakephp.org/4/en/development/dependency-injection.html#dependency-injection
      */
-    #[\Override]
+    #[Override]
     public function services(ContainerInterface $container): void
     {
-        
     }
 
-    private function _loadTheme()
+    /**
+     * Loads a theme
+     *
+     * @return void
+     */
+    private function loadTheme(): void
     {
         $theme = $this->getConfig('Cms.theme');
         try {
@@ -274,7 +300,12 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         }
     }
 
-    private function _loadPlugins()
+    /**
+     * Loads plugins
+     *
+     * @return void
+     */
+    private function loadPlugins(): void
     {
         $table = FactoryLocator::get('Table')->get('Plugins');
         $plugins = $table->find()->where(['enabled' => true])->cache('plugins', 'cms')->toArray();

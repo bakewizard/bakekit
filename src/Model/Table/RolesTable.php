@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -7,12 +6,12 @@ namespace App\Model\Table;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Override;
 
 /**
  * Roles Model
  *
  * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\HasMany $Users
- *
  * @method \App\Model\Entity\Role newEmptyEntity()
  * @method \App\Model\Entity\Role newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Role[] newEntities(array $data, array $options = [])
@@ -26,20 +25,15 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \Cake\ORM\Behavior\TreeBehavior
  */
 class RolesTable extends Table
 {
-
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -57,13 +51,13 @@ class RolesTable extends Table
             'foreignKey' => 'parent_id',
         ]);
         $this->hasMany('Users', [
-            'foreignKey' => 'role_id'
+            'foreignKey' => 'role_id',
         ]);
         $this->hasMany('Permissions', [
             'foreignKey' => 'resource_id',
         ]);
         $this->belongsToMany('Resources', [
-            'through' => 'Permissions'
+            'through' => 'Permissions',
         ]);
 
         $this->addBehavior('Tree');
@@ -76,7 +70,7 @@ class RolesTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -97,10 +91,10 @@ class RolesTable extends Table
 
         $validator
                 ->add('parent_id', 'custom', [
-                    'rule' => function($value, $context) {
+                    'rule' => function ($value, $context) {
                         return !empty($value);
                     },
-                    'message' => __('Choose parent category!')
+                    'message' => __('Choose parent category!'),
         ]);
 
         return $validator;
@@ -113,7 +107,7 @@ class RolesTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    #[\Override]
+    #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['alias']), ['errorField' => 'alias']);
@@ -121,5 +115,4 @@ class RolesTable extends Table
 
         return $rules;
     }
-
 }

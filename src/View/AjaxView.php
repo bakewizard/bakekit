@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /**
@@ -18,6 +17,8 @@ declare(strict_types=1);
 
 namespace App\View;
 
+use Override;
+
 /**
  * A view class that is used for AJAX responses.
  * Currently only switches the default layout and sets the response type -
@@ -25,7 +26,6 @@ namespace App\View;
  */
 class AjaxView extends AppView
 {
-
     /**
      * Sub-directory for this template file. This is often used for extension based routing.
      * Eg. With an `xml` extension, $subDir would be `xml/`
@@ -48,7 +48,7 @@ class AjaxView extends AppView
      *
      * @return void
      */
-    #[\Override]
+    #[Override]
     public function initialize(): void
     {
         parent::initialize();

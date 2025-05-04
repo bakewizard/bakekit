@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Middleware;
@@ -11,31 +10,32 @@ use Cake\Utility\Inflector;
 use Cake\View\View;
 use Cake\View\ViewBuilder;
 use Laminas\Diactoros\CallbackStream;
+use Override;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use const PREG_SPLIT_NO_EMPTY;
 
 class MaintenanceMiddleware implements MiddlewareInterface
 {
-
     use InstanceConfigTrait;
 
     /**
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedIps' => [],
         'className' => View::class,
         'templatePath' => 'Error',
         'statusCode' => 503,
         'templateLayout' => 'maintenance',
         'templateFileName' => 'maintenance',
-        'contentType' => 'text/html'
+        'contentType' => 'text/html',
     ];
 
     /**
-     * @param array $config
+     * @inheritDoc
      */
     public function __construct(array $config = [])
     {
@@ -47,15 +47,18 @@ class MaintenanceMiddleware implements MiddlewareInterface
             }
 
             if (is_string($config['allowedIps'])) {
-                $this->setConfig('allowedIps', preg_split("/[\s,;]+/", $config['allowedIps'], -1, \PREG_SPLIT_NO_EMPTY));
+                $this->setConfig('allowedIps', preg_split("/[\s,;]+/", $config['allowedIps'], -1, PREG_SPLIT_NO_EMPTY));
             }
         }
     }
 
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->_config['mode'] || $this->_isIpAllowed($request)) {
+        if (!$this->_config['mode'] || $this->isIpAllowed($request)) {
             return $handler->handle($request);
         }
 
@@ -65,7 +68,7 @@ class MaintenanceMiddleware implements MiddlewareInterface
     /**
      * @return \Cake\Http\Response
      */
-    protected function build()
+    protected function build(): Response
     {
         $cakeRequest = ServerRequestFactory::fromGlobals();
         $builder = new ViewBuilder();
@@ -81,18 +84,24 @@ class MaintenanceMiddleware implements MiddlewareInterface
         $response = new Response();
 
         $response
-                ->withHeader('Retry-After', (string) 3600)
+                ->withHeader('Retry-After', (string)3600)
                 ->withHeader('Content-Type', $this->_config['contentType'])
                 ->withStatus($this->_config['statusCode']);
 
         $body = new CallbackStream(function () use ($bodyString) {
                     return $bodyString;
-                });
+        });
 
         return $response->withBody($body);
     }
 
-    private function _isIpAllowed($request)
+    /**
+     * Check if the client's IP address is allowed based on configured CIDR ranges.
+     *
+     * @param \Cake\Http\ServerRequest $request
+     * @return bool
+     */
+    private function isIpAllowed(ServerRequestInterface $request): bool
     {
         $clientIp = $request->clientIp();
         $ipAddressList = $this->_config['allowedIps'];
@@ -107,13 +116,14 @@ class MaintenanceMiddleware implements MiddlewareInterface
             if (!preg_match('/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\/([1-9]|1[0-9]|2[0-9]|3[0-2])$/', $allowIP)) {
                 continue;
             }
-            list($ip, $maskBit) = explode("/", $allowIP);
-            $ipLong = ip2long($ip) >> (32 - $maskBit);
-            $selfIpLong = ip2long($clientIp) >> (32 - $maskBit);
+            [$ip, $maskBit] = explode('/', $allowIP);
+            $ipLong = ip2long($ip) >> 32 - $maskBit;
+            $selfIpLong = ip2long($clientIp) >> 32 - $maskBit;
             if ($selfIpLong === $ipLong) {
                 return true;
             }
         }
+
         return false;
     }
 }

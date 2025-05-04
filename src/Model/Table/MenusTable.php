@@ -1,19 +1,20 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Override;
+use Search\Manager;
 
 /**
  * Menus Model
  *
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\HasMany $MenuLinks
- *
  * @method \App\Model\Entity\Menu get($primaryKey, $options = [])
  * @method \App\Model\Entity\Menu newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\Menu[] newEntities(array $data, array $options = [])
@@ -25,14 +26,10 @@ use Cake\Validation\Validator;
  */
 class MenusTable extends Table
 {
-
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -44,8 +41,8 @@ class MenusTable extends Table
         $this->hasMany('MenuLinks', [
             'foreignKey' => 'menu_id',
             'order' => [
-                'lft' => 'ASC'
-            ]
+                'lft' => 'ASC',
+            ],
         ]);
 
         $this->addBehavior('Search.Search');
@@ -54,7 +51,7 @@ class MenusTable extends Table
     /**
      * @return \Search\Manager
      */
-    public function searchManager()
+    public function searchManager(): Manager
     {
         $searchManager = $this->behaviors()->Search->searchManager();
         $searchManager
@@ -71,7 +68,7 @@ class MenusTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -100,9 +97,18 @@ class MenusTable extends Table
     }
 
     /**
-     * beforeDelete callback
+     * Callback to set the tree scope for the associated MenuLinks before a Menu entity is deleted.
+     *
+     * This ensures that tree operations on the MenuLinks are scoped to the specific menu being deleted.
+     * If the Tree behavior is already attached to MenuLinks, its configuration is updated.
+     * Otherwise, the Tree behavior is attached with the appropriate scope.
+     *
+     * @param \Cake\Event\EventInterface $event The beforeDelete event.
+     * @param \Cake\Datasource\EntityInterface $entity The Menu entity being deleted.
+     * @param \ArrayObject $options Array of options passed to the delete operation.
+     * @return void
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity, $options)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         // Set tree scope for Links association
         $settings = [

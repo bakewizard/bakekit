@@ -1,21 +1,34 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\View\Helper;
 
-use Cake\View\Helper;
 use Cake\Routing\Router;
+use Cake\View\Helper;
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
 
 /**
  * JsonLD helper
  */
 class SchemaHelper extends Helper
 {
+    /**
+     * Array to hold the structured data.
+     *
+     * @var array
+     */
+    protected array $_data = [];
 
-    protected $_data = [];
-
-    public function addOrganization()
+    /**
+     * Adds Organization schema markup.
+     *
+     * Retrieves site name from the 'config' and generates the Organization schema.
+     *
+     * @return self
+     */
+    public function addOrganization(): self
     {
         $this->_data[] = [
             '@context' => 'https://schema.org',
@@ -29,15 +42,24 @@ class SchemaHelper extends Helper
         return $this;
     }
 
-    public function addBreadcrumbs($breadcrumbs)
+    /**
+     * Adds BreadcrumbList schema markup.
+     *
+     * Takes an array of breadcrumb items and formats them for JSON-LD.
+     *
+     * @param array $breadcrumbs An array of breadcrumb items, where each item is an
+     * associative array with 'title' and 'url' keys.
+     * @return self
+     */
+    public function addBreadcrumbs(array $breadcrumbs): self
     {
         if (empty($breadcrumbs)) {
-            return;
+            return $this;
         }
 
         $data = [
             '@context' => 'https://schema.org',
-            '@type' => 'BreadcrumbList'
+            '@type' => 'BreadcrumbList',
         ];
 
         $items = [];
@@ -48,8 +70,8 @@ class SchemaHelper extends Helper
                 'position' => $i + 1,
                 'item' => [
                     '@id' => $crumb['url'],
-                    'name' => $crumb['title']
-                ]
+                    'name' => $crumb['title'],
+                ],
             ];
         }
 
@@ -60,20 +82,28 @@ class SchemaHelper extends Helper
         return $this;
     }
 
-    public function render()
+    /**
+     * Renders the accumulated JSON-LD data as a script tag.
+     *
+     * @return string A script tag containing the JSON-LD data, or an empty string
+     * if no data has been added.
+     */
+    public function render(): string
     {
-        if (!empty($this->_data)) {
-            $scriptOpen = '<script type="application/ld+json">';
-            if (count($this->_data) > 1) {
-                $data = $this->_data;
-            } else {
-                $data = $this->_data[0];
-            }
-
-            $json = json_encode($data, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
-            $scriptClose = '</script>';
-
-            return $scriptOpen . $json . $scriptClose;
+        if (empty($this->_data)) {
+            return '';
         }
+
+        $scriptOpen = '<script type="application/ld+json">';
+        if (count($this->_data) > 1) {
+            $data = $this->_data;
+        } else {
+            $data = $this->_data[0];
+        }
+
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $scriptClose = '</script>';
+
+        return $scriptOpen . $json . $scriptClose;
     }
 }

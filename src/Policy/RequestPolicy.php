@@ -1,9 +1,9 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Policy;
 
+use App\Model\Entity\User;
 use Authorization\IdentityInterface;
 use Authorization\Policy\BeforePolicyInterface;
 use Authorization\Policy\RequestPolicyInterface;
@@ -12,11 +12,19 @@ use Authorization\Policy\ResultInterface;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use Override;
 
 class RequestPolicy implements RequestPolicyInterface, BeforePolicyInterface
 {
-
-    #[\Override]
+    /**
+     * Pre-authorization check
+     *
+     * @param \App\Model\Entity\User|null $identity
+     * @param mixed $resource
+     * @param string $action
+     * @return \Authorization\Policy\ResultInterface|bool|null
+     */
+    #[Override]
     public function before(?IdentityInterface $identity, mixed $resource, string $action): ResultInterface|bool|null
     {
         if (!$identity) {
@@ -37,11 +45,10 @@ class RequestPolicy implements RequestPolicyInterface, BeforePolicyInterface
      * @param \Cake\Http\ServerRequest $request Server Request
      * @return bool
      */
-    #[\Override]
-    public function canAccess($identity, ServerRequest $request): bool|ResultInterface
+    #[Override]
+    public function canAccess(?IdentityInterface $identity, ServerRequest $request): bool|ResultInterface
     {
-
-        if ($this->_authorize($identity, $request)) {
+        if ($this->authorize($identity, $request)) {
             return new Result(true);
         }
 
@@ -55,7 +62,7 @@ class RequestPolicy implements RequestPolicyInterface, BeforePolicyInterface
      * @param \Cake\Http\ServerRequest $request The request needing authorization.
      * @return bool
      */
-    private function _authorize($user, ServerRequest $request): bool
+    private function authorize(User $user, ServerRequest $request): bool
     {
         $plugin = empty($request->getParam('plugin')) ? 'System' : str_replace('//', '/', preg_replace('/\//', '\\', Inflector::camelize($request->getParam('plugin'))));
         $controller = Inflector::camelize($request->getParam('controller'));

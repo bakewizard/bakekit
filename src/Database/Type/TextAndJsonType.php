@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Database\Type;
@@ -7,6 +6,7 @@ namespace App\Database\Type;
 use Cake\Database\Driver;
 use Cake\Database\Type\BaseType;
 use InvalidArgumentException;
+use Override;
 use PDO;
 
 /**
@@ -16,7 +16,6 @@ use PDO;
  */
 class TextAndJsonType extends BaseType
 {
-
     /**
      * Convert a value data into a JSON string
      *
@@ -24,7 +23,7 @@ class TextAndJsonType extends BaseType
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @return string|null
      */
-    #[\Override]
+    #[Override]
     public function toDatabase(mixed $value, Driver $driver): mixed
     {
         if (is_resource($value)) {
@@ -43,9 +42,9 @@ class TextAndJsonType extends BaseType
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
-     * @return string|array|null
+     * @return array|string|null
      */
-    #[\Override]
+    #[Override]
     public function toPHP(mixed $value, Driver $driver): mixed
     {
         if (is_null($value)) {
@@ -62,7 +61,7 @@ class TextAndJsonType extends BaseType
      * @param \Cake\Database\Driver $driver The driver.
      * @return int
      */
-    #[\Override]
+    #[Override]
     public function toStatement(mixed $value, Driver $driver): int
     {
         return PDO::PARAM_STR;
@@ -74,7 +73,7 @@ class TextAndJsonType extends BaseType
      * @param mixed $value The value to convert.
      * @return mixed Converted value.
      */
-    #[\Override]
+    #[Override]
     public function marshal(mixed $value): mixed
     {
         return $value;

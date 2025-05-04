@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /**
@@ -19,6 +18,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Event\EventInterface;
+use Override;
 
 /**
  * Error Handling Controller
@@ -27,14 +27,13 @@ use Cake\Event\EventInterface;
  */
 class ErrorController extends AppController
 {
-
     /**
      * beforeRender callback.
      *
      * @param \Cake\Event\EventInterface $event Event.
      * @return \Cake\Http\Response|null|void
      */
-    #[\Override]
+    #[Override]
     public function beforeRender(EventInterface $event)
     {
         parent::beforeRender($event);
@@ -44,5 +43,4 @@ class ErrorController extends AppController
         $viewBuilder->setTemplatePath('Error');
         $viewBuilder->setLayout('error');
     }
-
 }

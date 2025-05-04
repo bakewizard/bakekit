@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /**
@@ -24,6 +23,7 @@ use Cake\Event\EventInterface;
 use Cake\I18n\I18n;
 use Cake\Routing\Router;
 use Cake\View\JsonView;
+use Override;
 
 /**
  * Application Controller
@@ -31,45 +31,49 @@ use Cake\View\JsonView;
  * Add your application-wide methods in the class below, your controllers
  * will inherit them.
  *
- * @link https://book.cakephp.org/4/en/controllers.html#the-app-controller
+ * @link https://book.cakephp.org/5/en/controllers.html#the-app-controller
  */
 class AppController extends Controller
 {
-
-    private $_breadcrumbs = [];
+    /**
+     * Breadcrumbs array.
+     *
+     * @var array<array<string, mixed>>
+     */
+    private array $_breadcrumbs = [];
 
     /**
-     * Initialization hook method.
-     *
-     * Use this method to add common initialization code like loading components.
-     *
-     * e.g. `$this->loadComponent('FormProtection');`
-     *
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(): void
     {
         $this->loadComponent('Flash');
     }
 
-    #[\Override]
+    /**
+     * Called before the controller action is invoked.
+     *
+     * @param \Cake\Event\EventInterface $event The beforeFilter event.
+     * @return \Cake\Http\Response|null|void May return a {@see \Cake\Http\Response} early or void to continue normally.
+     */
+    #[Override]
     public function beforeFilter(EventInterface $event)
     {
-        $this->_setLocale();
+        $this->setLocale();
 
-        $this->_setMeta();
+        $this->setMeta();
 
         $this->set('config', $this->getConfig());
     }
 
     /**
-     * Before render callback.
+     * Called after the controller action is run, but before the view is rendered.
      *
      * @param \Cake\Event\EventInterface $event The beforeRender event.
-     * @return void
+     * @return \Cake\Http\Response|null|void May return a {@see \Cake\Http\Response} early or void to continue normally.
      */
-    #[\Override]
+    #[Override]
     public function beforeRender(EventInterface $event)
     {
         $this->viewBuilder()->setTheme($this->getConfig('Cms.theme'));
@@ -77,13 +81,25 @@ class AppController extends Controller
         $this->set('breadcrumbs', $this->_breadcrumbs);
     }
 
-    #[\Override]
+    /**
+     * Returns the view classes this controller can use.
+     *
+     * @return array<string> An array containing the view class names.
+     */
+    #[Override]
     public function viewClasses(): array
     {
         return [JsonView::class];
     }
 
-    public function getConfig(?string $var = null, $default = null)
+    /**
+     * Get a configuration value.
+     *
+     * @param string|null $var The configuration key to retrieve. If null, all configuration values are returned.
+     * @param mixed $default The default value to return if the configuration key does not exist.
+     * @return mixed The configuration value, or the default value if the key does not exist.
+     */
+    public function getConfig(?string $var = null, mixed $default = null)
     {
         if ($var === null) {
             return Configure::read();
@@ -92,12 +108,26 @@ class AppController extends Controller
         return Configure::read($var, $default);
     }
 
-    protected function addCrumb($title, $url = null)
+    /**
+     * Adds a crumb to the breadcrumbs array.
+     *
+     * @param string $title The title of the breadcrumb.
+     * @param array|string|null $url The URL of the breadcrumb. If null, it will not be a link.
+     * @return void
+     */
+    protected function addCrumb(string $title, array|string|null $url = null): void
     {
         $this->_breadcrumbs[] = ['title' => $title, 'url' => Router::url($url, true)];
     }
 
-    private function _setMeta()
+    /**
+     * Sets meta information for specific actions.
+     *
+     * Currently, it fetches meta data for the 'index' action based on the plugin name.
+     *
+     * @return void
+     */
+    private function setMeta(): void
     {
         $action = $this->request->getParam('action');
         if ($action === 'index') {
@@ -109,14 +139,24 @@ class AppController extends Controller
         }
     }
 
-    private function _setLocale()
+    /**
+     * Sets the locale for the current request.
+     *
+     * It determines the locale based on the 'lang' parameter in the request,
+     * falling back to the default language configured in the application.
+     * It also sets configuration values related to internationalization.
+     *
+     * @return void
+     */
+    private function setLocale(): void
     {
         $languages = $this->getConfig('App.languages');
         $defaultLanguage = explode('_', I18n::getDefaultLocale())[0] ?? 'en';
-        $currentLanguage = ($this->request->getAttribute('params'))['lang'] ?? null;
+        $currentLanguage = $this->request->getAttribute('params')['lang'] ?? null;
 
         if (isset($languages)) {
-            if (($key = array_search($defaultLanguage, $languages)) !== false) {
+            $key = array_search($defaultLanguage, $languages);
+            if ($key !== false) {
                 unset($languages[$key]);
             }
             array_unshift($languages, $defaultLanguage);
@@ -133,7 +173,7 @@ class AppController extends Controller
         Configure::write('App.I18n', [
             'defaultLanguage' => $defaultLanguage,
             'currentLanguage' => $currentLanguage,
-            'languages' => $languages
+            'languages' => $languages,
         ]);
     }
 }

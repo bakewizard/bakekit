@@ -1,32 +1,31 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Lib;
 
+use Composer\Console\Application;
 use Exception;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * Simple Composer wrapper class.
- * 
+ *
  * A wrapper class for Composer to call it's commands from inside your code
  * using a simple object oriented API: turns php composer.phar require monolog/monolog
  * into $composer->require(['monolog/monolog:*']);.
  */
 class ComposerManager
 {
-
     private string $composerHome = ROOT . '/bin';
     private string $composerPath = ROOT . '/bin/composer.phar';
 
     /**
      * Runs composer commands.
-     * 
+     *
      * @param array $options
      * @return string
-     * @throws Exception
+     * @throws \Exception
      */
     public function run(array $options): string
     {
@@ -50,7 +49,7 @@ class ComposerManager
 
         require "phar://{$this->composerPath}/src/bootstrap.php";
 
-        $application = new \Composer\Console\Application();
+        $application = new Application();
         $application->setAutoExit(false);
         $application->run($input, $output);
 
@@ -62,14 +61,14 @@ class ComposerManager
     /**
      * Installs one or more packages
      * E.g. $this->Composer->require(['monolog/monolog:~1.16', 'slim/slim'])
-     * will install monolog in version 1.16 or later and the Slim framework 
+     * will install monolog in version 1.16 or later and the Slim framework
      * in the latest available version.
-     * 
+     *
      * @param array $packages
      * @param array $options
      * @return string
      */
-    public function require(array $packages, $options = []): string
+    public function require(array $packages, array $options = []): string
     {
         $options += [
             '--prefer-dist' => true,
@@ -82,14 +81,14 @@ class ComposerManager
 
     /**
      * Uninstalles one or more packages
-     * E.g. $this->Composer->remove(['monolog/monolog', 'slim/slim']) will uninstall 
+     * E.g. $this->Composer->remove(['monolog/monolog', 'slim/slim']) will uninstall
      * monolog in version 1.16 or later and the Slim framework in the latest available version.
-     * 
+     *
      * @param array $packages
      * @param array $options
      * @return string
      */
-    public function remove(array $packages, $options = []): string
+    public function remove(array $packages, array $options = []): string
     {
         $options += [
             '--no-progress' => true,
@@ -101,15 +100,15 @@ class ComposerManager
 
     /**
      * Updates dependencies to the latest possible version and updates the composer.lock file
-     * E.g. $composer->update() will update all dependencies while 
-     * $this->Composer->update(['symfony/css-crawler'], ['--optimize-autoloader']) 
+     * E.g. $composer->update() will update all dependencies while
+     * $this->Composer->update(['symfony/css-crawler'], ['--optimize-autoloader'])
      * will update only the CSS crawler symfony component optimizing the autoloader afterwards.
-     * 
+     *
      * @param array $packages
      * @param array $options
      * @return string
      */
-    public function update(array $packages, $options = []): string
+    public function update(array $packages, array $options = []): string
     {
         $options += [
             '--no-progress' => true,
@@ -121,7 +120,7 @@ class ComposerManager
 
     /**
      * Updates autoloader cache.
-     * 
+     *
      * @param array $options
      * @return string
      */
@@ -136,9 +135,10 @@ class ComposerManager
      * Adds/removes psr4 autoload path.
      *
      * @param string $plugin Plugin name.
+     * @param string|null $path
      * @return void
      */
-    public function modifyPsr4Autoload($name, $path = null): void
+    public function modifyPsr4Autoload(string $name, ?string $path = null): void
     {
         $file = ROOT . DS . 'composer.json';
         $config = $this->getConfigData();
@@ -160,12 +160,12 @@ class ComposerManager
 
     /**
      * Reads composer.json into array.
-     * 
+     *
      * @param string $path
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
-    public function getConfigData($path = null): array
+    public function getConfigData(?string $path = null): array
     {
         if (!$path) {
             $path = ROOT;

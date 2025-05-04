@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Command;
@@ -11,13 +10,13 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Exception;
 use Migrations\Migrations;
+use Override;
 
 /**
  * Installs CMS.
  */
 class InstallCommand extends Command
 {
-
     /**
      * Installs the application.
      *
@@ -25,7 +24,7 @@ class InstallCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return int|null The exit code or null for success
      */
-    #[\Override]
+    #[Override]
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
         try {
@@ -59,7 +58,7 @@ class InstallCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return void
      */
-    private function migrate($io)
+    private function migrate(ConsoleIo $io): void
     {
         $io->out('Setting up database objects... - ', 0);
 
@@ -77,7 +76,7 @@ class InstallCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return void
      */
-    private function createRootUser($io)
+    private function createRootUser(ConsoleIo $io): void
     {
         $io->out('Setup root user:');
 
@@ -129,12 +128,12 @@ class InstallCommand extends Command
             'password' => $password,
             'role' => [
                 'name' => 'Root',
-                'alias' => 'root'
-            ]
+                'alias' => 'root',
+            ],
         ];
 
         $user = $users->newEntity($data, [
-            'associated' => ['Roles']
+            'associated' => ['Roles'],
         ]);
 
         if ($users->save($user)) {
@@ -150,7 +149,7 @@ class InstallCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return void
      */
-    private function generateSystemResources($io)
+    private function generateSystemResources(ConsoleIo $io): void
     {
         $io->out('Generating system resources... - ', 0);
 
@@ -160,11 +159,11 @@ class InstallCommand extends Command
 
     /**
      * Sets root user permissions.
-     * 
+     *
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return void
      */
-    private function setRootPermissions($io)
+    private function setRootPermissions(ConsoleIo $io): void
     {
         $io->out('Setting root permissions... - ', 0);
         $permissions = $this->fetchTable('Permissions');
@@ -174,11 +173,11 @@ class InstallCommand extends Command
 
     /**
      * Loads CMS default settings into DB.
-     * 
+     *
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return void
      */
-    private function loadDefaultSettings($io)
+    private function loadDefaultSettings(ConsoleIo $io): void
     {
         $io->out('Loading default settings... - ', 0);
 

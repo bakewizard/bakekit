@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Controller\Admin;
@@ -7,18 +6,20 @@ namespace App\Controller\Admin;
 use App\Lib\PluginManager;
 use Cake\Cache\Cache;
 use Cake\Event\EventInterface;
+use Override;
 
 /**
  * MenuLinks Controller
  *
  * @property \App\Model\Table\MenuLinksTable $MenuLinks
- *
  * @method \App\Model\Entity\MenuLink[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class MenuLinksController extends AppController
 {
-
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
@@ -34,7 +35,7 @@ class MenuLinksController extends AppController
      * @param string|null $id Menu id.
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add($id = null)
+    public function add(?string $id = null)
     {
         $menuLink = $this->MenuLinks->newEmptyEntity();
         $menuLink->menu_id = $id;
@@ -58,9 +59,9 @@ class MenuLinksController extends AppController
      *
      * @param string|null $id Menu Link id.
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws Cake\Http\Exception\NotFoundException When record not found.
+     * @throws \App\Controller\Admin\Cake\Http\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $menuLink = $this->MenuLinks->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -85,7 +86,7 @@ class MenuLinksController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         $menuLink = $this->MenuLinks->get($id);
@@ -98,7 +99,13 @@ class MenuLinksController extends AppController
         return $this->redirect(['controller' => 'Menus', 'action' => 'view', $menuLink->menu_id]);
     }
 
-    public function moveUp($id = null)
+    /**
+     * Moves item up
+     *
+     * @param string $id
+     * @return void
+     */
+    public function moveUp(?string $id = null)
     {
         $this->request->allowMethod(['post', 'put']);
         $menuLink = $this->MenuLinks->get($id);
@@ -108,10 +115,17 @@ class MenuLinksController extends AppController
         } else {
             $this->Flash->error(__('The Menu link could not be moved up. Please, try again.'));
         }
+
         return $this->redirect(['controller' => 'Menus', 'action' => 'view', $menuLink->menu_id]);
     }
 
-    public function moveDown($id = null)
+    /**
+     * Moves item down
+     *
+     * @param string $id
+     * @return void
+     */
+    public function moveDown(?string $id = null)
     {
         $this->request->allowMethod(['post', 'put']);
         $menuLink = $this->MenuLinks->get($id);
@@ -121,10 +135,17 @@ class MenuLinksController extends AppController
         } else {
             $this->Flash->error(__('The Menu link could not be moved down. Please, try again.'));
         }
+
         return $this->redirect(['controller' => 'Menus', 'action' => 'view', $menuLink->menu_id]);
     }
 
-    public function getLinks($id = null)
+    /**
+     * Gets plugin links
+     *
+     * @param string $id
+     * @return void
+     */
+    public function getLinks(?string $id = null)
     {
         $menu = $this->MenuLinks->Menus->get($id);
 

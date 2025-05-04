@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Lib;
@@ -14,20 +13,31 @@ use KSamuel\FacetedSearch\Query\SearchQuery;
 
 class AttributesFilter
 {
-
-    protected $cacheConfig = 'default';
+    /**
+     * @var string The cache configuration used for storing the attribute index.
+     */
+    protected string $cacheConfig = 'default';
+    /**
+     * @var array List of range attributes that need special handling.
+     */
     private array $rangeAttributes = [];
 
-    public function setCacheConfig($cacheConfig): void
+    /**
+     * Set the cache configuration.
+     *
+     * @param string $cacheConfig The cache configuration to set.
+     * @return void
+     */
+    public function setCacheConfig(string $cacheConfig): void
     {
         $this->cacheConfig = $cacheConfig;
     }
 
     /**
      * Converts url path into attributes array
-     * 
+     *
      * Path: /some-attribute-1_some-val-1_some-val-2/
-     * 
+     *
      * @param string $path
      * @return array
      */
@@ -60,7 +70,7 @@ class AttributesFilter
     /**
      * Fetch filtered product IDs and active filters based on attributes.
      *
-     * @param int|null $categoryId
+     * @param string|int $categoryId
      * @param array|string $attributes
      * @return array [ids, activeFilters, attributes]
      */
@@ -70,13 +80,13 @@ class AttributesFilter
             $attributes = $this->parsePath($attributes);
         }
 
-        $index = Cache::read((string) $categoryId . '_idx', $this->cacheConfig);
+        $index = Cache::read((string)$categoryId . '_idx', $this->cacheConfig);
 
         if (!$index) {
             return [null, [], null];
         }
 
-        $search = (new Factory)->create(Factory::ARRAY_STORAGE);
+        $search = (new Factory())->create(Factory::ARRAY_STORAGE);
         $search->setData($index);
 
         $filters = [];
@@ -100,14 +110,27 @@ class AttributesFilter
         return [$ids, $activeOptions, $attributes];
     }
 
+    /**
+     * Sets the range attributes for special handling.
+     *
+     * @param array $attributes The range attributes where keys are attribute names and values are the step values.
+     * @return void
+     */
     public function setRangeAttributes(array $attributes): void
     {
         $this->rangeAttributes = $attributes;
     }
 
+    /**
+     * Creates an index for the given category and entities, storing them in the specified cache configuration.
+     *
+     * @param string|int $categoryId The ID of the category to create the index for.
+     * @param array &$entities The entities containing attribute data to index.
+     * @return void
+     */
     public function createIndex(int|string $categoryId, array &$entities): void
     {
-        $search = (new Factory)->create(Factory::ARRAY_STORAGE);
+        $search = (new Factory())->create(Factory::ARRAY_STORAGE);
         $storage = $search->getStorage();
 
         if (!empty($this->rangeAttributes)) {

@@ -1,25 +1,24 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Lib;
 
-use App\Lib\UploadHandlerInterface;
 use Cake\Core\InstanceConfigTrait;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
-use Imagine\Image\Point;
 use Imagine\Image\Palette\RGB;
+use Imagine\Image\Point;
+use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Flysystem\StorageAttributes;
 use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
 use League\Flysystem\Visibility;
+use Override;
 
 class ImageUploadHandler implements UploadHandlerInterface
 {
-
     use InstanceConfigTrait;
 
     protected array $_defaultConfig = [
@@ -32,6 +31,12 @@ class ImageUploadHandler implements UploadHandlerInterface
     private ?Filesystem $_storage = null;
     private Imagine $imagine;
 
+    /**
+     * ImageUploadHandler constructor.
+     *
+     * @param array<string, mixed> $config Configuration options.
+     * @throws \InvalidArgumentException If an unsupported image format is specified.
+     */
     public function __construct(array $config = [])
     {
         $this->setConfig($config);
@@ -39,7 +44,7 @@ class ImageUploadHandler implements UploadHandlerInterface
         $allowedFormats = ['jpeg', 'webp', 'avif'];
         $format = strtolower($this->_config['format']);
         if (!in_array($format, $allowedFormats, true)) {
-            throw new \InvalidArgumentException("Unsupported image format: $format");
+            throw new InvalidArgumentException("Unsupported image format: $format");
         }
 
         $visibility = PortableVisibilityConverter::fromArray([
@@ -51,7 +56,13 @@ class ImageUploadHandler implements UploadHandlerInterface
         $this->_storage = new Filesystem($adapter);
     }
 
-    #[\Override]
+    /**
+     * Handles image upload and thumbnail generation.
+     *
+     * @param array<string, mixed> $files Uploaded files.
+     * @return void
+     */
+    #[Override]
     public function handle(array $files): void
     {
         $this->imagine = new Imagine();
@@ -67,17 +78,23 @@ class ImageUploadHandler implements UploadHandlerInterface
 
             foreach ($this->_config['thumbs'] as $alias => $size) {
                 $thumbName = $file['id'] . '-' . $alias . '.' . $format;
-                list($thumbWidth, $thumbHeight) = is_array($size) ? $size : [$size, $size];
-                $this->createThumbnail($image, $file['path'], $thumbName, (int) $thumbWidth, (int) $thumbHeight);
+                [$thumbWidth, $thumbHeight] = is_array($size) ? $size : [$size, $size];
+                $this->createThumbnail($image, $file['path'], $thumbName, (int)$thumbWidth, (int)$thumbHeight);
             }
         }
     }
 
-    #[\Override]
+    /**
+     * Removes uploaded files and thumbnails from storage.
+     *
+     * @param array<string, mixed> $files Files to remove.
+     * @return void
+     */
+    #[Override]
     public function remove(array $files): void
     {
         foreach ($files as $file) {
-            $pattern = '/' . preg_quote((string) $file->id, '/') . '-[A-Za-z]+\.(jpe?g|webp|avif)$/i';
+            $pattern = '/' . preg_quote((string)$file->id, '/') . '-[A-Za-z]+\.(jpe?g|webp|avif)$/i';
 
             $foundFiles = $this->_storage->listContents($file->path)
                     ->filter(fn(StorageAttributes $attr) => $attr->isFile())
@@ -90,6 +107,16 @@ class ImageUploadHandler implements UploadHandlerInterface
         }
     }
 
+    /**
+     * Creates a thumbnail image with optional watermark.
+     *
+     * @param \Imagine\Image\ImageInterface $image Original image instance.
+     * @param string $path Path where the thumbnail should be saved.
+     * @param string $name Thumbnail file name.
+     * @param int $width Width of the thumbnail.
+     * @param int $height Height of the thumbnail.
+     * @return void
+     */
     private function createThumbnail(ImageInterface $image, string $path, string $name, int $width, int $height): void
     {
         $box = new Box($width, $height);
@@ -97,7 +124,7 @@ class ImageUploadHandler implements UploadHandlerInterface
         $thumbSize = $thumb->getSize();
 
         $background = $this->imagine->create($box, (new RGB())->color('#fff'));
-        $background->paste($thumb, new Point((int) (($width - $thumbSize->getWidth()) / 2), (int) (($height - $thumbSize->getHeight()) / 2)));
+        $background->paste($thumb, new Point((int)(($width - $thumbSize->getWidth()) / 2), (int)(($height - $thumbSize->getHeight()) / 2)));
 
         if (!empty($this->_config['watermark']['image'])) {
             $watermark = $this->createWatermark($width, $height);
@@ -116,6 +143,13 @@ class ImageUploadHandler implements UploadHandlerInterface
         $this->_storage->write($path . DS . $name, $imageData);
     }
 
+    /**
+     * Creates a watermark image.
+     *
+     * @param int $width Width of the base image.
+     * @param int $height Height of the base image.
+     * @return \Imagine\Image\ImageInterface Watermark image.
+     */
     private function createWatermark(int $width, int $height): ImageInterface
     {
         $scale = $this->_config['watermark']['scale'];
@@ -123,12 +157,20 @@ class ImageUploadHandler implements UploadHandlerInterface
 
         return $this->imagine
                         ->open($watermarkPath)
-                        ->thumbnail(new Box((int) ($width * $scale), (int) ($height * $scale)));
+                        ->thumbnail(new Box((int)($width * $scale), (int)($height * $scale)));
     }
 
+    /**
+     * Determines the position for the watermark.
+     *
+     * @param int $width Width of the base image.
+     * @param int $height Height of the base image.
+     * @param \Imagine\Image\Box $watermarkSize Watermark size.
+     * @return \Imagine\Image\Point Position of the watermark.
+     */
     private function getWatermarkPosition(int $width, int $height, Box $watermarkSize): Point
     {
-        $pos = (int) ($this->_config['watermark']['position'] ?? 9);
+        $pos = (int)($this->_config['watermark']['position'] ?? 9);
         $w = $watermarkSize->getWidth();
         $h = $watermarkSize->getHeight();
 

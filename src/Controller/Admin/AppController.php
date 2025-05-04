@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /**
@@ -31,6 +30,7 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
 use League\Flysystem\Visibility;
+use Override;
 
 /**
  * Application Controller
@@ -38,23 +38,16 @@ use League\Flysystem\Visibility;
  * Add your application-wide methods in the class below, your controllers
  * will inherit them.
  *
- * @link http://book.cakephp.org/3/en/controllers.html#the-app-controller
+ * @link http://book.cakephp.org/5/en/controllers.html#the-app-controller
  */
 class AppController extends Controller
 {
-
-    private $_breadcrumbs = [];
+    private array $_breadcrumbs = [];
 
     /**
-     * Initialization hook method.
-     *
-     * Use this method to add common initialization code like loading components.
-     *
-     * e.g. `$this->loadComponent('FormProtection');`
-     *
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(): void
     {
         $this->loadComponent('Flash');
@@ -64,8 +57,8 @@ class AppController extends Controller
                 'plugin' => null,
                 'prefix' => 'Admin',
                 'controller' => 'Users',
-                'action' => 'login'
-            ]
+                'action' => 'login',
+            ],
         ]);
         $this->loadComponent('Authorization.Authorization');
 
@@ -80,15 +73,21 @@ class AppController extends Controller
         }
     }
 
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function beforeFilter(EventInterface $event)
     {
-        $this->_setLocale();
+        $this->setLocale();
 
         $this->set('config', $this->getConfig());
     }
 
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function beforeRedirect(EventInterface $event, $url, Response $response)
     {
         $queryParams = $this->request->getQueryParams();
@@ -110,12 +109,9 @@ class AppController extends Controller
     }
 
     /**
-     * Before render callback.
-     *
-     * @param \Cake\Event\EventInterface $event The beforeRender event.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function beforeRender(EventInterface $event)
     {
         if ($this->request->is('ajax')) {
@@ -130,20 +126,25 @@ class AppController extends Controller
             $params = Router::parseRequest(new ServerRequest(['url' => $this->referer()]));
 
             if (isset($plugin) && $plugin !== 'Pages' && $controller !== 'Dashboard') {
-                $this->addCrumb(preg_replace('/([A-Z])/', " " . '$1', $plugin), ['plugin' => $plugin, 'controller' => 'Dashboard', 'action' => 'index']);
+                $this->addCrumb(preg_replace('/([A-Z])/', ' ' . '$1', $plugin), ['plugin' => $plugin, 'controller' => 'Dashboard', 'action' => 'index']);
             }
 
             if ($params['action'] === 'view' && !in_array($action, ['view', 'index'])) {
-                $this->addCrumb(preg_replace('/([A-Z])/', " " . '$1', $params['controller']), $params['action'] != 'index' ? ['plugin' => $params['plugin'], 'controller' => $params['controller'], 'action' => 'index'] : null);
-                $this->addCrumb(preg_replace('/([A-Z])/', " " . '$1', $controller), ['plugin' => $plugin, 'controller' => $params['controller'], 'action' => $params['action'], $params['pass'][0]]);
-            } else if ($action !== 'index') {
-                $this->addCrumb(preg_replace('/([A-Z])/', " " . '$1', $controller), ['plugin' => $plugin, 'controller' => $controller, 'action' => 'index']);
+                $this->addCrumb(preg_replace('/([A-Z])/', ' ' . '$1', $params['controller']), $params['action'] != 'index' ? ['plugin' => $params['plugin'], 'controller' => $params['controller'], 'action' => 'index'] : null);
+                $this->addCrumb(preg_replace('/([A-Z])/', ' ' . '$1', $controller), ['plugin' => $plugin, 'controller' => $params['controller'], 'action' => $params['action'], $params['pass'][0]]);
+            } elseif ($action !== 'index') {
+                $this->addCrumb(preg_replace('/([A-Z])/', ' ' . '$1', $controller), ['plugin' => $plugin, 'controller' => $controller, 'action' => 'index']);
             }
 
             $this->set('breadcrumbs', $this->_breadcrumbs);
         }
     }
 
+    /**
+     * Deletes a list of records
+     *
+     * @return void
+     */
     public function deleteMany()
     {
         $this->request->allowMethod(['post', 'delete']);
@@ -156,10 +157,11 @@ class AppController extends Controller
 
         $model = empty($params) ? $this->{$modelClass} : $this->{$modelClass}->{$params[0]};
 
-        $alias = strtolower(preg_replace('/([A-Z])/', " " . '$1', $model->getAlias()));
+        $alias = strtolower(preg_replace('/([A-Z])/', ' ' . '$1', $model->getAlias()));
 
         if (empty($ids)) {
             $this->Flash->error(__('You haven\'t selected any of the {0}.', $alias));
+
             return $this->redirect($this->referer());
         }
 
@@ -174,7 +176,13 @@ class AppController extends Controller
         return $this->redirect($this->referer());
     }
 
-    public function deleteFiles($id)
+    /**
+     * Deletes loaded file
+     *
+     * @param string|null $id
+     * @return void
+     */
+    public function deleteFiles(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -187,7 +195,14 @@ class AppController extends Controller
         return $this->redirect($this->referer());
     }
 
-    public function getConfig(?string $var = null, $default = null)
+    /**
+     * Config helper
+     *
+     * @param string|null $var Variable to obtain. Use '.' to access array elements.
+     * @param mixed $default The return value when the configure does not exist
+     * @return mixed Value stored in configure, or null.
+     */
+    public function getConfig(?string $var = null, mixed $default = null)
     {
         if ($var === null) {
             return Configure::read();
@@ -196,30 +211,49 @@ class AppController extends Controller
         return Configure::read($var, $default);
     }
 
+    /**
+     * Get a Flysystem Filesystem instance with custom visibility settings.
+     *
+     * @param string $basePath The base path for the local filesystem (default is WWW_ROOT).
+     * @return \League\Flysystem\Filesystem Configured filesystem instance.
+     */
     public function getStorage(string $basePath = WWW_ROOT): Filesystem
     {
         $visibility = PortableVisibilityConverter::fromArray(
-                [
+            [
                     'file' => ['public' => 0640, 'private' => 0600,],
                     'dir' => ['public' => 0750, 'private' => 0700,],
                 ],
-                Visibility::PUBLIC
+            Visibility::PUBLIC,
         );
 
         return new Filesystem(new LocalFilesystemAdapter($basePath, $visibility));
     }
 
-    protected function addCrumb($title, $url = null)
+    /**
+     * Adds a breadcrumb item to the breadcrumb trail.
+     *
+     * @param string $title The title of the breadcrumb.
+     *
+     * @param array|string|null $url The URL as a string or Router-compatible array. Null for no link.
+     * @return void
+     */
+    protected function addCrumb(string $title, string|array|null $url = null)
     {
         $this->_breadcrumbs[] = ['title' => $title, 'url' => Router::url($url, true)];
     }
 
+    /**
+     * Handles configuration form
+     *
+     * @return \Cake\Http\Response|null
+     */
     protected function settings()
     {
         $plugin = $this->getPlugin() ?? 'App';
         $formClass = $plugin . '\Form\ConfigForm';
         $namespace = $plugin === 'App' ? 'Cms' : $plugin;
-        $settings = new $formClass;
+        $settings = new $formClass();
 
         if ($this->request->is('post')) {
             if ($settings->execute($this->request->getData())) {
@@ -235,11 +269,11 @@ class AppController extends Controller
             $conf = Configure::read($namespace);
             if ($conf) {
                 foreach ($settings->getSchema()->fields() as $field) {
-                    list($group, $var) = strpos($field, '.') ? explode('.', $field) : [null, $field];
+                    [$group, $var] = strpos($field, '.') ? explode('.', $field) : [null, $field];
                     $value = null;
                     if ($group && isset($conf[$group][$var])) {
                         $value = $conf[$group][$var];
-                    } else if (isset($conf[$var])) {
+                    } elseif (isset($conf[$var])) {
                         $value = $conf[$var];
                     }
                     $this->setRequest($this->request->withData($field, $value));
@@ -250,21 +284,27 @@ class AppController extends Controller
         $this->set(compact('settings'));
     }
 
-    private function _setLocale()
+    /**
+     * Sets the application locale and language configuration.
+     *
+     * @return void
+     */
+    private function setLocale()
     {
         $locale = $this->request->getQuery('locale');
         $modelClass = pluginSplit($this->name)[1];
 
         $languages = $this->getConfig('App.languages');
         $defaultLanguage = explode('_', I18n::getDefaultLocale())[0] ?? 'en';
-        $currentLanguage = ($this->request->getAttribute('params'))['lang'] ?? null;
+        $currentLanguage = $this->request->getAttribute('params')['lang'] ?? null;
 
         if ($locale && ($this->{$modelClass}->hasBehavior('Translate'))) {
             $this->{$modelClass}->setLocale($locale);
         }
 
         if (isset($languages)) {
-            if (($key = array_search($defaultLanguage, $languages)) !== false) {
+            $key = array_search($defaultLanguage, $languages);
+            if ($key !== false) {
                 unset($languages[$key]);
             }
             array_unshift($languages, $defaultLanguage);
@@ -281,7 +321,7 @@ class AppController extends Controller
         Configure::write('App.I18n', [
             'defaultLanguage' => $defaultLanguage,
             'currentLanguage' => $currentLanguage,
-            'languages' => $languages
+            'languages' => $languages,
         ]);
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -7,6 +6,7 @@ namespace App\Model\Table;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Override;
 
 /**
  * Resources Model
@@ -14,7 +14,6 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\ResourcesTable&\Cake\ORM\Association\BelongsTo $ParentResources
  * @property \App\Model\Table\ResourcesTable&\Cake\ORM\Association\HasMany $ChildResources
  * @property \App\Model\Table\PermissionsTable&\Cake\ORM\Association\HasMany $Permissions
- *
  * @method \App\Model\Entity\Resource newEmptyEntity()
  * @method \App\Model\Entity\Resource newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Resource[] newEntities(array $data, array $options = [])
@@ -28,19 +27,14 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
  * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
- *
  * @mixin \Cake\ORM\Behavior\TreeBehavior
  */
 class ResourcesTable extends Table
 {
-
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -61,7 +55,7 @@ class ResourcesTable extends Table
             'foreignKey' => 'resource_id',
         ]);
         $this->belongsToMany('Roles', [
-            'through' => 'Permissions'
+            'through' => 'Permissions',
         ]);
 
         $this->addBehavior('Tree');
@@ -73,7 +67,7 @@ class ResourcesTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -96,7 +90,7 @@ class ResourcesTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    #[\Override]
+    #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['parent_id'], 'ParentResources'), ['errorField' => 'parent_id']);
@@ -106,12 +100,12 @@ class ResourcesTable extends Table
 
     /**
      * Creates a resource node.
-     * 
+     *
      * @param string $path The path to resource.
      * @param int $parentId The parent id to use when creating.
      * @return \Cake\Datasource\EntityInterface
      */
-    public function createNode($path, $parentId = null): object
+    public function createNode(string $path, ?int $parentId = null): object
     {
         $node = null;
         $aliases = explode('/', $path);
@@ -130,16 +124,15 @@ class ResourcesTable extends Table
 
     /**
      * Checks if node exists.
-     * 
+     *
      * @param string $alias Resource alias.
      * @param int $parentId Parent resource id.
      * @return \Cake\Datasource\EntityInterface|null Node if exists or null.
      */
-    public function checkNode($alias, $parentId = null): ?object
+    public function checkNode(string $alias, ?int $parentId = null): ?object
     {
         $node = $this->find()->where(['alias' => $alias, 'parent_id is' => $parentId])->first();
 
         return !empty($node) ? $node : null;
     }
-
 }

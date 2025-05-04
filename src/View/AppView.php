@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /**
@@ -19,21 +18,21 @@ namespace App\View;
 
 use Cake\Cache\Cache;
 use Cake\ORM\Entity;
-use Cake\View\View;
 use Cake\View\Exception\MissingCellException;
 use Cake\View\Exception\MissingCellTemplateException;
+use Cake\View\View;
+use Override;
 
 /**
  * Application View
  *
  * Your application’s default view class
  *
- * @link http://book.cakephp.org/3.0/en/views.html#the-app-view
+ * @link https://book.cakephp.org/5/en/views.html#the-app-view
  */
 class AppView extends View
 {
-
-    private $_regions = [];
+    private array $_regions = [];
 
     /**
      * Initialization hook method.
@@ -44,7 +43,7 @@ class AppView extends View
      *
      * @return void
      */
-    #[\Override]
+    #[Override]
     public function initialize(): void
     {
         parent::initialize();
@@ -52,7 +51,7 @@ class AppView extends View
         $this->loadHelper('Form', ['className' => 'BootstrapUI.Form', 'grid' => [
                 'left' => 2,
                 'middle' => 10,
-                'right' => 4
+                'right' => 4,
         ]]);
         $this->loadHelper('Html', ['className' => 'BootstrapUI.Html']);
         $this->loadHelper('Paginator', ['className' => 'BootstrapUI.Paginator']);
@@ -63,12 +62,19 @@ class AppView extends View
         if (!$this->isRenderingCell()) {
             $this->_regions = Cache::read('regions', 'cms');
             $this->Form->setTemplates([
-                'confirmJs' => 'app.initModal({{formName}}); return false;'
+                'confirmJs' => 'app.initModal({{formName}}); return false;',
             ]);
         }
     }
 
-    public function region($alias, array $arguments = [])
+    /**
+     * Returns a region content by alias
+     *
+     * @param string  $alias Region alias
+     * @param array $arguments Cell argumants
+     * @return string Region content
+     */
+    public function region(string $alias, array $arguments = []): string
     {
         if (!isset($this->_regions[$alias]) || !$this->_regions[$alias]->hasValue('blocks')) {
             return $this->request->getSession()->check('Auth.User') ? '<span class="fw-bold text-info">[' . $alias . ']</span>' : '';
@@ -104,10 +110,19 @@ class AppView extends View
                 $html .= '<span class="fw-bold text-danger">[' . $e->getMessage() . ']</span>';
             }
         }
+
         return $html;
     }
 
-    public function getImageUrl(?Entity $entity, $size = 'md', $index = 0): string
+    /**
+     * Returns an image url
+     *
+     * @param \Cake\ORM\Entity|null $entity Entity
+     * @param string $size Size
+     * @param int $index Index
+     * @return string Url
+     */
+    public function getImageUrl(?Entity $entity, string $size = 'md', int $index = 0): string
     {
         $image = null;
 
@@ -129,6 +144,11 @@ class AppView extends View
         return $this->Url->build($imagePath, ['fullBase' => true]);
     }
 
+    /**
+     * Checks if cell is rendered
+     *
+     * @return bool
+     */
     protected function isRenderingCell(): bool
     {
         return str_contains($this->getTemplatePath(), 'cell');

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Behavior;
@@ -12,15 +11,16 @@ use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Inflector;
+use Override;
+use const UPLOAD_ERR_NO_FILE;
 
 /**
  * Image behavior
  */
 class UploadBehavior extends Behavior
 {
-
-    private $_uploadHandler = null;
-    private $tableAlias = 'Files';
+    private ?UploadHandlerInterface $uploadHandler = null;
+    private string $tableAlias = 'Files';
 
     /**
      * Default configuration.
@@ -34,14 +34,17 @@ class UploadBehavior extends Behavior
         'modelPath' => null,
         'dirDepth' => 2,
         'uploadHandler' => [
-            'class' => '\\App\\Lib\\DefaultUploadHandler'
-        ]
+            'class' => '\\App\\Lib\\DefaultUploadHandler',
+        ],
     ];
 
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function initialize(array $config): void
     {
-        list($plugin, $table) = pluginSplit(strtolower($this->_table->getRegistryAlias()));
+        [$plugin, $table] = pluginSplit(strtolower($this->_table->getRegistryAlias()));
         $modelPath = '/' . ($plugin ?? 'main') . '/' . $table;
 
         if (!isset($config['modelPath'])) {
@@ -59,7 +62,7 @@ class UploadBehavior extends Behavior
         $foreignKey = strtolower($singularName) . '_id';
 
         $filesTable = FactoryLocator::get('Table')->get($this->tableAlias, [
-            'table' => Inflector::singularize($this->_table->getTable()) . '_' . ($config['tablePostfix'] ?? 'files')
+            'table' => Inflector::singularize($this->_table->getTable()) . '_' . ($config['tablePostfix'] ?? 'files'),
         ]);
 
         if ($this->_config['multiple']) {
@@ -68,19 +71,28 @@ class UploadBehavior extends Behavior
                 'saveStrategy' => 'replace',
                 'foreignKey' => $foreignKey,
                 'propertyName' => 'files',
-                'sort' => 'sort_order asc'
+                'sort' => 'sort_order asc',
             ]);
         } else {
             $this->_table->hasMany($this->tableAlias, [
                 'targetTable' => $filesTable,
                 'saveStrategy' => 'replace',
                 'foreignKey' => $foreignKey,
-                'propertyName' => 'files'
+                'propertyName' => 'files',
             ]);
         }
     }
 
-    public function beforeFind(EventInterface $event, SelectQuery $query, ArrayObject $options, $primary)
+    /**
+     * Modifies the find query to contain associated files.
+     *
+     * @param \Cake\Event\EventInterface $event The beforeFind event.
+     * @param \Cake\ORM\Query\SelectQuery $query The query object.
+     * @param \ArrayObject $options The options passed to the find method.
+     * @param bool $primary Whether this is the primary query.
+     * @return void
+     */
+    public function beforeFind(EventInterface $event, SelectQuery $query, ArrayObject $options, bool $primary): void
     {
         $query
                 ->select('id')
@@ -88,7 +100,18 @@ class UploadBehavior extends Behavior
                 ->contain($this->tableAlias);
     }
 
-    public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options)
+    /**
+     * Processes uploaded files before marshalling data into an entity.
+     *
+     * Extracts file information from the 'uploads' data and prepares the 'files'
+     * data structure for entity creation or patching.
+     *
+     * @param \Cake\Event\EventInterface $event The beforeMarshal event.
+     * @param \ArrayObject $data The data being marshalled.
+     * @param \ArrayObject $options The options passed to the marshaller.
+     * @return void
+     */
+    public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
     {
         if (!isset($data['uploads'])) {
             return;
@@ -104,13 +127,13 @@ class UploadBehavior extends Behavior
                 if (!isset($file['id'])) {
                     $upload = array_shift($uploads);
 
-                    if ($upload->getError() == \UPLOAD_ERR_NO_FILE) {
+                    if ($upload->getError() == UPLOAD_ERR_NO_FILE) {
                         continue;
                     }
 
                     $data['files'][$i]['name'] = $upload->getClientFilename();
                     $data['files'][$i]['path'] = $this->getConfig('modelPath') . $this->generatePath();
-                    $data['files'][$i]['format'] = $this->_uploadHandler->getConfig('format');
+                    $data['files'][$i]['format'] = $this->uploadHandler->getConfig('format');
                     $data['files'][$i]['tmp_name'] = $upload->getStream()->getMetadata('uri');
                 }
             }
@@ -118,13 +141,24 @@ class UploadBehavior extends Behavior
             if ($uploads[0]->getSize() > 0) {
                 $data['files'][0]['name'] = $uploads[0]->getClientFilename();
                 $data['files'][0]['path'] = $this->getConfig('modelPath') . $this->generatePath();
-                $data['files'][0]['format'] = $this->_uploadHandler->getConfig('format');
+                $data['files'][0]['format'] = $this->uploadHandler->getConfig('format');
                 $data['files'][0]['tmp_name'] = $uploads[0]->getStream()->getMetadata('uri');
             }
         }
     }
 
-    public function afterSave(EventInterface $event, EntityInterface $entity)
+    /**
+     * Handles file uploads after the entity is saved.
+     *
+     * If the 'files' property of the entity has been modified, it processes
+     * the uploaded files using the configured upload handler. It also handles
+     * removal of previously associated files if the entity is being updated.
+     *
+     * @param \Cake\Event\EventInterface $event The afterSave event.
+     * @param \Cake\Datasource\EntityInterface $entity The saved entity.
+     * @return void
+     */
+    public function afterSave(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->isDirty('files')) {
             $files = $entity->get('files');
@@ -132,33 +166,56 @@ class UploadBehavior extends Behavior
             if (!$entity->isNew()) {
                 $filesToRemove = array_udiff($entity->getOriginal('files'), $files, fn($a, $b) => $a->id <=> $b->id);
                 if (!empty($filesToRemove)) {
-                    $this->_uploadHandler->remove($filesToRemove);
+                    $this->uploadHandler->remove($filesToRemove);
                 }
             }
 
-            $this->_uploadHandler->handle($files);
+            $this->uploadHandler->handle($files);
         }
     }
 
-    public function afterDelete(EventInterface $event, EntityInterface $entity)
+    /**
+     * Handles the removal of associated files after the entity is deleted.
+     *
+     * @param \Cake\Event\EventInterface $event The afterDelete event.
+     * @param \Cake\Datasource\EntityInterface $entity The deleted entity.
+     * @return void
+     */
+    public function afterDelete(EventInterface $event, EntityInterface $entity): void
     {
-        $this->_uploadHandler->remove($entity->files);
+        $this->uploadHandler->remove($entity->files);
     }
 
-    public function remove($files)
+    /**
+     * Removes loaded files
+     *
+     * @param array $files
+     * @return void
+     */
+    public function remove(array $files): void
     {
         $fileIds = array_map(fn($file) => $file->id, $files);
         $this->_table->{$this->tableAlias}->deleteAll(['id IN' => $fileIds]);
 
-        $this->_uploadHandler->remove($files);
+        $this->uploadHandler->remove($files);
     }
 
+    /**
+     * Returns upload handler
+     *
+     * @return \App\Lib\UploadHandlerInterface
+     */
     public function getUploadHandler(): UploadHandlerInterface
     {
-        return $this->_uploadHandler;
+        return $this->uploadHandler;
     }
 
-    private function loadUploadHandler()
+    /**
+     * Loads upload handler
+     *
+     * @return void
+     */
+    private function loadUploadHandler(): void
     {
         $uploadHandlerClass = $this->_config['uploadHandler']['class'];
         unset($this->_config['uploadHandler']['class']);
@@ -167,11 +224,16 @@ class UploadBehavior extends Behavior
         $uploadHandler = new $uploadHandlerClass($config);
 
         if ($uploadHandler instanceof UploadHandlerInterface) {
-            $this->_uploadHandler = $uploadHandler;
+            $this->uploadHandler = $uploadHandler;
         }
     }
 
-    private function generatePath()
+    /**
+     * Generates random path
+     *
+     * @return string
+     */
+    private function generatePath(): string
     {
         $sublevels = $this->getConfig('dirDepth');
         $chunkLength = 2;
@@ -181,6 +243,7 @@ class UploadBehavior extends Behavior
         $bytes = intval(ceil($chunkLength * $sublevels / 2));
         $hash = bin2hex(random_bytes($bytes));
         $path = '/' . implode('/', str_split(substr($hash, 0, $sublevels * $chunkLength), $chunkLength));
+
         return $path;
     }
 }

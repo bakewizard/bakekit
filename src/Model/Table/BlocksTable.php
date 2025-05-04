@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Model\Table;
@@ -7,7 +6,6 @@ namespace App\Model\Table;
 use ArrayObject;
 use Cake\Core\App;
 use Cake\Database\Schema\TableSchemaInterface;
-use Cake\Database\TypeFactory;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior\Translate\ShadowTableStrategy;
@@ -15,15 +13,13 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
+use Override;
 use ReflectionClass;
-
-TypeFactory::map('textandjson', 'App\Database\Type\TextAndJsonType');
 
 /**
  * Blocks Model
  *
  * @property \App\Model\Table\RegionsTable|\Cake\ORM\Association\BelongsTo $Regions
- *
  * @method \App\Model\Entity\Block get($primaryKey, $options = [])
  * @method \App\Model\Entity\Block newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\Block[] newEntities(array $data, array $options = [])
@@ -35,23 +31,19 @@ TypeFactory::map('textandjson', 'App\Database\Type\TextAndJsonType');
  */
 class BlocksTable extends Table
 {
-
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function getSchema(): TableSchemaInterface
     {
-        $schema = parent::getSchema();
-        $schema->setColumnType('params', 'textandjson');
-
-        return $schema;
+        return parent::getSchema()->setColumnType('params', 'textandjson');
     }
 
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(array $config): void
     {
         parent::initialize($config);
@@ -62,7 +54,7 @@ class BlocksTable extends Table
 
         $this->belongsTo('Regions', [
             'foreignKey' => 'region_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
         ]);
 
         $this->addBehavior('ADmad/Sequence.Sequence', [
@@ -72,17 +64,14 @@ class BlocksTable extends Table
         $this->addBehavior('Translate', [
             'strategyClass' => ShadowTableStrategy::class,
             'fields' => ['title', 'params'],
-            'translationTable' => 'BlocksI18n'
+            'translationTable' => 'BlocksI18n',
         ]);
     }
 
     /**
-     * Default validation rules.
-     *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
@@ -113,7 +102,7 @@ class BlocksTable extends Table
                 ->add('cell', 'custom', [
                     'rule' => function ($cell, $context) {
                         $parts = explode('::', $cell);
-                        list($pluginAndCell, $action) = count($parts) === 2 ? [$parts[0], $parts[1]] : [$parts[0], 'display'];
+                        [$pluginAndCell, $action] = count($parts) === 2 ? [$parts[0], $parts[1]] : [$parts[0], 'display'];
                         $className = App::classname($pluginAndCell, 'View/Cell', 'Cell');
                         if ($className) {
                             $class = new ReflectionClass($className);
@@ -121,9 +110,10 @@ class BlocksTable extends Table
                                 return true;
                             }
                         }
+
                         return false;
                     },
-                    'message' => __('Cell doesn\'t exist')
+                    'message' => __('Cell doesn\'t exist'),
         ]);
 
         $validator
@@ -146,13 +136,9 @@ class BlocksTable extends Table
     }
 
     /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
-     *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
+     * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['alias']));
@@ -161,10 +147,20 @@ class BlocksTable extends Table
         return $rules;
     }
 
-    public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options)
+    /**
+     * beforeMarshal callback.
+     *
+     * Used to convert empty strings to null for nullable fields.
+     *
+     * @param \Cake\Event\EventInterface $event The beforeMarshal event.
+     * @param \ArrayObject $data The data being marshaled.
+     * @param \ArrayObject $options The options for marshalling.
+     * @return void
+     */
+    public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
     {
         foreach ($data as $key => $value) {
-            $nullable = Hash::get((array) $this->getSchema()->getColumn($key), 'null');
+            $nullable = Hash::get((array)$this->getSchema()->getColumn($key), 'null');
             if ($nullable !== true) {
                 continue;
             }
@@ -176,12 +172,22 @@ class BlocksTable extends Table
         $event->setResult($data);
     }
 
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    /**
+     * beforeSave callback.
+     *
+     * Initializes the 'params' field with default values from the associated cell's config form, if it exists.
+     * This is done when a new block is created or when the 'cell' field is modified.
+     *
+     * @param \Cake\Event\EventInterface $event The beforeSave event.
+     * @param \Cake\Datasource\EntityInterface $entity The entity being saved.
+     * @return void
+     */
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->isNew() || $entity->isDirty('cell')) {
             $configClass = App::classname($entity->cellFullName . 'CellConfig', 'Form/Cell', 'Form');
             if ($configClass) {
-                $config = new $configClass;
+                $config = new $configClass();
                 $fields = $config->getSchema()->fields();
                 $validator = $config->getValidator();
                 $data = [];

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Controller\Admin;
@@ -7,18 +6,20 @@ namespace App\Controller\Admin;
 use App\Lib\PluginManager;
 use Cake\Cache\Cache;
 use Cake\Event\EventInterface;
+use Override;
 
 /**
  * Roles Controller
  *
  * @property \App\Model\Table\RolesTable $Roles
- *
  * @method \App\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class RolesController extends AppController
 {
-
-    #[\Override]
+    /**
+     * @inheritDoc
+     */
+    #[Override]
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
@@ -58,7 +59,7 @@ class RolesController extends AppController
      * @return \Cake\Http\Response|void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $role = $this->Roles->get($id, contain: ['Users']);
 
@@ -94,7 +95,7 @@ class RolesController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $role = $this->Roles->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -118,7 +119,7 @@ class RolesController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         $role = $this->Roles->get($id);
@@ -138,7 +139,7 @@ class RolesController extends AppController
      * @param string|null $id Role id.
      * @return \Cake\Http\Response|void
      */
-    public function editPermissions($id = null)
+    public function editPermissions(?string $id = null)
     {
         if ($this->request->is('post') || $this->request->is('put')) {
             $permissions = $this->request->getData('perms');
@@ -162,11 +163,11 @@ class RolesController extends AppController
 
     /**
      * Clears role permissions
-     * 
+     *
      * @param string|null $id Role id
      * @return \Cake\Http\Response|null
      */
-    public function resetPermissions($id = null)
+    public function resetPermissions(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -181,7 +182,7 @@ class RolesController extends AppController
 
     /**
      * Reloads resources
-     * 
+     *
      * @return \Cake\Http\Response|null
      */
     public function reloadResources()
