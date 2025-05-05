@@ -101,7 +101,9 @@ class MenuHelper extends Helper
         $title = !empty($item['icon']) ? "<i class=\"{$item['icon']}\"></i> {$item['title']}" : $item['title'];
 
         if ($hasSubmenu) {
-            $attrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['dropdownMenuItemLink'], $this->_config['itemWithDropdownLink']) : $this->_config['dropdownMenuItemLink']);
+            $attrs = !empty($item['children'])
+                ? $this->mergeAttrs($this->_config['dropdownMenuItemLink'], $this->_config['itemWithDropdownLink'])
+                : $this->_config['dropdownMenuItemLink'];
         } else {
             $attrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['itemLink'], $this->_config['itemWithDropdownLink']) : $this->_config['itemLink']);
         }

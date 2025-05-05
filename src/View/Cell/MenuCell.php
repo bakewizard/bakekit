@@ -11,6 +11,8 @@ use App\View\Cell\BlockCell as Cell;
 class MenuCell extends Cell
 {
     /**
+     * Menu
+     *
      * Displays menu
      *
      * @param string $helper Menu helper

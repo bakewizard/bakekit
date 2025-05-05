@@ -88,8 +88,6 @@ class DocBlockParser
         array_shift($lines);// Removes opening `/**`
         array_pop($lines);// Removes closing `*/`
 
-        $insideDescription = false;
-
         foreach ($lines as $line) {
             $trimmedLine = trim($line, ' *');
 
@@ -98,12 +96,10 @@ class DocBlockParser
             }
 
             if (str_starts_with($trimmedLine, '@')) {
-                $insideDescription = false; // Stop adding to description when tags begin
                 $this->parseTag($trimmedLine);
             } elseif ($this->summary === '') {
                 $this->summary = $trimmedLine;
             } else {
-                $insideDescription = true;
                 $this->description .= $trimmedLine . PHP_EOL;
             }
         }

@@ -1,8 +1,11 @@
 parameters:
-    level: 8
+    level: 6
     treatPhpDocTypesAsCertain: false
-    checkGenericClassInNonGenericObjectType: false
     bootstrapFiles:
         - config/bootstrap.php
     paths:
         - src/
+    excludePaths:
+        - src/Console/Installer.php
+includes:
+    - vendor/cakedc/cakephp-phpstan/extension.neon

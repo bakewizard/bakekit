@@ -82,7 +82,9 @@ class PluginManager
                 $className = App::className($pluginAndCell, 'View/Cell', 'Cell');
                 $reflection = new ReflectionClass($className);
                 $declaredMethods = array_filter(
-                    $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
+                    $reflection->getMethods(
+                        ReflectionMethod::IS_PUBLIC,
+                    ),
                     fn($method) => $method->getDeclaringClass()->getName() === $className && $method->name !== 'initialize',
                 );
 
@@ -128,7 +130,8 @@ class PluginManager
                 $reflection = new ReflectionClass($className);
                 $declaredMethods = array_filter(
                     $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
-                    fn($method) => $method->getDeclaringClass()->getName() === $className && !in_array($method->name, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter']),
+                    fn($method) => $method->getDeclaringClass()->getName() === $className
+                        && !in_array($method->name, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter']),
                 );
 
                 foreach ($declaredMethods as $method) {
@@ -189,7 +192,11 @@ class PluginManager
 
                 $declaredMethods = array_filter(
                     $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
-                    fn($method) => $method->getDeclaringClass()->getName() === $className && !in_array($method->name, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter']),
+                    fn($method) => $method->getDeclaringClass()->getName() === $className
+                        && !in_array(
+                            $method->name,
+                            ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter'],
+                        ),
                 );
 
                 foreach ($declaredMethods as $method) {

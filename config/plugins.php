@@ -31,7 +31,7 @@ return [
     'DebugKit' => ['onlyDebug' => true],
     'Bake' => ['onlyCli' => true, 'optional' => true],
     'Migrations' => ['onlyCli' => true],
-    // Additional plugins here
+    'IdeHelper' => ['onlyCli' => true, 'optional' => true],
     'Authorization' => ['onlyCli' => true, 'optional' => true],
     'BootstrapUI' => []
 ];

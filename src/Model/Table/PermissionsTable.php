@@ -203,7 +203,11 @@ class PermissionsTable extends Table
                 if (is_null($allowed)) {
                     $inherited = true;
                     $allowed = isset($resource['parent_id']) ? $perms[$paths[$resource['parent_id']]]['permissions'][0] : false;
-                    $blocked = isset($resource['parent_id']) ? ($perms[$paths[$resource['parent_id']]]['permissions'][1] && !$perms[$paths[$resource['parent_id']]]['permissions'][0]) : false;
+                    $blocked = false;
+                    if (isset($resource['parent_id'])) {
+                        $parentPermissions = $perms[$paths[$resource['parent_id']]]['permissions'];
+                        $blocked = $parentPermissions[1] && !$parentPermissions[0];
+                    }
                 }
 
                 $perms[$paths[$resource['id']]] = [

@@ -126,12 +126,28 @@ class AppController extends Controller
             $params = Router::parseRequest(new ServerRequest(['url' => $this->referer()]));
 
             if (isset($plugin) && $plugin !== 'Pages' && $controller !== 'Dashboard') {
-                $this->addCrumb(preg_replace('/([A-Z])/', ' ' . '$1', $plugin), ['plugin' => $plugin, 'controller' => 'Dashboard', 'action' => 'index']);
+                $this->addCrumb(
+                    preg_replace('/([A-Z])/', ' ' . '$1', $plugin),
+                    ['plugin' => $plugin, 'controller' => 'Dashboard', 'action' => 'index'],
+                );
             }
 
             if ($params['action'] === 'view' && !in_array($action, ['view', 'index'])) {
-                $this->addCrumb(preg_replace('/([A-Z])/', ' ' . '$1', $params['controller']), $params['action'] != 'index' ? ['plugin' => $params['plugin'], 'controller' => $params['controller'], 'action' => 'index'] : null);
-                $this->addCrumb(preg_replace('/([A-Z])/', ' ' . '$1', $controller), ['plugin' => $plugin, 'controller' => $params['controller'], 'action' => $params['action'], $params['pass'][0]]);
+                $this->addCrumb(
+                    preg_replace('/([A-Z])/', ' ' . '$1', $params['controller']),
+                    $params['action'] != 'index'
+                        ? ['plugin' => $params['plugin'], 'controller' => $params['controller'], 'action' => 'index']
+                        : null,
+                );
+                $this->addCrumb(
+                    preg_replace('/([A-Z])/', ' ' . '$1', $controller),
+                    [
+                        'plugin' => $plugin,
+                        'controller' => $params['controller'],
+                        'action' => $params['action'],
+                        $params['pass'][0],
+                    ],
+                );
             } elseif ($action !== 'index') {
                 $this->addCrumb(preg_replace('/([A-Z])/', ' ' . '$1', $controller), ['plugin' => $plugin, 'controller' => $controller, 'action' => 'index']);
             }

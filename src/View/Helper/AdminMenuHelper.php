@@ -56,7 +56,9 @@ class AdminMenuHelper extends MenuHelper
         $title = "<i class=\"nav-icon $icon\"></i><p>{$item['title']}$submenuIcon</p>";
 
         if ($hasSubmenu) {
-            $attrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['dropdownMenuItemLink'], $this->_config['itemWithDropdownLink']) : $this->_config['dropdownMenuItemLink']);
+            $attrs = !empty($item['children'])
+                ? $this->mergeAttrs($this->_config['dropdownMenuItemLink'], $this->_config['itemWithDropdownLink'])
+                : $this->_config['dropdownMenuItemLink'];
         } else {
             $attrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['itemLink'], $this->_config['itemWithDropdownLink']) : $this->_config['itemLink']);
         }
