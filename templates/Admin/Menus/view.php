@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $menuLinks
+ * @var \App\Model\Entity\Menu $menu
+ */
+?>
 <div class="card card-primary card-outline">
     <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-eye me-2"></i><strong><?= h($menu->name) ?></strong> <?= __('links') ?></div>

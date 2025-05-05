@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var string $message
+ */
+?>
 <div class="error-page">
     <h2 class="headline text-danger">503</h2>
     <div class="error-content">

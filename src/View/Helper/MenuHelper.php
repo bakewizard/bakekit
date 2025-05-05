@@ -10,6 +10,8 @@ use Override;
 
 /**
  * Menu helper
+ *
+ * @property \Cake\View\Helper\HtmlHelper $Html
  */
 class MenuHelper extends Helper
 {

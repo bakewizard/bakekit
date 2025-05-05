@@ -19,6 +19,11 @@ use Cake\Utility\Text;
  * @property \Cake\I18n\DateTime|null $modified
  *
  * @property \App\Model\Entity\User[] $users
+ * @property \App\Model\Entity\Role|null $parent_role
+ * @property \App\Model\Entity\Role[] $child_roles
+ * @property \App\Model\Entity\Permission[] $permissions
+ * @property \App\Model\Entity\Resource[] $resources
+ * @property \App\Model\Entity\Permission $_joinData
  */
 class Role extends Entity
 {
@@ -58,6 +63,7 @@ class Role extends Entity
      *
      * @param string $alias The alias value to set.
      * @return string The generated slug.
+     * @see \App\Model\Entity\Role::$alias
      */
     protected function _setAlias(string $alias): string
     {

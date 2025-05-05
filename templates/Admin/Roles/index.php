@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $roles
+ */
+?>
 <div class="card">
     <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-list me-2"></i><?= __('Roles list') ?></div>

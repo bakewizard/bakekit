@@ -10,6 +10,9 @@ use Override;
  * Users Controller
  *
  * @property \App\Model\Table\UsersTable $Users
+ * @property \Search\Controller\Component\SearchComponent $Search
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
  */
 class UsersController extends AppController
 {

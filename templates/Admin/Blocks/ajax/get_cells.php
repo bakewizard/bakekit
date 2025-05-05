@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $data
+ */
+?>
 <div id="accordion">
     <?php foreach ($data as $plugin => $links): ?>
         <div class="card mb-2">

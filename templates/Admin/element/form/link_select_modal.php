@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ */
+?>
 <!-- Link select modal -->
 <div class="modal fade" id="link-select-dialog" tabindex="-1" role="dialog" aria-labelledby="link-select-dialog">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">

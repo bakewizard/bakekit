@@ -25,6 +25,9 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\DateTime|null $modified
  *
  * @property \App\Model\Entity\Role $role
+ * @property \Cake\ORM\Entity[] $files
+ * @property-read string|null $full_name
+ * @property \Authorization\AuthorizationServiceInterface $authorization
  */
 class User extends Entity implements AuthenticationIdentity, AuthorizationIdentity
 {
@@ -115,6 +118,7 @@ class User extends Entity implements AuthenticationIdentity, AuthorizationIdenti
      *
      * @param string $password The plain password.
      * @return string|null The hashed password or the existing password if the input is empty.
+     * @see \App\Model\Entity\User::$password
      */
     protected function _setPassword(string $password): ?string
     {
@@ -129,6 +133,7 @@ class User extends Entity implements AuthenticationIdentity, AuthorizationIdenti
      * Gets the user's full name by concatenating the first and last names.
      *
      * @return string|null The full name of the user or null if either first or last name is not set.
+     * @see \App\Model\Entity\User::$full_name
      */
     protected function _getFullName(): ?string
     {

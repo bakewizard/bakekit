@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var array $config
+ * @var mixed $regions
+ * @var \App\Model\Entity\Block $block
+ */
+?>
 <?= $this->Html->script(['/backend/js/blocks'], ['block' => true]) ?>
 
 <?= $this->element('form/cell_select_modal') ?>

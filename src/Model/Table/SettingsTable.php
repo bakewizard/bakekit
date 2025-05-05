@@ -4,24 +4,30 @@ declare(strict_types=1);
 namespace App\Model\Table;
 
 use ArrayObject;
-use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 use Override;
 
 /**
  * Settings Model
  *
- * @method \App\Model\Entity\Setting get($primaryKey, $options = [])
- * @method \App\Model\Entity\Setting newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\Setting get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \App\Model\Entity\Setting newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Setting[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Setting|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Setting saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Setting|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \App\Model\Entity\Setting saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \App\Model\Entity\Setting patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\Setting[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\Setting findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Setting[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Setting findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @extends \Cake\ORM\Table<array{Timestamp: \Cake\ORM\Behavior\TimestampBehavior}>
+ * @method \App\Model\Entity\Setting newEmptyEntity()
+ * @method \App\Model\Entity\Setting[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Setting>|false saveMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Setting[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Setting> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Setting[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Setting>|false deleteMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Setting[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Setting> deleteManyOrFail(iterable $entities, array $options = [])
  */
 class SettingsTable extends Table
 {
@@ -74,12 +80,27 @@ class SettingsTable extends Table
     }
 
     /**
-     * @inheritDoc
+     * beforeMarshal callback.
+     *
+     * Used to convert empty strings to null for nullable fields.
+     *
+     * @param \Cake\Event\EventInterface $event The beforeMarshal event.
+     * @param \ArrayObject $data The data being marshaled.
+     * @param \ArrayObject $options The options for marshalling.
+     * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
+    public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
     {
-        if (!is_null($entity->value) && trim($entity->value) == '') {
-            $entity->value = null;
+        foreach ($data as $key => $value) {
+            $nullable = Hash::get((array)$this->getSchema()->getColumn($key), 'null');
+            if ($nullable !== true) {
+                continue;
+            }
+            if (is_string($value) && $value === '') {
+                $data[$key] = null;
+            }
         }
+
+        $event->setResult($data);
     }
 }

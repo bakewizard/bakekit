@@ -11,6 +11,11 @@ use Migrations\Migrations;
 use ReflectionClass;
 use ReflectionMethod;
 
+/**
+ * @property \App\Model\Table\PluginsTable $Plugins
+ * @property \App\Model\Table\ResourcesTable $Resources
+ * @property \App\Model\Table\SettingsTable $Settings
+ */
 class PluginManager
 {
     use ModelAwareTrait;

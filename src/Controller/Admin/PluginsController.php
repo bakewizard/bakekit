@@ -16,6 +16,12 @@ use Override;
 use Symfony\Component\Filesystem\Filesystem;
 use ZipArchive;
 
+/**
+ * @property \App\Model\Table\PluginsTable $Plugins
+ * @property \Search\Controller\Component\SearchComponent $Search
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
+ */
 class PluginsController extends AppController
 {
     private string $pluginsDir;

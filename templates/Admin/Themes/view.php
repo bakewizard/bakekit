@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $activeTheme
+ * @var array $theme
+ */
+?>
 <div class="card">
     <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-eye me-2"></i><?= $theme['name'] ?></div>

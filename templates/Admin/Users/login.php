@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var array $config
+ */
+?>
 <?php $this->layout = 'login'; ?>
 <div class="login-box" style="width: 25rem;">
     <div class="login-logo">

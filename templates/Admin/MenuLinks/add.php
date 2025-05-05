@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $parentMenuLinks
+ * @var mixed $targets
+ * @var \App\Model\Entity\MenuLink $menuLink
+ */
+?>
 <?= $this->Html->script(['/backend/js/menus'], ['block' => true]) ?>
 
 <?= $this->element('form/link_select_modal') ?>

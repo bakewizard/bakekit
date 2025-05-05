@@ -1,4 +1,9 @@
 <?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $message
+ * @var mixed $url
+ */
 $this->layout = 'error';
 $this->assign('title', $message);
 ?>

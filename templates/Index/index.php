@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ */
+?>
 <?php $this->assign('title', 'Welcome to BakeKit CMS'); ?>
 
 <div class="mb-4 p-3 bg-light">

@@ -14,8 +14,9 @@ use ZipArchive;
 /**
  * Themes Controller
  *
- * @property \App\Model\Table\ThemesTable $Themes
- * @method \App\Model\Entity\Theme[]|\Cake\Collection\CollectionInterface paginate($object = null, array $settings = [])
+ * @property \Search\Controller\Component\SearchComponent $Search
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
  */
 class ThemesController extends AppController
 {

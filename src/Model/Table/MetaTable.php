@@ -16,16 +16,19 @@ use Override;
  * @method \App\Model\Entity\Metum newEmptyEntity()
  * @method \App\Model\Entity\Metum newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Metum[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Metum get($primaryKey, $options = [])
- * @method \App\Model\Entity\Metum findOrCreate($search, ?callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Metum get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \App\Model\Entity\Metum findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @method \App\Model\Entity\Metum patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \App\Model\Entity\Metum[] patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\Metum|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Metum saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Metum[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
- * @method \App\Model\Entity\Metum[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
- * @method \App\Model\Entity\Metum[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
- * @method \App\Model\Entity\Metum[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
+ * @method \App\Model\Entity\Metum|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \App\Model\Entity\Metum saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \App\Model\Entity\Metum[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum>|false saveMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Metum[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Metum[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum>|false deleteMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Metum[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum> deleteManyOrFail(iterable $entities, array $options = [])
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $MetaI18n
+ * @mixin \Cake\ORM\Behavior\TranslateBehavior
+ * @extends \Cake\ORM\Table<array{Translate: \Cake\ORM\Behavior\TranslateBehavior}>
  */
 class MetaTable extends Table
 {

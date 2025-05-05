@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $roles
+ * @var \App\Model\Entity\User $user
+ */
+?>
 <?= $this->Html->script(['/backend/js/users'], ['block' => true]); ?>
 <div class="card card-success card-outline">
     <div class="card-header">

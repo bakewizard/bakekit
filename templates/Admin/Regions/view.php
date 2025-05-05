@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Region $region
+ */
+?>
 <div class="card card-primary card-outline">
     <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-eye me-2"></i><strong><?= h($region->alias) ?></strong> <?= __('blocks') ?></div>

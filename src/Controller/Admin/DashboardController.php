@@ -7,6 +7,11 @@ use App\Lib\PluginManager;
 use Cake\Http\Response;
 use Override;
 
+/**
+ * @property \Search\Controller\Component\SearchComponent $Search
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
+ */
 class DashboardController extends AppController
 {
     /**

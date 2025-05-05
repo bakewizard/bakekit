@@ -13,16 +13,21 @@ use Cake\Utility\Text;
  *
  * @property int $id
  * @property string $alias
- * @property string $title
+ * @property string|null $title
  * @property string|null $description
  * @property int $region_id
- * @property string $cell
+ * @property string|null $cell
  * @property string|null $template
- * @property array|null $params
+ * @property string|null $params
  * @property int|null $position
  * @property bool|null $enabled
  *
  * @property \App\Model\Entity\Region $region
+ * @property string $cell_full_name
+ * @property string|false $cell_plugin
+ * @property string $cell_name
+ * @property string|null $cell_action
+ * @property \Cake\ORM\Entity[] $_i18n
  */
 class Block extends Entity
 {
@@ -90,6 +95,7 @@ class Block extends Entity
      *
      * @param string $alias The alias to set.
      * @return string The processed alias.
+     * @see \App\Model\Entity\Block::$alias
      */
     protected function _setAlias(string $alias): string
     {
@@ -100,6 +106,7 @@ class Block extends Entity
      * Gets the full class name of the cell.
      *
      * @return string The full cell class name, or '' if the 'cell' field is not set.
+     * @see \App\Model\Entity\Block::$cell_full_name
      */
     protected function _getCellFullName(): string
     {
@@ -114,6 +121,7 @@ class Block extends Entity
      * Gets the plugin name of the cell, if any.
      *
      * @return string|false The plugin name, false if no plugin is specified or if the 'cell' field is not set.
+     * @see \App\Model\Entity\Block::$cell_plugin
      */
     protected function _getCellPlugin(): string|false
     {
@@ -130,6 +138,7 @@ class Block extends Entity
      * Gets the short name of the cell.
      *
      * @return string The cell name, or '' if the 'cell' field is not set.
+     * @see \App\Model\Entity\Block::$cell_name
      */
     protected function _getCellName(): string
     {
@@ -148,6 +157,7 @@ class Block extends Entity
      * Gets the action method of the cell. Defaults to 'display'.
      *
      * @return string|null The cell action, or null if the 'cell' field is not set.
+     * @see \App\Model\Entity\Block::$cell_action
      */
     protected function _getCellAction(): ?string
     {

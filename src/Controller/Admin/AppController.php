@@ -39,6 +39,9 @@ use Override;
  * will inherit them.
  *
  * @link http://book.cakephp.org/5/en/controllers.html#the-app-controller
+ * @property \Search\Controller\Component\SearchComponent $Search
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
  */
 class AppController extends Controller
 {

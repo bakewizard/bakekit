@@ -14,19 +14,27 @@ use Override;
 /**
  * MenuLinks Model
  *
- * @property \App\Model\Table\MenusTable|\Cake\ORM\Association\BelongsTo $Menus
- * @property \App\Model\Table\MenuLinksTable|\Cake\ORM\Association\BelongsTo $ParentMenuLinks
- * @property \App\Model\Table\MenuLinksTable|\Cake\ORM\Association\HasMany $ChildMenuLinks
+ * @property \App\Model\Table\MenusTable&\Cake\ORM\Association\BelongsTo $Menus
+ * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\BelongsTo $ParentMenuLinks
+ * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\HasMany $ChildMenuLinks
  * @property |\Cake\ORM\Association\BelongsToMany $I18n
- * @method \App\Model\Entity\MenuLink get($primaryKey, $options = [])
- * @method \App\Model\Entity\MenuLink newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\MenuLink get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \App\Model\Entity\MenuLink newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\MenuLink[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\MenuLink|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\MenuLink saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\MenuLink|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \App\Model\Entity\MenuLink saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \App\Model\Entity\MenuLink patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\MenuLink[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\MenuLink findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\MenuLink[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \App\Model\Entity\MenuLink findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \Cake\ORM\Behavior\TreeBehavior
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $MenuLinksI18n
+ * @method \App\Model\Entity\MenuLink newEmptyEntity()
+ * @method \App\Model\Entity\MenuLink[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink>|false saveMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\MenuLink[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\MenuLink[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink>|false deleteMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\MenuLink[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TranslateBehavior
+ * @extends \Cake\ORM\Table<array{Translate: \Cake\ORM\Behavior\TranslateBehavior, Tree: \Cake\ORM\Behavior\TreeBehavior}>
  */
 class MenuLinksTable extends Table
 {
@@ -140,7 +148,7 @@ class MenuLinksTable extends Table
      * Calls TreeBehavior::recover when we are changing scope
      *
      * @param \Cake\Event\EventInterface $event
-     * @param \Cake\Datasource\EntityInterface $entity
+     * @param \App\Model\Entity\MenuLink $entity
      * @param array $options
      * @return void
      */

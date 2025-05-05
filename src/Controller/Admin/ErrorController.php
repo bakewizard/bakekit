@@ -24,6 +24,10 @@ use Override;
  * Error Handling Controller
  *
  * Controller used by ExceptionRenderer to render error responses.
+ *
+ * @property \Search\Controller\Component\SearchComponent $Search
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
  */
 class ErrorController extends AppController
 {

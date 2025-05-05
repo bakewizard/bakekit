@@ -15,14 +15,21 @@ use Search\Manager;
  * Menus Model
  *
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\HasMany $MenuLinks
- * @method \App\Model\Entity\Menu get($primaryKey, $options = [])
- * @method \App\Model\Entity\Menu newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\Menu get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \App\Model\Entity\Menu newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Menu[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Menu|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Menu saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Menu|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \App\Model\Entity\Menu saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \App\Model\Entity\Menu patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\Menu[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\Menu findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Menu[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Menu findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \App\Model\Entity\Menu newEmptyEntity()
+ * @method \App\Model\Entity\Menu[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Menu>|false saveMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Menu[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Menu> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Menu[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Menu>|false deleteMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Menu[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Menu> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Search\Model\Behavior\SearchBehavior
+ * @extends \Cake\ORM\Table<array{Search: \Search\Model\Behavior\SearchBehavior}>
  */
 class MenusTable extends Table
 {
@@ -40,7 +47,7 @@ class MenusTable extends Table
 
         $this->hasMany('MenuLinks', [
             'foreignKey' => 'menu_id',
-            'order' => [
+            'sort' => [
                 'lft' => 'ASC',
             ],
         ]);
@@ -104,7 +111,7 @@ class MenusTable extends Table
      * Otherwise, the Tree behavior is attached with the appropriate scope.
      *
      * @param \Cake\Event\EventInterface $event The beforeDelete event.
-     * @param \Cake\Datasource\EntityInterface $entity The Menu entity being deleted.
+     * @param \App\Model\Entity\Menu $entity The Menu entity being deleted.
      * @param \ArrayObject $options Array of options passed to the delete operation.
      * @return void
      */

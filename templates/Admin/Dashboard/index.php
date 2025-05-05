@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ */
+?>
 <div class="card">
     <div class="card-body">
         <h3>Welcome to BakeKit CMS!</h3>

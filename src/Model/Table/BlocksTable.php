@@ -19,15 +19,24 @@ use ReflectionClass;
 /**
  * Blocks Model
  *
- * @property \App\Model\Table\RegionsTable|\Cake\ORM\Association\BelongsTo $Regions
- * @method \App\Model\Entity\Block get($primaryKey, $options = [])
- * @method \App\Model\Entity\Block newEntity($data = null, array $options = [])
+ * @property \App\Model\Table\RegionsTable&\Cake\ORM\Association\BelongsTo $Regions
+ * @method \App\Model\Entity\Block get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \App\Model\Entity\Block newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Block[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Block|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Block saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Block|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \App\Model\Entity\Block saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \App\Model\Entity\Block patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\Block[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\Block findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Block[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Block findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $BlocksI18n
+ * @method \App\Model\Entity\Block newEmptyEntity()
+ * @method \App\Model\Entity\Block[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Block>|false saveMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Block[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Block> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Block[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Block>|false deleteMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Block[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Block> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \ADmad\Sequence\Model\Behavior\SequenceBehavior
+ * @mixin \Cake\ORM\Behavior\TranslateBehavior
+ * @extends \Cake\ORM\Table<array{Sequence: \ADmad\Sequence\Model\Behavior\SequenceBehavior, Translate: \Cake\ORM\Behavior\TranslateBehavior}>
  */
 class BlocksTable extends Table
 {
@@ -179,7 +188,7 @@ class BlocksTable extends Table
      * This is done when a new block is created or when the 'cell' field is modified.
      *
      * @param \Cake\Event\EventInterface $event The beforeSave event.
-     * @param \Cake\Datasource\EntityInterface $entity The entity being saved.
+     * @param \App\Model\Entity\Block $entity The entity being saved.
      * @return void
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity): void

@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ */
+?>
 <?php if ($this->Paginator->params()['pageCount'] > 1): ?>
     <div class="card-footer">
         <div class="row">

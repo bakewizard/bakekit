@@ -8,6 +8,9 @@ namespace App\Controller\Admin;
  *
  * @property \App\Model\Table\MetaTable $Meta
  * @method \App\Model\Entity\Metum[] paginate($object = null, array $settings = [])
+ * @property \Search\Controller\Component\SearchComponent $Search
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
  */
 class MetaController extends AppController
 {
@@ -51,7 +54,7 @@ class MetaController extends AppController
      *
      * @param string|null $id Metum id.
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function edit(?string $id = null)
     {

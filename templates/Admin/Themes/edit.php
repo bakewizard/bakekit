@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $theme
+ */
+?>
 <div class="themes form card card-primary">
     <div class="card-header with-border">
         <div class="card-title"><i class="fa-solid fa-edit"></i> <?= __('Edit Theme') ?></div>

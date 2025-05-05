@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ */
+?>
 <div class="float-end">
     <?= $this->Form->button('<i class="fa-solid fa-times-circle"></i> ' . __('Save & Close'), ['class' => 'btn-outline-success', 'escapeTitle' => false]) ?>
     <?php if ($this->request->getParam('action') === 'edit'): ?>

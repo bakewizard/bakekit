@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Region[]|\Cake\Collection\CollectionInterface $regions
+ */
+?>
 <div class="card">
     <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-list me-2"></i><?= __('Regions list') ?></div>

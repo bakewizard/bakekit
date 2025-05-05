@@ -134,7 +134,7 @@ class ComposerManager
     /**
      * Adds/removes psr4 autoload path.
      *
-     * @param string $plugin Plugin name.
+     * @param string $name Plugin name.
      * @param string|null $path
      * @return void
      */

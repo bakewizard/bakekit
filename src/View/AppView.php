@@ -29,6 +29,15 @@ use Override;
  * Your application’s default view class
  *
  * @link https://book.cakephp.org/5/en/views.html#the-app-view
+ * @property \BootstrapUI\View\Helper\FormHelper $Form
+ * @property \BootstrapUI\View\Helper\HtmlHelper $Html
+ * @property \BootstrapUI\View\Helper\PaginatorHelper $Paginator
+ * @property \BootstrapUI\View\Helper\BreadcrumbsHelper $Breadcrumbs
+ * @property \App\View\Helper\AuthHelper $Auth
+ * @property \App\View\Helper\MenuHelper $Menu
+ * @property \App\View\Helper\AdminMenuHelper $AdminMenu
+ * @property \App\View\Helper\MediaHelper $Media
+ * @property \App\View\Helper\SchemaHelper $Schema
  */
 class AppView extends View
 {

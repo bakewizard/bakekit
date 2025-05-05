@@ -13,7 +13,7 @@ class CmsPlugin extends BasePlugin
     /**
      * Application instance
      *
-     * @var \Cake\Core\Application
+     * @var \Cake\Core\PluginApplicationInterface
      */
     protected PluginApplicationInterface $app;
 

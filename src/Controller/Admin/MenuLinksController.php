@@ -13,6 +13,9 @@ use Override;
  *
  * @property \App\Model\Table\MenuLinksTable $MenuLinks
  * @method \App\Model\Entity\MenuLink[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @property \Search\Controller\Component\SearchComponent $Search
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
  */
 class MenuLinksController extends AppController
 {

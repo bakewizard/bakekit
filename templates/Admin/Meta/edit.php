@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var array $config
+ * @var mixed $plugins
+ * @var \App\Model\Entity\Metum $metum
+ */
+?>
 <?= $this->Html->script(['/backend/plugins/tinymce/tinymce.min', '/backend/js/meta'], ['block' => true]) ?>
 <div class="card card-success card-outline">
     <div class="card-header">

@@ -37,6 +37,7 @@ class Region extends Entity
      *
      * @param string $alias The alias value to set.
      * @return string The generated slug.
+     * @see \App\Model\Entity\Region::$alias
      */
     protected function _setAlias(string $alias): string
     {

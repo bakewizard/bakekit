@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $breadcrumbs
+ */
+?>
 <!DOCTYPE html>
 <html>
     <head>

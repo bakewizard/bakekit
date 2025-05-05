@@ -12,6 +12,9 @@ use Cake\Http\Response;
  *
  * @property \App\Model\Table\BlocksTable $Blocks
  * @method \App\Model\Entity\Block[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @property \Search\Controller\Component\SearchComponent $Search
+ * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
+ * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization
  */
 class BlocksController extends AppController
 {

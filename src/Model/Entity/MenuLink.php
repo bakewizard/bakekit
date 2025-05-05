@@ -15,12 +15,13 @@ use Cake\ORM\Entity;
  * @property string|null $icon
  * @property string|null $link
  * @property string|null $target
- * @property int|null $lft
- * @property int|null $rght
+ * @property int $lft
+ * @property int $rght
  *
  * @property \App\Model\Entity\Menu $menu
- * @property \App\Model\Entity\MenuLink $parent_menu_link
+ * @property \App\Model\Entity\MenuLink|null $parent_menu_link
  * @property \App\Model\Entity\MenuLink[] $child_menu_links
+ * @property \Cake\ORM\Entity[] $_i18n
  */
 class MenuLink extends Entity
 {

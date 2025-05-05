@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ */
+?>
 <!-- Cell select modal -->
 <div class="modal fade" id="cell-select-dialog" tabindex="-1" role="dialog" aria-labelledby="cell-select-dialog">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

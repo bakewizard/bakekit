@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $plugins
+ * @var mixed $settings
+ */
+?>
 <?php $this->assign('page', __('Settings')); ?>
 
 <div class="row">

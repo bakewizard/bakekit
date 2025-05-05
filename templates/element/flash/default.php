@@ -1,4 +1,9 @@
 <?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $message
+ * @var array $params
+ */
 $class = 'info';
 if (!empty($params['class'])) {
     $class .= ' ' . $params['class'];

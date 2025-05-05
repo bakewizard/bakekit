@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Plugin[]|\Cake\Collection\CollectionInterface $plugins
+ */
+?>
 <div class="card">
     <div class="card-header">
         <?= $this->Form->create(null, ['align' => 'horizontal', 'type' => 'file', 'url' => ['action' => 'install']]) ?>

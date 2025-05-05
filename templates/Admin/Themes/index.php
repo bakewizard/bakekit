@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $activeTheme
+ * @var mixed $themes
+ */
+?>
 <div class="card card-default">
     <div class="card-header with-border">
         <div class="card-title"><i class="fa-solid fa-list me-2"></i><?= __('Installed themes') ?></div>

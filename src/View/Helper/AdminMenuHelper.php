@@ -8,6 +8,8 @@ use Override;
 
 /**
  * Admin Menu helper
+ *
+ * @property \Cake\View\Helper\HtmlHelper $Html
  */
 class AdminMenuHelper extends MenuHelper
 {

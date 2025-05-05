@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Metum[]|\Cake\Collection\CollectionInterface $meta
+ */
+?>
 <div class="card">
     <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-list me-2"></i><?= __('Meta list') ?></div>

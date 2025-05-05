@@ -1,4 +1,7 @@
 <?php
+/**
+ * @var \App\View\AppView $this
+ */
 $paging = $this->Paginator->params();
 $showOptions = [20, 40, 60];
 $currentLimit = $paging['perPage'] ?? $showOptions[0];

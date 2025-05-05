@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var object $settings
+ * @var \App\Model\Entity\Block $block
+ */
+?>
 <?= $this->Html->script(['/backend/js/menu'], ['block' => true]) ?>
 
 <template id="attribute-item-template">

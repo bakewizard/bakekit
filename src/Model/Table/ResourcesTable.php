@@ -17,17 +17,19 @@ use Override;
  * @method \App\Model\Entity\Resource newEmptyEntity()
  * @method \App\Model\Entity\Resource newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Resource[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Resource get($primaryKey, $options = [])
- * @method \App\Model\Entity\Resource findOrCreate($search, ?callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Resource get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \App\Model\Entity\Resource findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @method \App\Model\Entity\Resource patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \App\Model\Entity\Resource[] patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\Resource|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Resource saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
- * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
- * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
- * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
+ * @method \App\Model\Entity\Resource|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \App\Model\Entity\Resource saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Resource>|false saveMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Resource> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Resource>|false deleteMany(iterable $entities, array $options = [])
+ * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Resource> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TreeBehavior
+ * @property \App\Model\Table\RolesTable&\Cake\ORM\Association\BelongsToMany $Roles
+ * @extends \Cake\ORM\Table<array{Tree: \Cake\ORM\Behavior\TreeBehavior}>
  */
 class ResourcesTable extends Table
 {

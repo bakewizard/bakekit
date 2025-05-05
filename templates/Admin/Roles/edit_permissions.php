@@ -1,3 +1,13 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var mixed $allowed
+ * @var mixed $blocked
+ * @var mixed $inherited
+ * @var mixed $resources
+ * @var \App\Model\Entity\Role $role
+ */
+?>
 <div class="card">
     <div class="card-header with-border">
         <div class="card-title"><i class="fa-solid fa-list me-2"></i><strong><?= $role->name ?></strong> <?= __('permissions') ?></div>

@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ */
+?>
 <ul id="control-sidebar-menu" class="nav sidebar-menu flex-column" role="menu" data-accordion="false">
     <li class="nav-item">
         <a href="<?= $this->Url->build(['plugin' => false, 'controller' => 'Plugins', 'action' => 'index'], ['fullBase' => true]) ?>" class="nav-link">

@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var array $config
+ */
+?>
 <?php $entityLocale = $this->request->getQuery('locale') ?? $config['App']['I18n']['currentLanguage'] ?>
 
 <div class="btn-group">

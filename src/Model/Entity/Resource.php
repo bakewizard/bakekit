@@ -14,9 +14,11 @@ use Cake\ORM\Entity;
  * @property int $lft
  * @property int $rght
  *
- * @property \App\Model\Entity\ParentResource $parent_resource
- * @property \App\Model\Entity\ChildResource[] $child_resources
+ * @property \App\Model\Entity\Resource|null $parent_resource
+ * @property \App\Model\Entity\Resource[] $child_resources
  * @property \App\Model\Entity\Permission[] $permissions
+ * @property \App\Model\Entity\Role[] $roles
+ * @property \App\Model\Entity\Permission $_joinData
  */
 class Resource extends Entity
 {

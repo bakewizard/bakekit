@@ -11,7 +11,7 @@ use Cake\Utility\Inflector;
  *
  * @property int $id
  * @property string $name
- * @property string|null $alias
+ * @property string $alias
  * @property string|null $description
  * @property string|null $parent_plugin
  * @property bool|null $enabled
@@ -43,6 +43,7 @@ class Plugin extends Entity
      *
      * @param string $alias The alias value to set.
      * @return string The generated slug.
+     * @see \App\Model\Entity\Plugin::$alias
      */
     protected function _setAlias(string $alias): string
     {
