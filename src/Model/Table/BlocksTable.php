@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Entity\Block;
 use ArrayObject;
 use Cake\Core\App;
 use Cake\Database\Schema\TableSchemaInterface;
-use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior\Translate\ShadowTableStrategy;
 use Cake\ORM\RulesChecker;
@@ -191,10 +191,10 @@ class BlocksTable extends Table
      * @param \App\Model\Entity\Block $entity The entity being saved.
      * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity): void
+    public function beforeSave(EventInterface $event, Block $entity): void
     {
         if ($entity->isNew() || $entity->isDirty('cell')) {
-            $configClass = App::classname($entity->cellFullName . 'CellConfig', 'Form/Cell', 'Form');
+            $configClass = App::classname($entity->cell_full_name . 'CellConfig', 'Form/Cell', 'Form');
             if ($configClass) {
                 $config = new $configClass();
                 $fields = $config->getSchema()->fields();

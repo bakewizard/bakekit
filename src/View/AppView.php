@@ -106,9 +106,8 @@ class AppView extends View
                 $cell = $this->cell($block->cell, $arguments, $options);
                 $html .= $cell->render(!empty($block->template) ? $block->template : null);
 
-                $cellView = $cell->getView();
-                $css = $cellView->fetch('css');
-                $script = $cellView->fetch('script');
+                $css = $cell->viewBuilder()->getVar('css') ?? '';
+                $script = $cell->viewBuilder()->getVar('script') ?? '';
                 if (!empty($css)) {
                     $this->prepend('css', $css);
                 }

@@ -12,27 +12,24 @@ use Cake\Validation\Validator;
 use Override;
 
 /**
- * MenuLinks Model
- *
  * @property \App\Model\Table\MenusTable&\Cake\ORM\Association\BelongsTo $Menus
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\BelongsTo $ParentMenuLinks
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\HasMany $ChildMenuLinks
- * @property |\Cake\ORM\Association\BelongsToMany $I18n
- * @method \App\Model\Entity\MenuLink get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\MenuLink newEntity(array $data, array $options = [])
- * @method \App\Model\Entity\MenuLink[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\MenuLink|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\MenuLink saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\MenuLink patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\MenuLink[] patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\MenuLink findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @mixin \Cake\ORM\Behavior\TreeBehavior
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $MenuLinksI18n
  * @method \App\Model\Entity\MenuLink newEmptyEntity()
+ * @method \App\Model\Entity\MenuLink newEntity(array $data, array $options = [])
+ * @method \App\Model\Entity\MenuLink[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\MenuLink get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \App\Model\Entity\MenuLink findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \App\Model\Entity\MenuLink patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\MenuLink[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \App\Model\Entity\MenuLink|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \App\Model\Entity\MenuLink saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \App\Model\Entity\MenuLink[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink>|false saveMany(iterable $entities, array $options = [])
  * @method \App\Model\Entity\MenuLink[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink> saveManyOrFail(iterable $entities, array $options = [])
  * @method \App\Model\Entity\MenuLink[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink>|false deleteMany(iterable $entities, array $options = [])
  * @method \App\Model\Entity\MenuLink[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TreeBehavior
  * @mixin \Cake\ORM\Behavior\TranslateBehavior
  * @extends \Cake\ORM\Table<array{Translate: \Cake\ORM\Behavior\TranslateBehavior, Tree: \Cake\ORM\Behavior\TreeBehavior}>
  */
@@ -81,29 +78,29 @@ class MenuLinksTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-                ->nonNegativeInteger('id')
-                ->allowEmptyString('id', null, 'create');
+            ->nonNegativeInteger('id')
+            ->allowEmptyString('id', null, 'create');
 
         $validator
-                ->scalar('title')
-                ->maxLength('title', 255)
-                ->requirePresence('title', 'create')
-                ->notEmptyString('title');
+            ->scalar('title')
+            ->maxLength('title', 255)
+            ->requirePresence('title', 'create')
+            ->notEmptyString('title');
 
         $validator
-                ->scalar('icon')
-                ->maxLength('icon', 100)
-                ->allowEmptyString('icon');
+            ->scalar('icon')
+            ->maxLength('icon', 100)
+            ->allowEmptyString('icon');
 
         $validator
-                ->scalar('link')
-                ->maxLength('link', 255)
-                ->allowEmptyString('link');
+            ->scalar('link')
+            ->maxLength('link', 255)
+            ->allowEmptyString('link');
 
         $validator
-                ->scalar('target')
-                ->maxLength('target', 10)
-                ->allowEmptyString('target');
+            ->scalar('target')
+            ->maxLength('target', 10)
+            ->allowEmptyString('target');
 
         return $validator;
     }
@@ -137,8 +134,8 @@ class MenuLinksTable extends Table
         ];
         if ($this->hasBehavior('Tree')) {
             $this->behaviors()
-                    ->get('Tree')
-                    ->setConfig($settings);
+                ->get('Tree')
+                ->setConfig($settings);
         } else {
             $this->addBehavior('Tree', $settings);
         }

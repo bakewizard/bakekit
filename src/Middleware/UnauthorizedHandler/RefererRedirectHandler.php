@@ -8,6 +8,7 @@ use Authorization\Exception\ForbiddenException;
 use Authorization\Exception\MissingIdentityException;
 use Authorization\Middleware\UnauthorizedHandler\HandlerInterface;
 use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Override;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -54,11 +55,17 @@ class RefererRedirectHandler implements HandlerInterface
 
         $message = $exception instanceof ForbiddenException ? $exception->getResult()->getReason() : $exception->getMessage();
 
-        $request->getFlash()->error($message, ['params' => ['code' => $exception->getCode()]]);
+        if ($request instanceof ServerRequest) {
+            $request->getFlash()->error($message, ['params' => ['code' => $exception->getCode()]]);
 
-        return (new Response())
-                        ->withHeader('Location', $request->referer())
-                        ->withStatus($options['statusCode']);
+            return (new Response())
+                            ->withHeader('Location', $request->referer())
+                            ->withStatus($options['statusCode']);
+        } else {
+            return (new Response())
+            ->withHeader('Location', '/')
+            ->withStatus($options['statusCode']);
+        }
     }
 
     /**

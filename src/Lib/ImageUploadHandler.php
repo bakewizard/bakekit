@@ -17,7 +17,7 @@ use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
 use League\Flysystem\Visibility;
 use Override;
 
-class ImageUploadHandler implements UploadHandlerInterface
+class ImageUploadHandler extends AbstractUploadHandler
 {
     use InstanceConfigTrait;
 

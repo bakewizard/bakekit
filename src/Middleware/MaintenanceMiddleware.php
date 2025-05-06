@@ -117,8 +117,8 @@ class MaintenanceMiddleware implements MiddlewareInterface
                 continue;
             }
             [$ip, $maskBit] = explode('/', $allowIP);
-            $ipLong = ip2long($ip) >> 32 - $maskBit;
-            $selfIpLong = ip2long($clientIp) >> 32 - $maskBit;
+            $ipLong = ip2long($ip) >> 32 - (int)$maskBit;
+            $selfIpLong = ip2long($clientIp) >> 32 - (int)$maskBit;
             if ($selfIpLong === $ipLong) {
                 return true;
             }

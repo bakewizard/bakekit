@@ -3,17 +3,17 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Entity\Resource;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Override;
 
 /**
- * Resources Model
- *
  * @property \App\Model\Table\ResourcesTable&\Cake\ORM\Association\BelongsTo $ParentResources
  * @property \App\Model\Table\ResourcesTable&\Cake\ORM\Association\HasMany $ChildResources
  * @property \App\Model\Table\PermissionsTable&\Cake\ORM\Association\HasMany $Permissions
+ * @property \App\Model\Table\RolesTable&\Cake\ORM\Association\BelongsToMany $Roles
  * @method \App\Model\Entity\Resource newEmptyEntity()
  * @method \App\Model\Entity\Resource newEntity(array $data, array $options = [])
  * @method \App\Model\Entity\Resource[] newEntities(array $data, array $options = [])
@@ -28,7 +28,6 @@ use Override;
  * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Resource>|false deleteMany(iterable $entities, array $options = [])
  * @method \App\Model\Entity\Resource[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Resource> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TreeBehavior
- * @property \App\Model\Table\RolesTable&\Cake\ORM\Association\BelongsToMany $Roles
  * @extends \Cake\ORM\Table<array{Tree: \Cake\ORM\Behavior\TreeBehavior}>
  */
 class ResourcesTable extends Table
@@ -105,9 +104,9 @@ class ResourcesTable extends Table
      *
      * @param string $path The path to resource.
      * @param int $parentId The parent id to use when creating.
-     * @return \Cake\Datasource\EntityInterface
+     * @return \App\Model\Entity\Resource
      */
-    public function createNode(string $path, ?int $parentId = null): object
+    public function createNode(string $path, ?int $parentId = null): Resource
     {
         $node = null;
         $aliases = explode('/', $path);
@@ -129,9 +128,9 @@ class ResourcesTable extends Table
      *
      * @param string $alias Resource alias.
      * @param int $parentId Parent resource id.
-     * @return \Cake\Datasource\EntityInterface|null Node if exists or null.
+     * @return \App\Model\Entity\Resource|null Node if exists or null.
      */
-    public function checkNode(string $alias, ?int $parentId = null): ?object
+    public function checkNode(string $alias, ?int $parentId = null): ?Resource
     {
         $node = $this->find()->where(['alias' => $alias, 'parent_id is' => $parentId])->first();
 

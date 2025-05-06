@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Behavior;
 
-use App\Lib\UploadHandlerInterface;
+use App\Lib\AbstractUploadHandler;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\FactoryLocator;
@@ -19,7 +19,7 @@ use const UPLOAD_ERR_NO_FILE;
  */
 class UploadBehavior extends Behavior
 {
-    private ?UploadHandlerInterface $uploadHandler = null;
+    private ?AbstractUploadHandler $uploadHandler = null;
     private string $tableAlias = 'Files';
 
     /**
@@ -66,6 +66,7 @@ class UploadBehavior extends Behavior
         ]);
 
         if ($this->_config['multiple']) {
+            // @phpstan-ignore-next-line
             $this->_table->hasMany($this->tableAlias, [
                 'targetTable' => $filesTable,
                 'saveStrategy' => 'replace',
@@ -74,6 +75,7 @@ class UploadBehavior extends Behavior
                 'sort' => 'sort_order asc',
             ]);
         } else {
+            // @phpstan-ignore-next-line
             $this->_table->hasMany($this->tableAlias, [
                 'targetTable' => $filesTable,
                 'saveStrategy' => 'replace',
@@ -203,9 +205,9 @@ class UploadBehavior extends Behavior
     /**
      * Returns upload handler
      *
-     * @return \App\Lib\UploadHandlerInterface
+     * @return \App\Lib\AbstractUploadHandler
      */
-    public function getUploadHandler(): UploadHandlerInterface
+    public function getUploadHandler(): AbstractUploadHandler
     {
         return $this->uploadHandler;
     }
@@ -223,7 +225,7 @@ class UploadBehavior extends Behavior
 
         $uploadHandler = new $uploadHandlerClass($config);
 
-        if ($uploadHandler instanceof UploadHandlerInterface) {
+        if ($uploadHandler instanceof AbstractUploadHandler) {
             $this->uploadHandler = $uploadHandler;
         }
     }

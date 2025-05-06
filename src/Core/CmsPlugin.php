@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use App\Application;
 use Cake\Core\BasePlugin;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Routing\RouteBuilder;
@@ -13,9 +14,9 @@ class CmsPlugin extends BasePlugin
     /**
      * Application instance
      *
-     * @var \Cake\Core\PluginApplicationInterface
+     * @var \App\Application
      */
-    protected PluginApplicationInterface $app;
+    protected Application $app;
 
     /**
      * The alias of this plugin
@@ -57,7 +58,7 @@ class CmsPlugin extends BasePlugin
         if (is_file($path)) {
             $return = require $path;
             if (is_callable($return)) {
-                $languages = $this->app->getConfig('I18n.languages');
+                $languages = $this->app->getConfig('App.languages');
                 if ($languages) {
                     foreach ($languages as $i => $lang) {
                         if ($i !== 0) {

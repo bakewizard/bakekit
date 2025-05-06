@@ -311,7 +311,7 @@ class PluginManager
     /**
      * Deletes plugin resources.
      *
-     * @param string Plugin name.
+     * @param string $plugin Plugin name.
      * @return void
      */
     public function deleteResources(string $plugin): void

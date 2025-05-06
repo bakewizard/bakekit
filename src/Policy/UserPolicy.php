@@ -13,12 +13,7 @@ use Override;
 class UserPolicy implements BeforePolicyInterface
 {
     /**
-     * Pre-authorization check
-     *
-     * @param \App\Model\Entity\User|null $identity
-     * @param mixed $resource
-     * @param string $action
-     * @return \Authorization\Policy\ResultInterface|bool|null
+     * @inheritDoc
      */
     #[Override]
     public function before(?IdentityInterface $identity, mixed $resource, string $action): ResultInterface|bool|null
@@ -27,12 +22,14 @@ class UserPolicy implements BeforePolicyInterface
             return true;
         }
 
-        if ($identity->isRoot()) {
-            if ($action === 'delete' && $identity->id == $resource->id) {
-                return new Result(false, __('Root user cannot be deleted.'));
-            }
+        if ($identity instanceof User) {
+            if ($identity->isRoot()) {
+                if ($action === 'delete' && isset($resource->id) && $identity->id == $resource->id) {
+                    return new Result(false, __('Root user cannot be deleted.'));
+                }
 
-            return true;
+                return true;
+            }
         }
 
         return null;
@@ -41,11 +38,11 @@ class UserPolicy implements BeforePolicyInterface
     /**
      * View check
      *
-     * @param \Authorization\IdentityInterface $user
+     * @param \App\Model\Entity\User $user
      * @param \App\Model\Entity\User $currentUser
      * @return \Authorization\Policy\Result|bool
      */
-    public function canView(IdentityInterface $user, User $currentUser): bool|Result
+    public function canView(User $user, User $currentUser): bool|Result
     {
         if ($user->id == $currentUser->id) {
             return new Result(true);
@@ -57,11 +54,11 @@ class UserPolicy implements BeforePolicyInterface
     /**
      * Edit check
      *
-     * @param \Authorization\IdentityInterface $user
+     * @param \App\Model\Entity\User $user
      * @param \App\Model\Entity\User $currentUser
      * @return \Authorization\Policy\Result|bool
      */
-    public function canEdit(IdentityInterface $user, User $currentUser): bool|Result
+    public function canEdit(User $user, User $currentUser): bool|Result
     {
         if ($user->id == $currentUser->id) {
             return new Result(true);
@@ -73,11 +70,11 @@ class UserPolicy implements BeforePolicyInterface
     /**
      * Add check
      *
-     * @param \Authorization\IdentityInterface $user
+     * @param \App\Model\Entity\User $user
      * @param \App\Model\Entity\User $currentUser
      * @return \Authorization\Policy\Result|bool
      */
-    public function canAdd(IdentityInterface $user, User $currentUser): bool|Result
+    public function canAdd(User $user, User $currentUser): bool|Result
     {
         return new Result(false, __('Only Root can create new users.'));
     }
@@ -85,11 +82,11 @@ class UserPolicy implements BeforePolicyInterface
     /**
      * Delete check
      *
-     * @param \Authorization\IdentityInterface $user
+     * @param \App\Model\Entity\User $user
      * @param \App\Model\Entity\User $currentUser
      * @return \Authorization\Policy\Result|bool
      */
-    public function canDelete(IdentityInterface $user, User $currentUser): bool|Result
+    public function canDelete(User $user, User $currentUser): bool|Result
     {
         return new Result(false, __('Only Root can delete other users.'));
     }

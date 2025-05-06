@@ -17,12 +17,7 @@ use Override;
 class RequestPolicy implements RequestPolicyInterface, BeforePolicyInterface
 {
     /**
-     * Pre-authorization check
-     *
-     * @param \App\Model\Entity\User|null $identity
-     * @param mixed $resource
-     * @param string $action
-     * @return \Authorization\Policy\ResultInterface|bool|null
+     * @inheritDoc
      */
     #[Override]
     public function before(?IdentityInterface $identity, mixed $resource, string $action): ResultInterface|bool|null
@@ -31,7 +26,7 @@ class RequestPolicy implements RequestPolicyInterface, BeforePolicyInterface
             return true;
         }
 
-        if ($identity->isRoot()) {
+        if ($identity instanceof User && $identity->isRoot()) {
             return true;
         }
 
@@ -39,20 +34,16 @@ class RequestPolicy implements RequestPolicyInterface, BeforePolicyInterface
     }
 
     /**
-     * Checks if the request can be accessed.
-     *
-     * @param \Authorization\IdentityInterface|null Identity
-     * @param \Cake\Http\ServerRequest $request Server Request
-     * @return bool
+     * @inheritDoc
      */
     #[Override]
     public function canAccess(?IdentityInterface $identity, ServerRequest $request): bool|ResultInterface
     {
-        if ($this->authorize($identity, $request)) {
+        if ($identity && $this->authorize($identity, $request)) {
             return new Result(true);
         }
 
-        return new Result(false, __('User {0} is not allowed to access the resource!', $identity->full_name));
+        return new Result(false, __('User {0} is not allowed to access the resource!', $identity?->full_name ?? 'Guest'));
     }
 
     /**

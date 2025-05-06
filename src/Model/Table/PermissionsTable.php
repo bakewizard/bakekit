@@ -88,12 +88,12 @@ class PermissionsTable extends Table
     /**
      * Allows a role to access a resource
      *
-     * @param int $role
-     * @param int $resource
-     * @param int $value
+     * @param string|int $role
+     * @param string|int $resource
+     * @param string|int $value
      * @return bool
      */
-    public function allow(int $role, int $resource, int $value = 1): bool
+    public function allow(int|string $role, int|string $resource, int|string $value = 1): bool
     {
         $entity = $this->newEntity([
             'role_id' => $role,
@@ -107,11 +107,11 @@ class PermissionsTable extends Table
     /**
      * Denies a role to access a resource
      *
-     * @param int $role
-     * @param int $resource
+     * @param string|int $role
+     * @param string|int $resource
      * @return bool
      */
-    public function deny(int $role, int $resource): bool
+    public function deny(int|string $role, int|string $resource): bool
     {
         return $this->allow($role, $resource, 0);
     }
@@ -119,11 +119,11 @@ class PermissionsTable extends Table
     /**
      * Inherits role permission
      *
-     * @param int $role
-     * @param int $resource
+     * @param string|int $role
+     * @param string|int $resource
      * @return bool
      */
-    public function inherit(int $role, int $resource): bool
+    public function inherit(int|string $role, int|string $resource): bool
     {
         $entity = $this->find()->where(['role_id' => $role, 'resource_id' => $resource])->first();
 
@@ -133,11 +133,11 @@ class PermissionsTable extends Table
     /**
      * Checks if a role can access a resource
      *
-     * @param int $role
-     * @param int $resource
+     * @param string|int $role
+     * @param string|int $resource
      * @return bool
      */
-    public function check(int $role, int $resource): bool
+    public function check(int|string $role, int|string $resource): bool
     {
         $perms = $this->getPermissions($role);
 
@@ -147,10 +147,10 @@ class PermissionsTable extends Table
     /**
      * Receives role permissions
      *
-     * @param int $role
+     * @param string|int $role
      * @return mixed
      */
-    public function getPermissions(int $role): mixed
+    public function getPermissions(int|string $role): mixed
     {
         $permissions = function () use ($role) {
 

@@ -4,17 +4,16 @@ declare(strict_types=1);
 namespace App\Model\Filter;
 
 use Cake\Database\Driver\Mysql;
+use Cake\ORM\Table;
 use Exception;
-use Override;
 use Search\Model\Filter\Base;
 
 class FullTextFilter extends Base
 {
     /**
-     * Default configuration.
-     *
-     * @var array
+     * @inheritDoc
      */
+    // Overrides the parent method to define default configuration
     protected array $_defaultConfig = [
         'mode' => 'OR',
         'matchMode' => 'IN NATURAL LANGUAGE MODE',
@@ -33,13 +32,12 @@ class FullTextFilter extends Base
     ];
 
     /**
-     *  Process a MATCH condition.
+     * Process a MATCH condition.
      *
      * Ex. MATCH(title,body) AGAINST ('some text' IN BOOLEAN MODE)
      *
      * @return bool
      */
-    #[Override]
     public function process(): bool
     {
         $value = $this->value();
@@ -47,19 +45,17 @@ class FullTextFilter extends Base
             return false;
         }
 
-        //ensure database engine is MySQL
-        if (!$this->manager()->getRepository()->getConnection()->getDriver() instanceof Mysql) {
-            throw new Exception('Only MySQL is supported');
-        }
+        $repository = $this->getRepository();
+        $this->ensureMysql($repository);
 
-        $match = implode(',', $this->getFields());
+        $match = implode(',', $this->getFields($repository));
         $matchMode = $this->getConfig('matchMode');
 
-        if (!in_array($matchMode, $this->_validMatchModes)) {
+        if (!in_array($matchMode, $this->_validMatchModes, true)) {
             $matchMode = $this->_validMatchModes[0];
         }
 
-        $condition = "MATCH({$match}) AGAINST ('{$this->filter($value)}' {$matchMode})";
+        $condition = "MATCH({$match}) AGAINST ('{$this->filter($value,$matchMode)}' {$matchMode})";
 
         $this->getQuery()->andWhere([$this->getConfig('mode') => [$condition]]);
 
@@ -67,41 +63,77 @@ class FullTextFilter extends Base
     }
 
     /**
+     * Gets the repository instance.
+     *
+     * @return \Cake\ORM\Table|null
+     */
+    private function getRepository(): ?Table
+    {
+        $repository = $this->manager()->getRepository();
+
+        return $repository instanceof Table ? $repository : null;
+    }
+
+    /**
+     * Ensures the database connection is MySQL.
+     *
+     * @param \Cake\ORM\Table|null $repository The repository instance.
+     * @return void
+     * @throws \Exception If the database engine is not MySQL.
+     */
+    private function ensureMysql(?Table $repository): void
+    {
+        if ($repository && !$repository->getConnection()->getDriver() instanceof Mysql) {
+            throw new Exception('Only MySQL is supported for full-text search.');
+        }
+    }
+
+    /**
      * Gets the list of fields to use in the MATCH clause, with optional translation.
      *
+     * @param \Cake\ORM\Table|null $repository The repository instance.
      * @return array List of field names.
      */
-    private function getFields(): array
+    private function getFields(?Table $repository): array
     {
         $fields = $this->getConfig('fields');
-        if (!$this->getConfig('aliasField')) {
+        $aliasField = $this->getConfig('aliasField');
+
+        if (!$aliasField || !$repository) {
             return $fields;
         }
 
-        $repository = $this->manager()->getRepository();
+        if ($repository->hasBehavior('Translate')) {
+            /** @var \Cake\ORM\Behavior\TranslateBehavior $translateBehavior */
+            $translateBehavior = $repository->getBehavior('Translate');
+            $translatedFields = [];
+            foreach ($fields as $field) {
+                $translatedFields[] = $translateBehavior->translationField($field);
+            }
 
-        $return = [];
-        foreach ($fields as $field) {
-            $return[] = $repository->translationField($field);
+            return $translatedFields;
         }
 
-        return $return;
+        return $fields;
     }
 
     /**
      * Prepares the search string by cleaning and appending wildcard suffixes for BOOLEAN mode.
      *
      * @param string $text Input text.
+     * @param string $matchMode The current match mode.
      * @return string Filtered fulltext search query string.
      */
-    private function filter(string $text): string
+    private function filter(string $text, string $matchMode): string
     {
         $words = explode(' ', preg_replace('/[^\p{L}\p{N}\s\-]/u', '', $text));
-        foreach ($words as $i => &$word) {
-            if (!empty($word)) {
-                $words[$i] = $word . '*';
-            } else {
-                unset($words[$i]);
+        if ($matchMode === 'IN BOOLEAN MODE') {
+            foreach ($words as $i => &$word) {
+                if (!empty($word) && !str_ends_with($word, '*')) {
+                    $words[$i] = $word . '*';
+                } elseif (empty($word)) {
+                    unset($words[$i]);
+                }
             }
         }
 

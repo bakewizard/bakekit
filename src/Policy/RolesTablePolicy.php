@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Policy;
 
+use App\Model\Entity\User;
 use Authorization\IdentityInterface;
 use Authorization\Policy\BeforePolicyInterface;
 use Authorization\Policy\Result;
@@ -13,12 +14,7 @@ use Override;
 class RolesTablePolicy implements BeforePolicyInterface
 {
     /**
-     * Pre-authorization check
-     *
-     * @param \App\Model\Entity\User|null $identity
-     * @param mixed $resource
-     * @param string $action
-     * @return \Authorization\Policy\ResultInterface|bool|null
+     * @inheritDoc
      */
     #[Override]
     public function before(?IdentityInterface $identity, mixed $resource, string $action): ResultInterface|bool|null
@@ -27,7 +23,7 @@ class RolesTablePolicy implements BeforePolicyInterface
             return true;
         }
 
-        if ($identity->isRoot()) {
+        if ($identity instanceof User && $identity->isRoot()) {
             return true;
         }
 
@@ -37,7 +33,7 @@ class RolesTablePolicy implements BeforePolicyInterface
     /**
      * Checks if user can view roles list
      *
-     * @param \Authorization\IdentityInterfac $identity
+     * @param \Authorization\IdentityInterface $identity
      * @param \Cake\ORM\Query\SelectQuery $query
      * @return \Authorization\Policy\Result|bool
      */
