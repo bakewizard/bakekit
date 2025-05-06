@@ -128,7 +128,7 @@ class ImageUploadHandler extends AbstractUploadHandler
 
         if (!empty($this->_config['watermark']['image'])) {
             $watermark = $this->createWatermark($width, $height);
-            $position = $this->getWatermarkPosition($width, $height, $watermark->getSize());
+            $position = $this->getWatermarkPosition($width, $height, $watermark->getSize()->getWidth(), $watermark->getSize()->getHeight());
             $background->paste($watermark, $position);
         }
 
@@ -165,25 +165,24 @@ class ImageUploadHandler extends AbstractUploadHandler
      *
      * @param int $width Width of the base image.
      * @param int $height Height of the base image.
-     * @param \Imagine\Image\Box $watermarkSize Watermark size.
+     * @param int $wmWidth Width of the watermark.
+     * @param int $wmHeight Height of the watermark.
      * @return \Imagine\Image\Point Position of the watermark.
      */
-    private function getWatermarkPosition(int $width, int $height, Box $watermarkSize): Point
+    private function getWatermarkPosition(int $width, int $height, int $wmWidth, int $wmHeight): Point
     {
         $pos = (int)($this->_config['watermark']['position'] ?? 9);
-        $w = $watermarkSize->getWidth();
-        $h = $watermarkSize->getHeight();
 
         return match ($pos) {
             1 => new Point(0, 0), // top-left
-            2 => new Point(($width - $w) / 2, 0), // top-center
-            3 => new Point($width - $w, 0), // top-right
-            4 => new Point(0, ($height - $h) / 2), // middle-left
-            5 => new Point(($width - $w) / 2, ($height - $h) / 2), // middle-center
-            6 => new Point($width - $w, ($height - $h) / 2), // middle-right
-            7 => new Point(0, $height - $h), // bottom-left
-            8 => new Point(($width - $w) / 2, $height - $h), // bottom-center
-            default => new Point($width - $w, $height - $h), // bottom-right
+            2 => new Point(($width - $wmWidth) / 2, 0), // top-center
+            3 => new Point($width - $wmWidth, 0), // top-right
+            4 => new Point(0, ($height - $wmHeight) / 2), // middle-left
+            5 => new Point(($width - $wmWidth) / 2, ($height - $wmHeight) / 2), // middle-center
+            6 => new Point($width - $wmWidth, ($height - $wmHeight) / 2), // middle-right
+            7 => new Point(0, $height - $wmHeight), // bottom-left
+            8 => new Point(($width - $wmWidth) / 2, $height - $wmHeight), // bottom-center
+            default => new Point($width - $wmWidth, $height - $wmHeight), // bottom-right
         };
     }
 }

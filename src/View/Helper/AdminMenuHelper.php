@@ -14,9 +14,7 @@ use Override;
 class AdminMenuHelper extends MenuHelper
 {
     /**
-     * Default configuration.
-     *
-     * @var array
+     * @inheritDoc
      */
     protected array $_defaultConfig = [
         'container' => [

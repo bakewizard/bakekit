@@ -119,52 +119,28 @@ class AppController extends Controller
     {
         if ($this->request->is('ajax')) {
             $this->viewBuilder()->setClassName('Ajax');
-        } else {
-            $this->viewBuilder()->setLayout('admin');
 
-            $plugin = $this->request->getParam('plugin');
-            $controller = $this->request->getParam('controller');
-            $action = $this->request->getParam('action');
-
-            $params = Router::parseRequest(new ServerRequest(['url' => $this->referer()]));
-
-            if (isset($plugin) && $plugin !== 'Pages' && $controller !== 'Dashboard') {
-                $this->addCrumb(
-                    preg_replace('/([A-Z])/', ' ' . '$1', $plugin),
-                    ['plugin' => $plugin, 'controller' => 'Dashboard', 'action' => 'index'],
-                );
-            }
-
-            if ($params['action'] === 'view' && !in_array($action, ['view', 'index'])) {
-                $this->addCrumb(
-                    preg_replace('/([A-Z])/', ' ' . '$1', $params['controller']),
-                    $params['action'] != 'index'
-                        ? ['plugin' => $params['plugin'], 'controller' => $params['controller'], 'action' => 'index']
-                        : null,
-                );
-                $this->addCrumb(
-                    preg_replace('/([A-Z])/', ' ' . '$1', $controller),
-                    [
-                        'plugin' => $plugin,
-                        'controller' => $params['controller'],
-                        'action' => $params['action'],
-                        $params['pass'][0],
-                    ],
-                );
-            } elseif ($action !== 'index') {
-                $this->addCrumb(preg_replace('/([A-Z])/', ' ' . '$1', $controller), ['plugin' => $plugin, 'controller' => $controller, 'action' => 'index']);
-            }
-
-            $this->set('breadcrumbs', $this->_breadcrumbs);
+            return;
         }
+
+        $this->viewBuilder()->setLayout('admin');
+
+        $plugin = $this->request->getParam('plugin');
+        $controller = $this->request->getParam('controller');
+        $action = $this->request->getParam('action');
+
+        $this->addPluginBreadcrumb($plugin);
+        $this->addControllerBreadcrumb($plugin, $controller, $action);
+
+        $this->set('breadcrumbs', $this->_breadcrumbs);
     }
 
     /**
      * Deletes a list of records
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
-    public function deleteMany()
+    public function deleteMany(): ?Response
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -199,9 +175,9 @@ class AppController extends Controller
      * Deletes loaded file
      *
      * @param string|null $id
-     * @return void
+     * @return \Cake\Http\Response|null
      */
-    public function deleteFiles(?string $id = null)
+    public function deleteFiles(?string $id = null): ?Response
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -240,9 +216,9 @@ class AppController extends Controller
     {
         $visibility = PortableVisibilityConverter::fromArray(
             [
-                    'file' => ['public' => 0640, 'private' => 0600,],
-                    'dir' => ['public' => 0750, 'private' => 0700,],
-                ],
+                'file' => ['public' => 0640, 'private' => 0600,],
+                'dir' => ['public' => 0750, 'private' => 0700,],
+            ],
             Visibility::PUBLIC,
         );
 
@@ -263,9 +239,66 @@ class AppController extends Controller
     }
 
     /**
+     * Adds a breadcrumb for the plugin, if applicable.
+     *
+     * @param string|null $plugin The name of the plugin.
+     * @return void
+     */
+    protected function addPluginBreadcrumb(?string $plugin): void
+    {
+        if ($plugin !== null && $plugin !== 'Pages' && $this->request->getParam('controller') !== 'Dashboard') {
+            $this->addCrumb(
+                preg_replace('/([A-Z])/', ' $1', $plugin),
+                ['plugin' => $plugin, 'controller' => 'Dashboard', 'action' => 'index'],
+            );
+        }
+    }
+
+    /**
+     * Adds breadcrumbs based on the controller and action.
+     *
+     * @param string|null $plugin     The name of the plugin.
+     * @param string      $controller The name of the controller.
+     * @param string      $action     The name of the current action.
+     * @return void
+     */
+    protected function addControllerBreadcrumb(?string $plugin, string $controller, string $action): void
+    {
+        $referer = $this->request->referer();
+        if ($referer) {
+            $refererParams = Router::parseRequest(new ServerRequest(['url' => $referer]));
+
+            if ($refererParams['action'] === 'view' && !in_array($action, ['view', 'index'])) {
+                $this->addCrumb(
+                    preg_replace('/([A-Z])/', ' $1', $refererParams['controller']),
+                    ['plugin' => $refererParams['plugin'], 'controller' => $refererParams['controller'], 'action' => 'index'],
+                );
+                $this->addCrumb(
+                    preg_replace('/([A-Z])/', ' $1', $controller),
+                    [
+                        'plugin' => $plugin,
+                        'controller' => $refererParams['controller'],
+                        'action' => $refererParams['action'],
+                        $refererParams['pass'][0] ?? null,
+                    ],
+                );
+
+                return;
+            }
+        }
+
+        if ($action !== 'index') {
+            $this->addCrumb(
+                preg_replace('/([A-Z])/', ' $1', $controller),
+                ['plugin' => $plugin, 'controller' => $controller, 'action' => 'index'],
+            );
+        }
+    }
+
+    /**
      * Handles configuration form
      *
-     * @return \Cake\Http\Response|null
+     * @return \Cake\Http\Response|null|void
      */
     protected function settings()
     {

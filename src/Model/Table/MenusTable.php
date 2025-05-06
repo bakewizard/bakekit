@@ -58,7 +58,10 @@ class MenusTable extends Table
      */
     public function searchManager(): Manager
     {
-        $searchManager = $this->behaviors()->Search->searchManager();
+        /** @var \Search\Model\Behavior\SearchBehavior $search */
+        $search = $this->getBehavior('Search');
+        $searchManager = $search->searchManager();
+
         $searchManager
                 ->useCollection('backend')
                 ->value('prefix', ['filterEmpty' => true])

@@ -25,9 +25,7 @@ class MenuHelper extends Helper
     public array $helpers = ['Html'];
 
     /**
-     * Default configuration.
-     *
-     * @var array
+     * @inheritDoc
      */
     protected array $_defaultConfig = [
         'container' => [

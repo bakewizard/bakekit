@@ -41,7 +41,7 @@ class DashboardController extends AppController
      *
      * Displays/Sets the Cms settings
      *
-     * @return \Cake\Http\Response|null
+     * @return \Cake\Http\Response|null|void
      */
     #[Override]
     public function settings()

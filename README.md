@@ -1,4 +1,10 @@
-# BakeKit
+# BakeKit CMS
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/bakewizard/bakekit/blob/develop/LICENSE)
+[![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-blue)](https://php.net)
+[![GitHub release](https://img.shields.io/github/v/release/bakewizard/bakekit?label=stable&sort=semver)](https://github.com/bakewizard/bakekit/releases)
+[![PHPStan](https://img.shields.io/badge/PHPStan-level%205-brightgreen)](https://phpstan.org/)
+> Currently passing PHPStan at level 6 – aiming for level 8 ✅
 
 BakeKit is a fully-featured CMS foundation built with [CakePHP 5](https://cakephp.org/). Designed for developers who want to rapidly build web applications without reinventing the wheel, BakeKit offers everything a modern CMS should — including authentication, authorization, user roles, menus, widgets, settings, plugins, themes, and more — right out of the oven.
 

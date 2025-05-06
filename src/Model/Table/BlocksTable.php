@@ -206,6 +206,7 @@ class BlocksTable extends Table
                         $data[$fieldName] = $fieldAttrs['default'];
                     }
                 }
+                // @phpstan-ignore-next-line
                 $entity->params = empty($data) ? null : $data;
             } else {
                 $entity->params = null;

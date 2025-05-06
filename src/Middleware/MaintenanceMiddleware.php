@@ -5,6 +5,7 @@ namespace App\Middleware;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
 use Cake\Utility\Inflector;
 use Cake\View\View;
@@ -58,7 +59,13 @@ class MaintenanceMiddleware implements MiddlewareInterface
     #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->_config['mode'] || $this->isIpAllowed($request)) {
+        $isMaintenanceMode = $this->_config['mode'] ?? false;
+
+        if (!$isMaintenanceMode) {
+            return $handler->handle($request);
+        }
+
+        if ($request instanceof ServerRequest && $this->isIpAllowed($request)) {
             return $handler->handle($request);
         }
 
@@ -101,7 +108,7 @@ class MaintenanceMiddleware implements MiddlewareInterface
      * @param \Cake\Http\ServerRequest $request
      * @return bool
      */
-    private function isIpAllowed(ServerRequestInterface $request): bool
+    private function isIpAllowed(ServerRequest $request): bool
     {
         $clientIp = $request->clientIp();
         $ipAddressList = $this->_config['allowedIps'];

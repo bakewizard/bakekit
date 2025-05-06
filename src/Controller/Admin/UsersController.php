@@ -34,7 +34,7 @@ class UsersController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|null
+     * @return \Cake\Http\Response|null|void Renders the index view.
      */
     public function index()
     {
@@ -49,7 +49,7 @@ class UsersController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -80,7 +80,7 @@ class UsersController extends AppController
      * Edit method
      *
      * @param string|null $id User id.
-     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit(?string $id = null)
@@ -132,7 +132,7 @@ class UsersController extends AppController
     /**
      * Login action.
      *
-     * @return \Cake\Http\Response|null Redirects the user to the dashboard upon successful login.
+     * @return \Cake\Http\Response|null|void Redirects the user to the dashboard upon successful login.
      */
     public function login()
     {
@@ -140,7 +140,7 @@ class UsersController extends AppController
 
         $result = $this->Authentication->getResult();
 
-        if ($result->isValid()) {
+        if ($result && $result->isValid()) {
             $plugin = $this->getConfig('Cms.defaultDashboard', 'System');
             $defaultDashboard = ['plugin' => $plugin == 'System' ? null : $plugin, 'prefix' => 'Admin', 'controller' => 'Dashboard'];
             $target = $this->Authentication->getLoginRedirect() ?? $defaultDashboard;
@@ -148,7 +148,7 @@ class UsersController extends AppController
             return $this->redirect($target);
         }
 
-        if ($this->request->is('post') && !$result->isValid()) {
+        if ($this->request->is('post')) {
             $this->Flash->error(__('User name or password is incorrect'));
         }
     }
@@ -156,7 +156,7 @@ class UsersController extends AppController
     /**
      * Logout action.
      *
-     * @return \Cake\Http\Response|null Redirects the user to the login page after logout.
+     * @return \Cake\Http\Response|null|void Redirects the user to the login page after logout.
      */
     public function logout()
     {

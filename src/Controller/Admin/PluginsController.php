@@ -8,6 +8,7 @@ use App\Lib\PluginManager;
 use Cake\Cache\Cache;
 use Cake\Core\App;
 use Cake\Event\EventInterface;
+use Cake\Http\Response;
 use Cake\Utility\Inflector;
 use DirectoryIterator;
 use Exception;
@@ -94,9 +95,9 @@ class PluginsController extends AppController
      *
      * @param string|null $id Plugin id.
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit(?string $id = null)
+    public function edit(?string $id = null): ?Response
     {
         $plugin = $this->Plugins->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -104,12 +105,14 @@ class PluginsController extends AppController
             if ($this->Plugins->save($plugin)) {
                 $this->Flash->success(__('The plugin has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The plugin could not be saved. Please, try again.'));
         }
 
         $this->set(compact('plugin'));
+
+        return null;
     }
 
     /**
@@ -249,9 +252,9 @@ class PluginsController extends AppController
      * Deactivates a plugin
      *
      * @param string|int $id Plugin id
-     * @return void
+     * @return \Cake\Http\Response|null
      */
-    public function deactivate(string|int $id)
+    public function deactivate(string|int $id): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
 

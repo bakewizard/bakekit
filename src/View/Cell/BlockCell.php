@@ -21,10 +21,7 @@ use ReflectionMethod;
 class BlockCell extends Cell
 {
     /**
-     * List of valid options that can be passed into this
-     * cell's constructor.
-     *
-     * @var array
+     * @inheritDoc
      */
     protected array $_validCellOptions = ['block', 'parentView'];
 

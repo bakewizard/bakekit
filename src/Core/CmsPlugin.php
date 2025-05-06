@@ -16,7 +16,7 @@ class CmsPlugin extends BasePlugin
      *
      * @var \App\Application
      */
-    protected Application $app;
+    protected ?Application $app;
 
     /**
      * The alias of this plugin
@@ -43,7 +43,7 @@ class CmsPlugin extends BasePlugin
     #[Override]
     public function bootstrap(PluginApplicationInterface $app): void
     {
-        $this->app = $app;
+        $this->app = $app instanceof Application ? $app : null;
 
         parent::bootstrap($app);
     }

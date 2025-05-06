@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Core\Configure\Engine;
 
 use Cake\Core\Configure\ConfigEngineInterface;
-use Cake\Datasource\FactoryLocator;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Override;
 
@@ -39,7 +39,7 @@ class DbConfig implements ConfigEngineInterface
             $table = self::TABLE;
         }
         if (is_string($table)) {
-            $table = FactoryLocator::get('Table')->get($table);
+            $table = TableRegistry::getTableLocator()->get($table);
         }
 
         $this->_cacheConfig = $cacheConfig;
@@ -63,15 +63,15 @@ class DbConfig implements ConfigEngineInterface
             valueField: 'value',
             groupField: 'namespace',
         )
-                ->formatResults(function ($results) {
-                    $resultSet = $results->toArray();
-                    if (isset($resultSet[''])) {
-                        $resultSet += $resultSet[''];
-                        unset($resultSet['']);
-                    }
+            ->formatResults(function ($results) {
+                $resultSet = $results->toArray();
+                if (isset($resultSet[''])) {
+                    $resultSet += $resultSet[''];
+                    unset($resultSet['']);
+                }
 
-                    return $resultSet;
-                });
+                return $resultSet;
+            });
 
         if ($key !== '*') {
             $query->where([
@@ -114,14 +114,16 @@ class DbConfig implements ConfigEngineInterface
         $table = $this->_table;
 
         $entity = $table->find()->where([
-                    $table->aliasField('namespace') => $namespace,
-                    $table->aliasField('path') => $path,
-                ])->first();
+            $table->aliasField('namespace') => $namespace,
+            $table->aliasField('path') => $path,
+        ])->first();
 
         if (empty($entity)) {
             $entity = $table->newEmptyEntity();
         }
 
-        return $table->patchEntity($entity, compact('namespace', 'path', 'value')) && $table->save($entity);
+        $entity = $table->patchEntity($entity, compact('namespace', 'path', 'value'));
+
+        return $table->save($entity) !== false;
     }
 }

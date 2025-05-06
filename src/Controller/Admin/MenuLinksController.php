@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 use App\Lib\PluginManager;
 use Cake\Cache\Cache;
 use Cake\Event\EventInterface;
+use Cake\Http\Response;
 use Override;
 
 /**
@@ -36,12 +37,12 @@ class MenuLinksController extends AppController
      * Add method
      *
      * @param string|null $id Menu id.
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
     public function add(?string $id = null)
     {
         $menuLink = $this->MenuLinks->newEmptyEntity();
-        $menuLink->menu_id = $id;
+        $menuLink->menu_id = $id !== null ? (int)$id : null;
         if ($this->request->is('post')) {
             $menuLink = $this->MenuLinks->patchEntity($menuLink, $this->request->getData());
             if ($this->MenuLinks->save($menuLink)) {
@@ -61,8 +62,8 @@ class MenuLinksController extends AppController
      * Edit method
      *
      * @param string|null $id Menu Link id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \App\Controller\Admin\Cake\Http\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit(?string $id = null)
     {
@@ -106,7 +107,7 @@ class MenuLinksController extends AppController
      * Moves item up
      *
      * @param string $id
-     * @return void
+     * @return \Cake\Http\Response|null
      */
     public function moveUp(?string $id = null)
     {
@@ -126,9 +127,9 @@ class MenuLinksController extends AppController
      * Moves item down
      *
      * @param string $id
-     * @return void
+     * @return \Cake\Http\Response|null
      */
-    public function moveDown(?string $id = null)
+    public function moveDown(?string $id = null): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
         $menuLink = $this->MenuLinks->get($id);

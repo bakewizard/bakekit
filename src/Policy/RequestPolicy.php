@@ -39,11 +39,11 @@ class RequestPolicy implements RequestPolicyInterface, BeforePolicyInterface
     #[Override]
     public function canAccess(?IdentityInterface $identity, ServerRequest $request): bool|ResultInterface
     {
-        if ($identity && $this->authorize($identity, $request)) {
+        if ($identity instanceof User && $this->authorize($identity, $request)) {
             return new Result(true);
         }
 
-        return new Result(false, __('User {0} is not allowed to access the resource!', $identity?->full_name ?? 'Guest'));
+        return new Result(false, __('User {0} is not allowed to access the resource!', $identity->full_name ?? 'Guest'));
     }
 
     /**

@@ -22,12 +22,12 @@ class BlocksController extends AppController
      * Add method
      *
      * @param string|null $id Region id.
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
     public function add(?string $id = null)
     {
         $block = $this->Blocks->newEmptyEntity();
-        $block->region_id = $id;
+        $block->region_id = (int)$id;
         if ($this->request->is('post')) {
             $block = $this->Blocks->patchEntity($block, $this->request->getData());
             if ($this->Blocks->save($block)) {
@@ -45,7 +45,7 @@ class BlocksController extends AppController
      * Edit method
      *
      * @param string|null $id Block id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
+     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function edit(?string $id = null)
@@ -88,9 +88,9 @@ class BlocksController extends AppController
      * Moves block up
      *
      * @param string $id
-     * @return void
+     * @return \Cake\Http\Response|null
      */
-    public function moveUp(?string $id = null)
+    public function moveUp(?string $id = null): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
         $block = $this->Blocks->get($id);
@@ -108,9 +108,9 @@ class BlocksController extends AppController
      * Moves block down
      *
      * @param string $id
-     * @return void
+     * @return \Cake\Http\Response|null
      */
-    public function moveDown(?string $id = null)
+    public function moveDown(?string $id = null): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
         $block = $this->Blocks->get($id);
@@ -133,7 +133,7 @@ class BlocksController extends AppController
     public function config(string $id): ?Response
     {
         $block = $this->Blocks->get($id);
-        $pluginAndName = $block->cellPlugin ? "{$block->cellPlugin}.{$block->cellName}" : $block->cellName;
+        $pluginAndName = $block->cell_plugin ? "{$block->cell_plugin}.{$block->cell_name}" : $block->cell_name;
         $cellSettingsFormClass = App::classname($pluginAndName . 'CellConfig', 'Form/Cell', 'Form');
         $settings = new $cellSettingsFormClass();
         if ($this->request->is('post')) {
@@ -163,7 +163,7 @@ class BlocksController extends AppController
 
         $this->setName('CellConfig');
 
-        $this->render("{$pluginAndName}/{$block->cellAction}");
+        $this->render("{$pluginAndName}/{$block->cell_action}");
 
         return null;
     }

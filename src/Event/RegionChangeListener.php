@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace App\Event;
 
 use Cake\Cache\Cache;
-use Cake\Datasource\FactoryLocator;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\I18n\I18n;
 use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\TableRegistry;
 use Override;
 
 class RegionChangeListener implements EventListenerInterface
@@ -38,7 +38,7 @@ class RegionChangeListener implements EventListenerInterface
      */
     public function createCache(EventInterface $event): void
     {
-        $regions = FactoryLocator::get('Table')->get('Regions');
+        $regions = TableRegistry::getTableLocator()->get('Regions');
 
         $table = $event->getSubject();
 

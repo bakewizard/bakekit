@@ -46,6 +46,7 @@ use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\TableLocator;
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\Routing\Route\DashedRoute;
@@ -307,7 +308,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      */
     private function loadPlugins(): void
     {
-        $table = FactoryLocator::get('Table')->get('Plugins');
+        $table = TableRegistry::getTableLocator()->get('Plugins');
         $plugins = $table->find()->where(['enabled' => true])->cache('plugins', 'cms')->toArray();
         foreach ($plugins as $plugin) {
             $this->addPlugin($plugin->name, ['alias' => $plugin->alias]);

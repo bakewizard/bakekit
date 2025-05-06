@@ -23,9 +23,7 @@ class UploadBehavior extends Behavior
     private string $tableAlias = 'Files';
 
     /**
-     * Default configuration.
-     *
-     * @var array
+     * @inheritDoc
      */
     protected array $_defaultConfig = [
         'maxFiles' => 10,
@@ -185,7 +183,7 @@ class UploadBehavior extends Behavior
      */
     public function afterDelete(EventInterface $event, EntityInterface $entity): void
     {
-        $this->uploadHandler->remove($entity->files);
+        $this->uploadHandler->remove($entity->get('files'));
     }
 
     /**
