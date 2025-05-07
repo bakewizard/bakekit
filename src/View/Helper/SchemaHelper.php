@@ -17,7 +17,7 @@ class SchemaHelper extends Helper
     /**
      * Array to hold the structured data.
      *
-     * @var array
+     * @var array<int, array<string, mixed>>
      */
     protected array $_data = [];
 
@@ -47,8 +47,7 @@ class SchemaHelper extends Helper
      *
      * Takes an array of breadcrumb items and formats them for JSON-LD.
      *
-     * @param array $breadcrumbs An array of breadcrumb items, where each item is an
-     * associative array with 'title' and 'url' keys.
+     * @param array<int, array{title: string, url: string}> $breadcrumbs An array of breadcrumb items.
      * @return self
      */
     public function addBreadcrumbs(array $breadcrumbs): self

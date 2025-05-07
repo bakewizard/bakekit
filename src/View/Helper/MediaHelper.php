@@ -13,6 +13,9 @@ use Cake\View\Helper;
  */
 class MediaHelper extends Helper
 {
+    /**
+     * @var array<string>
+     */
     protected array $helpers = ['Url'];
 
     /**

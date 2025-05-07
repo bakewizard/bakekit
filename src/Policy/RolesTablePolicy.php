@@ -33,8 +33,8 @@ class RolesTablePolicy implements BeforePolicyInterface
     /**
      * Checks if user can view roles list
      *
-     * @param \Authorization\IdentityInterface $identity
-     * @param \Cake\ORM\Query\SelectQuery $query
+     * @param \App\Model\Entity\User $identity The user identity.
+     * @param \Cake\ORM\Query\SelectQuery<\App\Model\Entity\Role> $query The query for roles.
      * @return \Authorization\Policy\Result|bool
      */
     public function canIndex(IdentityInterface $identity, SelectQuery $query): bool|Result

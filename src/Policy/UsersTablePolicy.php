@@ -11,9 +11,9 @@ class UsersTablePolicy
     /**
      * Restricts index method
      *
-     * @param \App\Model\Entity\User $user
-     * @param \Cake\ORM\Query\SelectQuery $query
-     * @return \Cake\ORM\Query\SelectQuery
+     * @param \App\Model\Entity\User $user The user identity.
+     * @param \Cake\ORM\Query\SelectQuery<\App\Model\Entity\User> $query The query to modify.
+     * @return \Cake\ORM\Query\SelectQuery<\App\Model\Entity\User> The modified query.
      */
     public function scopeIndex(IdentityInterface $user, SelectQuery $query): SelectQuery
     {

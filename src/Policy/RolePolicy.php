@@ -44,7 +44,7 @@ class RolePolicy implements BeforePolicyInterface
      * is not explicitly defined in the policy. It denies access by default with a generic message.
      *
      * @param string $name
-     * @param array $arguments
+     * @param array<string, mixed> $arguments
      * @return \Authorization\Policy\Result
      */
     public function __call(string $name, array $arguments): Result

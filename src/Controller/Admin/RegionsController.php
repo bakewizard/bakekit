@@ -7,7 +7,7 @@ namespace App\Controller\Admin;
  * Regions Controller
  *
  * @property \App\Model\Table\RegionsTable $Regions
- * @method \App\Model\Entity\Region[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Region> paginate(\Cake\Datasource\RepositoryInterface|\Cake\Datasource\QueryInterface|string|null $object = null, array $settings = [])
+ * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Region> paginate(\Cake\Datasource\RepositoryInterface|\Cake\Datasource\QueryInterface|string|null $object = null, array $settings = [])
  * @property \Search\Controller\Component\SearchComponent $Search
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization

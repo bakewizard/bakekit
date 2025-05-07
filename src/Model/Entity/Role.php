@@ -18,11 +18,11 @@ use Cake\Utility\Text;
  * @property \Cake\I18n\DateTime|null $created
  * @property \Cake\I18n\DateTime|null $modified
  *
- * @property \App\Model\Entity\User[] $users
+ * @property array<\App\Model\Entity\User> $users
  * @property \App\Model\Entity\Role|null $parent_role
- * @property \App\Model\Entity\Role[] $child_roles
- * @property \App\Model\Entity\Permission[] $permissions
- * @property \App\Model\Entity\Resource[] $resources
+ * @property array<\App\Model\Entity\Role> $child_roles
+ * @property array<\App\Model\Entity\Permission> $permissions
+ * @property array<\App\Model\Entity\Resource> $resources
  * @property \App\Model\Entity\Permission $_joinData
  */
 class Role extends Entity

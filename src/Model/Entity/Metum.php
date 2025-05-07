@@ -17,7 +17,7 @@ use Cake\ORM\Entity;
  * @property string|null $seo_keywords
  *
  * @property \App\Model\Entity\Plugin $plugin
- * @property \Cake\ORM\Entity[] $_i18n
+ * @property array<\Cake\ORM\Entity> $_i18n
  */
 class Metum extends Entity
 {

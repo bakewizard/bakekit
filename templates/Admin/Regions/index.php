@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\Region[]|\Cake\Collection\CollectionInterface $regions
+ * @var array<\App\Model\Entity\Region>|\Cake\Collection\CollectionInterface<\App\Model\Entity\Region> $regions
  */
 ?>
 <div class="card">

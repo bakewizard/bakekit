@@ -27,7 +27,7 @@ use Cake\Utility\Text;
  * @property string|false $cell_plugin
  * @property string $cell_name
  * @property string|null $cell_action
- * @property \Cake\ORM\Entity[] $_i18n
+ * @property array<\Cake\ORM\Entity> $_i18n
  */
 class Block extends Entity
 {

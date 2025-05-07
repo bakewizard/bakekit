@@ -13,7 +13,7 @@ use Cake\Utility\Text;
  * @property string $alias
  * @property string|null $description
  *
- * @property \App\Model\Entity\Block[] $blocks
+ * @property array<\App\Model\Entity\Block> $blocks
  */
 class Region extends Entity
 {

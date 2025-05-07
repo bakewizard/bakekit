@@ -21,6 +21,11 @@ class ImageUploadHandler extends AbstractUploadHandler
 {
     use InstanceConfigTrait;
 
+    /**
+     * Default configuration.
+     *
+     * @var array<string, mixed>
+     */
     protected array $_defaultConfig = [
         'basePath' => WWW_ROOT . 'media',
         'thumbs' => [],

@@ -25,7 +25,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\DateTime|null $modified
  *
  * @property \App\Model\Entity\Role $role
- * @property \Cake\ORM\Entity[] $files
+ * @property array<\Cake\ORM\Entity> $files
  * @property-read string|null $full_name
  * @property \Authorization\AuthorizationServiceInterface $authorization
  */
@@ -85,7 +85,9 @@ class User extends Entity implements AuthenticationIdentity, AuthorizationIdenti
     }
 
     /**
-     * @inheritDoc
+     * Retrieves the original data of the entity.
+     *
+     * @return \ArrayAccess<string, mixed>|array<string, mixed> The original data of the entity.
      */
     public function getOriginalData(): ArrayAccess|array
     {
@@ -93,7 +95,9 @@ class User extends Entity implements AuthenticationIdentity, AuthorizationIdenti
     }
 
     /**
-     * @inheritDoc
+     * Gets the identifier for the user entity.
+     *
+     * @return array<int|string>|string|int|null The identifier of the user.
      */
     public function getIdentifier(): array|string|int|null
     {

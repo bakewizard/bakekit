@@ -18,6 +18,11 @@ class DocBlockParser
 {
     private string $summary = '';
     private string $description = '';
+    /**
+     * Tags are stored as an associative array where the key is the tag name
+     *
+     * @var array<string, string>
+     */
     private array $tags = [];
 
     /**
@@ -64,9 +69,9 @@ class DocBlockParser
      * If the tag does not exist, false is returned.
      *
      * @param string $tagName The name of the tag (e.g., '@param', '@return').
-     * @return array|string|false The value(s) associated with the tag or false if the tag is not found.
+     * @return string|false The value(s) associated with the tag or false if the tag is not found.
      */
-    public function getTag(string $tagName): array|string|false
+    public function getTag(string $tagName): string|false
     {
         return $this->tags[$tagName] ?? false;
     }

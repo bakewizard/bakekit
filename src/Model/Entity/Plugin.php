@@ -16,7 +16,7 @@ use Cake\Utility\Inflector;
  * @property string|null $parent_plugin
  * @property bool|null $enabled
  *
- * @property \App\Model\Entity\Metum[] $meta
+ * @property array<\App\Model\Entity\Metum> $meta
  */
 class Plugin extends Entity
 {

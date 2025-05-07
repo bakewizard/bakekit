@@ -41,6 +41,9 @@ use Override;
  */
 class AppView extends View
 {
+    /**
+     * @var array<string, \Cake\ORM\Entity>
+     */
     private array $_regions = [];
 
     /**
@@ -58,9 +61,9 @@ class AppView extends View
         parent::initialize();
 
         $this->loadHelper('Form', ['className' => 'BootstrapUI.Form', 'grid' => [
-                'left' => 2,
-                'middle' => 10,
-                'right' => 4,
+            'left' => 2,
+            'middle' => 10,
+            'right' => 4,
         ]]);
         $this->loadHelper('Html', ['className' => 'BootstrapUI.Html']);
         $this->loadHelper('Paginator', ['className' => 'BootstrapUI.Paginator']);
@@ -69,7 +72,9 @@ class AppView extends View
         $this->loadHelper('Menu');
 
         if (!$this->isRenderingCell()) {
-            $this->_regions = Cache::read('regions', 'cms');
+            /** @var array<string, \Cake\ORM\Entity>|false $cachedRegions */
+            $cachedRegions = Cache::read('regions', 'cms');
+            $this->_regions = $cachedRegions ?: [];
             $this->Form->setTemplates([
                 'confirmJs' => 'app.initModal({{formName}}); return false;',
             ]);
@@ -80,7 +85,7 @@ class AppView extends View
      * Returns a region content by alias
      *
      * @param string  $alias Region alias
-     * @param array $arguments Cell argumants
+     * @param array<string, mixed> $arguments Cell arguments
      * @return string Region content
      */
     public function region(string $alias, array $arguments = []): string
@@ -90,6 +95,7 @@ class AppView extends View
         }
 
         $html = '';
+        /** @var string|null $lang */
         $lang = $this->request->getParam('lang');
         foreach ($this->_regions[$alias]->blocks as $block) {
             if ($block->isEmpty('cell')) {
@@ -103,10 +109,13 @@ class AppView extends View
 
             $options = ['block' => $block, 'parentView' => $this];
             try {
+                /** @var \Cake\View\Cell $cell */
                 $cell = $this->cell($block->cell, $arguments, $options);
                 $html .= $cell->render(!empty($block->template) ? $block->template : null);
 
+                /** @var string|null $css */
                 $css = $cell->viewBuilder()->getVar('css') ?? '';
+                /** @var string|null $script */
                 $script = $cell->viewBuilder()->getVar('script') ?? '';
                 if (!empty($css)) {
                     $this->prepend('css', $css);
@@ -135,16 +144,22 @@ class AppView extends View
         $image = null;
 
         if (!is_null($entity)) {
-            $image = $entity->files[$index] ?? $entity;
+            /** @var \Cake\ORM\Entity|array<\Cake\ORM\Entity>|null $files */
+            $files = $entity->get('files');
+            $image = is_array($files) ? ($files[$index] ?? null) : $entity;
         }
 
-        $outputFormat = $this->get('config')['Cms']['images']['format'];
+        /** @var array<string, mixed> $config */
+        $config = $this->get('config');
+        $outputFormat = $config['Cms']['images']['format'];
 
         $imagePath = '/img/noimage.svg';
         if ($image) {
             $name = $image->id . '-' . $size . '.' . $outputFormat;
+            // @phpstan-ignore-next-line
             $absPath = WWW_ROOT . 'media' . $image->path;
             if (is_file($absPath . DIRECTORY_SEPARATOR . $name)) {
+                // @phpstan-ignore-next-line
                 $imagePath = '/' . basename(WWW_ROOT . 'media') . $image->path . '/' . $name;
             }
         }

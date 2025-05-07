@@ -23,7 +23,7 @@ class MaintenanceMiddleware implements MiddlewareInterface
     use InstanceConfigTrait;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'allowedIps' => [],
@@ -36,7 +36,7 @@ class MaintenanceMiddleware implements MiddlewareInterface
     ];
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $config Configuration options for the middleware.
      */
     public function __construct(array $config = [])
     {

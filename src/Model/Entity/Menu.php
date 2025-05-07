@@ -14,7 +14,7 @@ use Cake\ORM\Entity;
  * @property bool|null $prefix
  * @property bool|null $enabled
  *
- * @property \App\Model\Entity\MenuLink[] $menu_links
+ * @property array<\App\Model\Entity\MenuLink> $menu_links
  */
 class Menu extends Entity
 {

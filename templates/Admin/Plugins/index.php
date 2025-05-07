@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\Plugin[]|\Cake\Collection\CollectionInterface $plugins
+ * @var array<\App\Model\Entity\Plugin>|\Cake\Collection\CollectionInterface<\App\Model\Entity\Plugin> $plugins
  */
 ?>
 <div class="card">

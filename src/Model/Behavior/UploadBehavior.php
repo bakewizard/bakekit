@@ -86,9 +86,10 @@ class UploadBehavior extends Behavior
     /**
      * Modifies the find query to contain associated files.
      *
-     * @param \Cake\Event\EventInterface $event The beforeFind event.
-     * @param \Cake\ORM\Query\SelectQuery $query The query object.
-     * @param \ArrayObject $options The options passed to the find method.
+     * @template TSubject of \Cake\Datasource\EntityInterface
+     * @param \Cake\Event\EventInterface<TSubject> $event The beforeFind event.
+     * @param \Cake\ORM\Query\SelectQuery<TSubject> $query The query object.
+     * @param \ArrayObject<string, mixed> $options The options passed to the find method.
      * @param bool $primary Whether this is the primary query.
      * @return void
      */
@@ -106,9 +107,12 @@ class UploadBehavior extends Behavior
      * Extracts file information from the 'uploads' data and prepares the 'files'
      * data structure for entity creation or patching.
      *
-     * @param \Cake\Event\EventInterface $event The beforeMarshal event.
-     * @param \ArrayObject $data The data being marshalled.
-     * @param \ArrayObject $options The options passed to the marshaller.
+     * @template TSubject of \Cake\Datasource\EntityInterface
+     * @template TKey of array-key
+     * @template TValue
+     * @param \Cake\Event\EventInterface<TSubject> $event The beforeMarshal event.
+     * @param \ArrayObject<TKey, TValue> $data The data being marshalled.
+     * @param \ArrayObject<TKey, TValue> $options The options passed to the marshaller.
      * @return void
      */
     public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
@@ -154,7 +158,8 @@ class UploadBehavior extends Behavior
      * the uploaded files using the configured upload handler. It also handles
      * removal of previously associated files if the entity is being updated.
      *
-     * @param \Cake\Event\EventInterface $event The afterSave event.
+     * @template TSubject of \Cake\Datasource\EntityInterface
+     * @param \Cake\Event\EventInterface<TSubject> $event The afterSave event.
      * @param \Cake\Datasource\EntityInterface $entity The saved entity.
      * @return void
      */
@@ -177,7 +182,8 @@ class UploadBehavior extends Behavior
     /**
      * Handles the removal of associated files after the entity is deleted.
      *
-     * @param \Cake\Event\EventInterface $event The afterDelete event.
+     * @template TSubject of \Cake\Datasource\EntityInterface
+     * @param \Cake\Event\EventInterface<TSubject> $event The afterDelete event.
      * @param \Cake\Datasource\EntityInterface $entity The deleted entity.
      * @return void
      */
@@ -189,7 +195,7 @@ class UploadBehavior extends Behavior
     /**
      * Removes loaded files
      *
-     * @param array $files
+     * @param array<object> $files An array of objects to remove (each expected to have an 'id' property).
      * @return void
      */
     public function remove(array $files): void

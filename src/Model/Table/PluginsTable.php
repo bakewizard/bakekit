@@ -14,17 +14,17 @@ use Override;
  * @property \App\Model\Table\MetaTable&\Cake\ORM\Association\HasMany $Meta
  * @method \App\Model\Entity\Plugin newEmptyEntity()
  * @method \App\Model\Entity\Plugin newEntity(array $data, array $options = [])
- * @method \App\Model\Entity\Plugin[] newEntities(array $data, array $options = [])
+ * @method array<\App\Model\Entity\Plugin> newEntities(array $data, array $options = [])
  * @method \App\Model\Entity\Plugin get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
  * @method \App\Model\Entity\Plugin findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @method \App\Model\Entity\Plugin patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\Plugin[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method array<\App\Model\Entity\Plugin> patchEntities(iterable $entities, array $data, array $options = [])
  * @method \App\Model\Entity\Plugin|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \App\Model\Entity\Plugin saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Plugin[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin>|false saveMany(iterable $entities, array $options = [])
- * @method \App\Model\Entity\Plugin[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin> saveManyOrFail(iterable $entities, array $options = [])
- * @method \App\Model\Entity\Plugin[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin>|false deleteMany(iterable $entities, array $options = [])
- * @method \App\Model\Entity\Plugin[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin>|false saveMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin>|false deleteMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin> deleteManyOrFail(iterable $entities, array $options = [])
  */
 class PluginsTable extends Table
 {

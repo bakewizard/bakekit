@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Model\Entity\User[]|\Cake\Collection\CollectionInterface $users
+ * @var array<\App\Model\Entity\User>|\Cake\Collection\CollectionInterface<\App\Model\Entity\User> $users
  */
 ?>
 <div class="card">

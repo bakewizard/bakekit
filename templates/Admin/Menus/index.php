@@ -2,7 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var mixed $_isSearch
- * @var \App\Model\Entity\Menu[]|\Cake\Collection\CollectionInterface $menus
+ * @var array<\App\Model\Entity\Menu>|\Cake\Collection\CollectionInterface<\App\Model\Entity\Menu> $menus
  */
 ?>
 <div class="card">

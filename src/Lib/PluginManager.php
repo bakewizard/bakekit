@@ -37,7 +37,7 @@ class PluginManager
      *
      * @param bool $includeSystem Include System plugin if true.
      * @param bool $includeSubPlugins Include sub plugins if true.
-     * @return array
+     * @return array<string> List of plugin names.
      */
     public function getPlugins(bool $includeSystem = false, bool $includeSubPlugins = false): array
     {
@@ -61,7 +61,7 @@ class PluginManager
     /**
      * Gets all available cells from all loaded plugins.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getCells(): array
     {
@@ -110,7 +110,7 @@ class PluginManager
     /**
      * Gets all available links from all loaded plugins.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getLinks(): array
     {
@@ -167,7 +167,7 @@ class PluginManager
     /**
      * Gets all available admin links from all loaded plugins.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getAdminLinks(): array
     {

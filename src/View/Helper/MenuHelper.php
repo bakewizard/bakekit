@@ -15,17 +15,22 @@ use Override;
  */
 class MenuHelper extends Helper
 {
+    /**
+     * @var string
+     */
     private string $path;
 
     /**
      * Helpers used.
      *
-     * @var array
+     * @var array<string>
      */
     public array $helpers = ['Html'];
 
     /**
-     * @inheritDoc
+     * Default configuration.
+     *
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'container' => [
@@ -66,8 +71,8 @@ class MenuHelper extends Helper
     /**
      * Renders menu
      *
-     * @param array $menuItems Menu items
-     * @param array $options Options
+     * @param array<\App\Model\Entity\MenuLink> $menuItems Menu items
+     * @param array<string, mixed> $options Options
      * @return string
      */
     public function render(array $menuItems = [], array $options = []): string
@@ -100,19 +105,24 @@ class MenuHelper extends Helper
 
         $title = !empty($item['icon']) ? "<i class=\"{$item['icon']}\"></i> {$item['title']}" : $item['title'];
 
+        $linkAttrs = [];
         if ($hasSubmenu) {
-            $attrs = !empty($item['children'])
+            $linkAttrs = !empty($item['children'])
                 ? $this->mergeAttrs($this->_config['dropdownMenuItemLink'], $this->_config['itemWithDropdownLink'])
                 : $this->_config['dropdownMenuItemLink'];
         } else {
-            $attrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['itemLink'], $this->_config['itemWithDropdownLink']) : $this->_config['itemLink']);
+            $linkAttrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['itemLink'], $this->_config['itemWithDropdownLink']) : $this->_config['itemLink']);
         }
 
         if ($this->path === $item['link']) {
-            $attrs['class'] .= ' active';
+            if (isset($linkAttrs['class'])) {
+                $linkAttrs['class'] .= ' active';
+            } else {
+                $linkAttrs['class'] = 'active';
+            }
         }
 
-        $html .= $this->Html->link($title, $this->renderLink($item['link']), $attrs + ['target' => $item['target'], 'escape' => false]);
+        $html .= $this->Html->link($title, $this->renderLink($item['link']), $linkAttrs + ['target' => $item['target'], 'escape' => false]);
 
         if (!empty($item['children'])) {
             $items = '';
@@ -122,13 +132,14 @@ class MenuHelper extends Helper
             $html .= $this->Html->tag('ul', $items, $this->_config['dropdownMenu']);
         }
 
+        $listItemAttrs = [];
         if ($hasSubmenu) {
-            $attrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['dropdownMenuItem'], $this->_config['itemWithDropdown']) : $this->_config['dropdownMenuItem']);
+            $listItemAttrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['dropdownMenuItem'], $this->_config['itemWithDropdown']) : $this->_config['dropdownMenuItem']);
         } else {
-            $attrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['item'], $this->_config['itemWithDropdown']) : $this->_config['item']);
+            $listItemAttrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['item'], $this->_config['itemWithDropdown']) : $this->_config['item']);
         }
 
-        return $this->Html->tag('li', $html, $attrs);
+        return $this->Html->tag('li', $html, $listItemAttrs);
     }
 
     /**
@@ -139,7 +150,7 @@ class MenuHelper extends Helper
      */
     protected function renderLink(string $link): string
     {
-        if ($link[0] === '/' && I18n::getLocale() !== I18n::getDefaultLocale()) {
+        if (str_starts_with($link, '/') && I18n::getLocale() !== I18n::getDefaultLocale()) {
             return '/' . I18n::getLocale() . $link;
         } else {
             return $link;
@@ -149,20 +160,18 @@ class MenuHelper extends Helper
     /**
      * Merges attributes
      *
-     * @param array $attrs1
-     * @param array $attrs2
-     * @return array
+     * @param array<string, string> $attrs1
+     * @param array<string, string> $attrs2
+     * @return array<string, string>
      */
     protected function mergeAttrs(array $attrs1, array $attrs2): array
     {
         $attrs = $attrs1;
-        foreach ($attrs1 as $attr1 => $value1) {
-            foreach ($attrs2 as $attr2 => $value2) {
-                if ($attr2 === $attr1) {
-                    $attrs[$attr2] = trim($value1 . ' ' . $value2);
-                } else {
-                    $attrs[$attr2] = $value2;
-                }
+        foreach ($attrs2 as $attr2 => $value2) {
+            if (isset($attrs[$attr2])) {
+                $attrs[$attr2] = trim($attrs[$attr2] . ' ' . $value2);
+            } else {
+                $attrs[$attr2] = $value2;
             }
         }
 

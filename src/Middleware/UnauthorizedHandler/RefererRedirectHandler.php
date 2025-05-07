@@ -25,7 +25,7 @@ class RefererRedirectHandler implements HandlerInterface
      *  - `queryParam` - Query parameter name for the target url.
      *  - `statusCode` - Redirection status code.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $defaultOptions = [
         'exceptions' => [
@@ -41,7 +41,7 @@ class RefererRedirectHandler implements HandlerInterface
      *
      * @param \Authorization\Exception\Exception $exception Authorization exception thrown by the application.
      * @param \Psr\Http\Message\ServerRequestInterface $request Server request.
-     * @param array $options Options array.
+     * @param array<string, mixed> $options Options array.
      * @return \Psr\Http\Message\ResponseInterface
      */
     #[Override]
@@ -72,7 +72,7 @@ class RefererRedirectHandler implements HandlerInterface
      * Checks if an exception matches one of the classes.
      *
      * @param \Authorization\Exception\Exception $exception Exception instance.
-     * @param array $exceptions A list of exception classes.
+     * @param array<string> $exceptions A list of fully qualified exception class names.
      * @return bool
      */
     protected function checkException(Exception $exception, array $exceptions): bool

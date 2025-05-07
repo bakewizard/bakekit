@@ -23,7 +23,7 @@ class ComposerManager
     /**
      * Runs composer commands.
      *
-     * @param array $options
+     * @param array<string, mixed> $options
      * @return string
      * @throws \Exception
      */
@@ -65,7 +65,7 @@ class ComposerManager
      * in the latest available version.
      *
      * @param array $packages
-     * @param array $options
+     * @param array<string, mixed> $options
      * @return string
      */
     public function require(array $packages, array $options = []): string

@@ -20,8 +20,8 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\Menu $menu
  * @property \App\Model\Entity\MenuLink|null $parent_menu_link
- * @property \App\Model\Entity\MenuLink[] $child_menu_links
- * @property \Cake\ORM\Entity[] $_i18n
+ * @property array<\App\Model\Entity\MenuLink> $child_menu_links
+ * @property array<\Cake\ORM\Entity> $_i18n
  */
 class MenuLink extends Entity
 {
