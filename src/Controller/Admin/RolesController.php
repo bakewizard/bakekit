@@ -12,7 +12,7 @@ use Override;
  * Roles Controller
  *
  * @property \App\Model\Table\RolesTable $Roles
- * @method \App\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @method \App\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Role> paginate($object = null, array<string, mixed> $settings = [])
  * @property \Search\Controller\Component\SearchComponent $Search
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization

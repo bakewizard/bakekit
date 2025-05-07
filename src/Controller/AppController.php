@@ -52,9 +52,9 @@ class AppController extends Controller
     }
 
     /**
-     * Called before the controller action is invoked.
+     * {@inheritDoc}
      *
-     * @param \Cake\Event\EventInterface $event The beforeFilter event.
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event The beforeFilter event.
      * @return \Cake\Http\Response|null|void May return a {@see \Cake\Http\Response} early or void to continue normally.
      */
     #[Override]
@@ -68,9 +68,9 @@ class AppController extends Controller
     }
 
     /**
-     * Called after the controller action is run, but before the view is rendered.
+     * {@inheritDoc}
      *
-     * @param \Cake\Event\EventInterface $event The beforeRender event.
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event The beforeRender event.
      * @return \Cake\Http\Response|null|void May return a {@see \Cake\Http\Response} early or void to continue normally.
      */
     #[Override]
@@ -112,7 +112,7 @@ class AppController extends Controller
      * Adds a crumb to the breadcrumbs array.
      *
      * @param string $title The title of the breadcrumb.
-     * @param array|string|null $url The URL of the breadcrumb. If null, it will not be a link.
+     * @param array<mixed, mixed>|string|null $url The URL of the breadcrumb. If null, it will not be a link.
      * @return void
      */
     protected function addCrumb(string $title, array|string|null $url = null): void

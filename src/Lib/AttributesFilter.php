@@ -18,7 +18,7 @@ class AttributesFilter
      */
     protected string $cacheConfig = 'default';
     /**
-     * @var array List of range attributes that need special handling.
+     * @var array<string, int> List of range attributes that need special handling.
      */
     private array $rangeAttributes = [];
 
@@ -39,7 +39,7 @@ class AttributesFilter
      * Path: /some-attribute-1_some-val-1_some-val-2/
      *
      * @param string $path
-     * @return array
+     * @return array<string, mixed>
      */
     public function parsePath(string $path): array
     {
@@ -71,8 +71,8 @@ class AttributesFilter
      * Fetch filtered product IDs and active filters based on attributes.
      *
      * @param string|int $categoryId
-     * @param array|string $attributes
-     * @return array [ids, activeFilters, attributes]
+     * @param array<string, mixed>|string $attributes
+     * @return array<int, mixed> [ids, activeFilters, attributes]
      */
     public function fetch(int|string $categoryId, array|string $attributes): array
     {
@@ -113,7 +113,7 @@ class AttributesFilter
     /**
      * Sets the range attributes for special handling.
      *
-     * @param array $attributes The range attributes where keys are attribute names and values are the step values.
+     * @param array<string, int> $attributes The range attributes where keys are attribute names and values are the step values.
      * @return void
      */
     public function setRangeAttributes(array $attributes): void
@@ -125,7 +125,7 @@ class AttributesFilter
      * Creates an index for the given category and entities, storing them in the specified cache configuration.
      *
      * @param string|int $categoryId The ID of the category to create the index for.
-     * @param array &$entities The entities containing attribute data to index.
+     * @param array<int, mixed> &$entities The entities containing attribute data to index.
      * @return void
      */
     public function createIndex(int|string $categoryId, array &$entities): void

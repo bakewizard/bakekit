@@ -11,7 +11,7 @@ use Override;
  * Menus Controller
  *
  * @property \App\Model\Table\MenusTable $Menus
- * @method \App\Model\Entity\Menu[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Menu> paginate($object = null, array<string, mixed> $settings = [])
  * @property \Search\Controller\Component\SearchComponent $Search
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization

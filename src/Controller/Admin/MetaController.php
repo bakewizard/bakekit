@@ -7,7 +7,7 @@ namespace App\Controller\Admin;
  * Meta Controller
  *
  * @property \App\Model\Table\MetaTable $Meta
- * @method \App\Model\Entity\Metum[] paginate($object = null, array $settings = [])
+ * @method \App\Model\Entity\Metum[] paginate($object = null, array<string, mixed> $settings = [])
  * @property \Search\Controller\Component\SearchComponent $Search
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization

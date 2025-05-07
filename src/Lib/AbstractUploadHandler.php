@@ -12,7 +12,7 @@ abstract class AbstractUploadHandler
     /**
      * Handle the upload of files.
      *
-     * @param array $files An array of file data to be uploaded.
+     * @param array<array-key, mixed> $files An array of file data to be uploaded.
      * @return void
      */
     abstract public function handle(array $files): void;
@@ -20,7 +20,7 @@ abstract class AbstractUploadHandler
     /**
      * Remove specified files.
      *
-     * @param array $files An array of file data to be removed.
+     * @param array<array-key, mixed> $files An array of file data to be removed.
      * @return void
      */
     abstract public function remove(array $files): void;

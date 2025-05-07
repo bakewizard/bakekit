@@ -28,7 +28,7 @@ class CmsPlugin extends BasePlugin
     /**
      * Constructor for the plugin.
      *
-     * @param array $options Array of options/configuration.
+     * @param array<string, mixed> $options Array of options/configuration.
      */
     public function __construct(array $options = [])
     {
@@ -38,7 +38,7 @@ class CmsPlugin extends BasePlugin
     }
 
     /**
-     * @inheritDoc
+     * @param \Cake\Core\PluginApplicationInterface<\App\Application> $app The application instance.
      */
     #[Override]
     public function bootstrap(PluginApplicationInterface $app): void

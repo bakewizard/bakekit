@@ -45,7 +45,7 @@ class ConfigForm extends Form
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $data
      */
     #[Override]
     protected function _execute(array $data): bool

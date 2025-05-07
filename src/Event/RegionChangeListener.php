@@ -33,7 +33,7 @@ class RegionChangeListener implements EventListenerInterface
      * and stores them in the cache. It specifically sets the default locale for
      * the 'Blocks' table to ensure correct translation retrieval.
      *
-     * @param \Cake\Event\EventInterface $event The event object.
+     * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The event object.
      * @return void
      */
     public function createCache(EventInterface $event): void
@@ -43,6 +43,7 @@ class RegionChangeListener implements EventListenerInterface
         $table = $event->getSubject();
 
         if ($table->getAlias() === 'Blocks') {
+            // @phpstan-ignore-next-line
             $table->setLocale(I18n::getDefaultLocale());
         }
 

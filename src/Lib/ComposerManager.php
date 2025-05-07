@@ -64,7 +64,7 @@ class ComposerManager
      * will install monolog in version 1.16 or later and the Slim framework
      * in the latest available version.
      *
-     * @param array $packages
+     * @param array<int, string> $packages
      * @param array<string, mixed> $options
      * @return string
      */
@@ -84,8 +84,8 @@ class ComposerManager
      * E.g. $this->Composer->remove(['monolog/monolog', 'slim/slim']) will uninstall
      * monolog in version 1.16 or later and the Slim framework in the latest available version.
      *
-     * @param array $packages
-     * @param array $options
+     * @param array<int, string> $packages
+     * @param array<string, mixed> $options
      * @return string
      */
     public function remove(array $packages, array $options = []): string
@@ -104,8 +104,8 @@ class ComposerManager
      * $this->Composer->update(['symfony/css-crawler'], ['--optimize-autoloader'])
      * will update only the CSS crawler symfony component optimizing the autoloader afterwards.
      *
-     * @param array $packages
-     * @param array $options
+     * @param array<int, string> $packages
+     * @param array<string, mixed> $options
      * @return string
      */
     public function update(array $packages, array $options = []): string
@@ -121,7 +121,7 @@ class ComposerManager
     /**
      * Updates autoloader cache.
      *
-     * @param array $options
+     * @param array<string, mixed> $options
      * @return string
      */
     public function dumpAutoload(array $options = []): string
@@ -161,8 +161,8 @@ class ComposerManager
     /**
      * Reads composer.json into array.
      *
-     * @param string $path
-     * @return array
+     * @param string|null $path
+     * @return array<string, mixed>
      * @throws \Exception
      */
     public function getConfigData(?string $path = null): array

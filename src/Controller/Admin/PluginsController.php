@@ -322,7 +322,7 @@ class PluginsController extends AppController
      * Reads composer.json into array.
      *
      * @param string $path
-     * @return array
+     * @return array<string, mixed>
      * @throws \Exception
      */
     private function getConfigData(?string $path = null): array

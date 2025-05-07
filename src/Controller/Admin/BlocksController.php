@@ -11,7 +11,7 @@ use Cake\Http\Response;
  * Blocks Controller
  *
  * @property \App\Model\Table\BlocksTable $Blocks
- * @method \App\Model\Entity\Block[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Block> paginate($object = null, array<string, mixed> $settings = [])
  * @property \Search\Controller\Component\SearchComponent $Search
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization

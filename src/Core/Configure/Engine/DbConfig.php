@@ -52,7 +52,7 @@ class DbConfig implements ConfigEngineInterface
      * a database, or other datasource.
      *
      * @param string $key Key to read.
-     * @return array An array of data to merge into the runtime configuration
+     * @return array<string, mixed> An array of data to merge into the runtime configuration
      */
     #[Override]
     public function read(string $key): array
@@ -88,7 +88,7 @@ class DbConfig implements ConfigEngineInterface
      * {@inheritDoc}
      *
      * @param string $key The identifier to write to.
-     * @param array $data The data to dump.
+     * @param array<string, mixed> $data The data to dump.
      * @return bool True on success or false on failure.
      */
     #[Override]

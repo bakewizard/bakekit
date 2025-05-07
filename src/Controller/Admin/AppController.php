@@ -31,6 +31,7 @@ use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
 use League\Flysystem\Visibility;
 use Override;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Application Controller
@@ -45,6 +46,11 @@ use Override;
  */
 class AppController extends Controller
 {
+    /**
+     * Breadcrumbs array
+     *
+     * @var array<int, array{title: string, url: string|null}>
+     */
     private array $_breadcrumbs = [];
 
     /**
@@ -88,10 +94,15 @@ class AppController extends Controller
     }
 
     /**
-     * @inheritDoc
+     * Undocumented function
+     *
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
+     * @param \Psr\Http\Message\UriInterface|array<mixed, mixed>|string $url
+     * @param \Cake\Http\Response $response
+     * @return void
      */
     #[Override]
-    public function beforeRedirect(EventInterface $event, $url, Response $response)
+    public function beforeRedirect(EventInterface $event, UriInterface|array|string $url, Response $response)
     {
         $queryParams = $this->request->getQueryParams();
 
@@ -230,7 +241,7 @@ class AppController extends Controller
      *
      * @param string $title The title of the breadcrumb.
      *
-     * @param array|string|null $url The URL as a string or Router-compatible array. Null for no link.
+     * @param array<mixed, mixed>|string|null $url The URL of the breadcrumb. If null, it will not be a link.
      * @return void
      */
     protected function addCrumb(string $title, string|array|null $url = null)

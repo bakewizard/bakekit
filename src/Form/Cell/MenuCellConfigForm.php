@@ -14,6 +14,11 @@ use Override;
  */
 class MenuCellConfigForm extends Form
 {
+    /**
+     * Menus
+     *
+     * @var array<int, mixed>
+     */
     private array $menus;
 
     /**
@@ -65,7 +70,7 @@ class MenuCellConfigForm extends Form
     /**
      * Returns menus
      *
-     * @return array
+     * @return array<int, mixed>
      */
     public function getMenus(): array
     {

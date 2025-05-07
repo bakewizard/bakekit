@@ -42,7 +42,7 @@ class TextAndJsonType extends BaseType
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
-     * @return array|string|null
+     * @return mixed|null
      */
     #[Override]
     public function toPHP(mixed $value, Driver $driver): mixed
