@@ -17,16 +17,16 @@ class AuthHelper extends Helper
     /**
      * Request object
      *
-     * @var \Cake\Http\ServerRequest|null
+     * @var \Cake\Http\ServerRequest
      */
-    protected ?ServerRequest $_request = null;
+    protected ServerRequest $_request;
 
     /**
      * Session object
      *
-     * @var \Cake\Http\Session|null
+     * @var \Cake\Http\Session
      */
-    protected ?Session $_session = null;
+    protected Session $_session;
 
     /**
      * @inheritDoc

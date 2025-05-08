@@ -55,12 +55,17 @@ class RequestPolicy implements RequestPolicyInterface, BeforePolicyInterface
      */
     private function authorize(User $user, ServerRequest $request): bool
     {
-        $plugin = empty($request->getParam('plugin')) ? 'System' : str_replace('//', '/', preg_replace('/\//', '\\', Inflector::camelize($request->getParam('plugin'))));
+        $pluginParam = $request->getParam('plugin');
+        $plugin = empty($pluginParam)
+        ? 'System'
+        : str_replace('//', '/', str_replace('/', '\\', Inflector::camelize($pluginParam)));
+
         $controller = Inflector::camelize($request->getParam('controller'));
         $action = $request->getParam('action');
 
         $permissions = TableRegistry::getTableLocator()->get('Permissions');
+        $path = sprintf('Site/%s/%s/%s', $plugin, $controller, $action);
 
-        return $permissions->check($user->role_id, 'Site/' . $plugin . '/' . $controller . '/' . $action);
+        return $permissions->check($user->role_id, $path);
     }
 }

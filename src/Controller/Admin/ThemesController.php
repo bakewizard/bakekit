@@ -103,6 +103,12 @@ class ThemesController extends AppController
         $this->request->allowMethod(['post', 'put']);
 
         $file = $this->request->getUploadedFile('theme');
+        if ($file === null) {
+            $this->Flash->error(__('No file was uploaded.'));
+
+            return $this->redirect(['action' => 'index']);
+        }
+
         $error = $file->getError();
 
         if ($error) {
@@ -128,7 +134,13 @@ class ThemesController extends AppController
             return $this->redirect(['action' => 'index']);
         }
 
-        $theme = basename($file->getClientFilename(), '.zip');
+        $filename = $file->getClientFilename();
+        if ($filename === null) {
+            $this->Flash->error(__('Uploaded file does not have a valid name.'));
+
+            return $this->redirect(['action' => 'index']);
+        }
+        $theme = basename($filename, '.zip');
 
         // 2. Validate theme name
         if (!preg_match('/^[A-Z][a-zA-Z0-9]+$/', $theme)) {

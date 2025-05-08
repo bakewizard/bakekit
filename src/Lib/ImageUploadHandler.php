@@ -33,7 +33,7 @@ class ImageUploadHandler extends AbstractUploadHandler
         'format' => 'jpeg', // Options: 'jpeg', 'webp', 'avif'
         'watermark' => null,
     ];
-    private ?Filesystem $_storage = null;
+    private Filesystem $_storage;
     private Imagine $imagine;
 
     /**

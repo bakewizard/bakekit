@@ -35,14 +35,22 @@ use Search\Model\Filter\Base;
 class FullTextFilter extends Base
 {
     /**
-     * Default configuration for the FullTextFilter.
+     * Default configuration.
      *
-     * - `mode`: Specifies the logical operator to use when combining search terms.
-     *   Default is 'OR'.
-     * - `matchMode`: Defines the SQL full-text search mode to be used.
-     *   Default is 'IN NATURAL LANGUAGE MODE'.
+     * - `mode`: Specifies the logical operator to use when combining search terms. Default is 'OR'.
+     * - `matchMode`: Defines the SQL full-text search mode to be used. Default is 'IN NATURAL LANGUAGE MODE'.
      *
-     * @var array<int, string>
+     * @var array<string, mixed>
+     */
+    protected array $_defaultConfig = [
+        'mode' => 'OR',
+        'matchMode' => 'IN NATURAL LANGUAGE MODE',
+    ];
+
+    /**
+     * List of valid MySQL match modes.
+     *
+     * @var array<string>
      */
     private array $_validMatchModes = [
         'IN NATURAL LANGUAGE MODE',
@@ -66,7 +74,9 @@ class FullTextFilter extends Base
         }
 
         $repository = $this->getRepository();
-        $this->ensureMysql($repository);
+        if ($repository && !$repository->getConnection()->getDriver() instanceof Mysql) {
+            throw new Exception('Only MySQL is supported for full-text search.');
+        }
 
         $match = implode(',', $this->getFields($repository));
         $matchMode = $this->getConfig('matchMode');
@@ -95,20 +105,6 @@ class FullTextFilter extends Base
     }
 
     /**
-     * Ensures the database connection is MySQL.
-     *
-     * @param \Cake\ORM\Table|null $repository The repository instance.
-     * @return void
-     * @throws \Exception If the database engine is not MySQL.
-     */
-    private function ensureMysql(?Table $repository): void
-    {
-        if ($repository && !$repository->getConnection()->getDriver() instanceof Mysql) {
-            throw new Exception('Only MySQL is supported for full-text search.');
-        }
-    }
-
-    /**
      * Gets the list of fields to use in the MATCH clause, with optional translation.
      *
      * @param \Cake\ORM\Table|null $repository The repository instance.
@@ -124,6 +120,7 @@ class FullTextFilter extends Base
         }
 
         if ($repository->hasBehavior('Translate')) {
+            /** @var \Cake\ORM\Behavior\TranslateBehavior $translateBehavior */
             /**
              * @phpstan-ignore method.unresolvableReturnType
              */
@@ -148,15 +145,10 @@ class FullTextFilter extends Base
      */
     private function filter(string $text, string $matchMode): string
     {
-        $words = explode(' ', preg_replace('/[^\p{L}\p{N}\s\-]/u', '', $text));
+        $cleanText = preg_replace('/[^\p{L}\p{N}\s-]/u', '', $text) ?? '';
+        $words = explode(' ', $cleanText);
         if ($matchMode === 'IN BOOLEAN MODE') {
-            foreach ($words as $i => &$word) {
-                if (!empty($word) && !str_ends_with($word, '*')) {
-                    $words[$i] = $word . '*';
-                } elseif (empty($word)) {
-                    unset($words[$i]);
-                }
-            }
+            $words = array_map(fn($word) => str_ends_with($word, '*') ? $word : $word . '*', $words);
         }
 
         return implode(' ', $words);

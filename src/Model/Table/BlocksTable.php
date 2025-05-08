@@ -208,7 +208,9 @@ class BlocksTable extends Table
                 foreach ($fields as $fieldName) {
                     if ($validator->field($fieldName)->isPresenceRequired()) {
                         $fieldAttrs = $config->getSchema()->field($fieldName);
-                        $data[$fieldName] = $fieldAttrs['default'];
+                        if (is_array($fieldAttrs) && array_key_exists('default', $fieldAttrs)) {
+                            $data[$fieldName] = $fieldAttrs['default'];
+                        }
                     }
                 }
                 // @phpstan-ignore-next-line

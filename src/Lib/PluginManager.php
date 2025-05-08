@@ -87,6 +87,9 @@ class PluginManager
                 $cell = substr(pathinfo($file, PATHINFO_FILENAME), 0, -4);
                 $pluginAndCell = is_null($pluginName) ? $cell : "{$pluginName}.{$cell}";
                 $className = App::className($pluginAndCell, 'View/Cell', 'Cell');
+                if ($className === null) {
+                    continue;
+                }
                 $reflection = new ReflectionClass($className);
                 $declaredMethods = array_filter(
                     $reflection->getMethods(
@@ -137,6 +140,9 @@ class PluginManager
 
                 $controller = substr(pathinfo($file, PATHINFO_FILENAME), 0, -10);
                 $className = App::className("{$plugin}.{$controller}", 'Controller', 'Controller');
+                if ($className === null) {
+                    continue;
+                }
                 $reflection = new ReflectionClass($className);
                 $declaredMethods = array_filter(
                     $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
@@ -194,6 +200,9 @@ class PluginManager
 
                 $controller = substr(pathinfo($file, PATHINFO_FILENAME), 0, -10);
                 $className = App::className("{$plugin}.{$controller}", 'Controller/Admin', 'Controller');
+                if ($className === null) {
+                    continue;
+                }
                 $reflection = new ReflectionClass($className);
 
                 if (!$reflection->hasMethod('index')) {
@@ -310,6 +319,9 @@ class PluginManager
                 $baseName = $position !== false ? substr($file, 0, $position) : $file;
                 $controller = substr($baseName, 0, strlen($baseName) - 10);
                 $className = App::className($plugin ? "{$plugin}.{$controller}" : $controller, 'Controller/Admin', 'Controller');
+                if ($className === null) {
+                    continue;
+                }
                 $reflection = new ReflectionClass($className);
                 $actions = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 
@@ -367,7 +379,9 @@ class PluginManager
             $data = [];
             foreach ($fields as $fieldName) {
                 $fieldAttrs = $config->getSchema()->field($fieldName);
-                $data[$fieldName] = $fieldAttrs['default'];
+                if (is_array($fieldAttrs) && array_key_exists('default', $fieldAttrs)) {
+                    $data[$fieldName] = $fieldAttrs['default'];
+                }
             }
             $config->execute(Hash::expand($data));
         }

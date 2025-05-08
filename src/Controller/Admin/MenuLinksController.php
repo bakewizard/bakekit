@@ -42,7 +42,7 @@ class MenuLinksController extends AppController
     public function add(?string $id = null)
     {
         $menuLink = $this->MenuLinks->newEmptyEntity();
-        $menuLink->menu_id = $id !== null ? (int)$id : null;
+        $menuLink->menu_id = (int)$id;
         if ($this->request->is('post')) {
             $menuLink = $this->MenuLinks->patchEntity($menuLink, $this->request->getData());
             if ($this->MenuLinks->save($menuLink)) {

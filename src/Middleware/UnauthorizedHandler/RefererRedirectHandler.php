@@ -53,13 +53,13 @@ class RefererRedirectHandler implements HandlerInterface
             throw $exception;
         }
 
-        $message = $exception instanceof ForbiddenException ? $exception->getResult()->getReason() : $exception->getMessage();
+        $message = $exception instanceof ForbiddenException ? $exception->getResult()?->getReason() : $exception->getMessage();
 
         if ($request instanceof ServerRequest) {
-            $request->getFlash()->error($message, ['params' => ['code' => $exception->getCode()]]);
+            $request->getFlash()->error($message ?? 'An error has occurred.', ['params' => ['code' => $exception->getCode()]]);
 
             return (new Response())
-                            ->withHeader('Location', $request->referer())
+                            ->withHeader('Location', $request->referer() ?? '/')
                             ->withStatus($options['statusCode']);
         } else {
             return (new Response())

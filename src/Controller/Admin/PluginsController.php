@@ -119,7 +119,7 @@ class PluginsController extends AppController
     /**
      * Installs a plugin.
      *
-     * @return \Cake\Http\Response Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Exception When error is encountered.
      */
     public function install()
@@ -127,6 +127,11 @@ class PluginsController extends AppController
         $this->request->allowMethod(['post', 'put']);
 
         $file = $this->request->getUploadedFile('plugin');
+        if ($file === null) {
+            $this->Flash->error(__('No file was uploaded.'));
+
+            return $this->redirect(['action' => 'index']);
+        }
         $error = $file->getError();
 
         if ($error) {
@@ -135,7 +140,11 @@ class PluginsController extends AppController
             return $this->redirect(['action' => 'index']);
         }
 
-        $plugin = basename($file->getClientFilename(), '.zip');
+        $filename = $file->getClientFilename();
+        if ($filename === null) {
+            throw new Exception(__('Uploaded file does not have a valid filename.'));
+        }
+        $plugin = basename($filename, '.zip');
 
         if (is_dir($this->pluginsDir . $plugin)) {
             $this->Flash->error(__('Folder with the name "{0}" already exists', $plugin));
@@ -158,7 +167,7 @@ class PluginsController extends AppController
      * Uninstalls a plugin.
      *
      * @param string $name Plugin name.
-     * @return \Cake\Http\Response Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Exception When error is encountered.
      */
     public function uninstall(string $name)

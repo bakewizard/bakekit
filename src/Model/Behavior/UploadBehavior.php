@@ -19,7 +19,7 @@ use const UPLOAD_ERR_NO_FILE;
  */
 class UploadBehavior extends Behavior
 {
-    private ?AbstractUploadHandler $uploadHandler = null;
+    private AbstractUploadHandler $uploadHandler;
     private string $tableAlias = 'Files';
 
     /**

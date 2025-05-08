@@ -161,8 +161,10 @@ class UsersController extends AppController
     public function logout()
     {
         $result = $this->Authentication->getResult();
-        if ($result->isValid()) {
-            return $this->redirect($this->Authentication->logout());
+        if ($result !== null && $result->isValid()) {
+            $logoutUrl = $this->Authentication->logout();
+
+            return $this->redirect($logoutUrl ?? '/');
         }
     }
 }
