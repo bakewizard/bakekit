@@ -21,7 +21,7 @@ class DocBlockParser
     /**
      * Tags are stored as an associative array where the key is the tag name
      *
-     * @var array<string, string>
+     * @var array<string, mixed>
      */
     private array $tags = [];
 

@@ -34,7 +34,9 @@ class TextAndJsonType extends BaseType
             return null;
         }
 
-        return is_string($value) ? $value : json_encode($value);
+        $json = is_string($value) ? $value : json_encode($value);
+
+        return $json === false ? null : $json;
     }
 
     /**

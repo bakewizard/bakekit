@@ -42,6 +42,9 @@ class ComposerManager
         ];
 
         $cwd = getcwd();
+        if ($cwd === false) {
+            throw new Exception('Failed to get current working directory.');
+        }
         chdir(ROOT);
 
         $input = new ArrayInput($options);
@@ -161,20 +164,26 @@ class ComposerManager
     /**
      * Reads composer.json into array.
      *
-     * @param string|null $path
+     * @param string $path
      * @return array<string, mixed>
-     * @throws \Exception
      */
-    public function getConfigData(?string $path = null): array
+    private function getConfigData(?string $path = null): array
     {
         if (!$path) {
             $path = ROOT;
         }
 
-        if (!is_readable($path)) {
-            throw new Exception(__('Main composer file not found.'));
+        $configFile = $path . DS . 'composer.json';
+
+        if (!file_exists($configFile) || !is_readable($configFile)) {
+            return [];
         }
 
-        return json_decode(file_get_contents($path . DS . 'composer.json'), true);
+        $content = file_get_contents($configFile);
+        if ($content === false) {
+            return [];
+        }
+
+        return json_decode($content, true);
     }
 }

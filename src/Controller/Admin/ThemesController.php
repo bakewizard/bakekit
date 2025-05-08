@@ -45,16 +45,17 @@ class ThemesController extends AppController
                 }
 
                 $name = $info->getFilename();
-                $configFile = $this->themesDir . $name . DS . 'composer.json';
-                if (is_file($configFile)) {
-                    $content = file_get_contents($configFile);
-                    $json = json_decode($content, true);
-                    $themes[$name] = [
-                        'name' => $name,
-                        'description' => $json['description'] ?? '--- No description ---',
-                        'license' => $json['license'] ?? '--- No license ---',
-                    ];
+                $config = $this->getConfigData($this->themesDir . $name);
+
+                if (empty($config)) {
+                    continue;
                 }
+
+                $themes[$name] = [
+                    'name' => $name,
+                    'description' => $config['description'] ?? '--- No description ---',
+                    'license' => $config['license'] ?? '--- No license ---',
+                ];
             }
         }
 
@@ -75,15 +76,14 @@ class ThemesController extends AppController
      */
     public function view(string $name)
     {
-        $themePath = $this->themesDir . $name . DIRECTORY_SEPARATOR;
         $activeTheme = $this->getConfig('Cms.theme');
 
-        $content = file_get_contents($themePath . 'composer.json');
-        $json = json_decode($content, true);
+        $config = $this->getConfigData($this->themesDir . $name);
+
         $theme = [
             'name' => $name,
-            'description' => $json['description'] ?? '--- No description ---',
-            'license' => $json['license'] ?? '--- No license ---',
+            'description' => $config['description'] ?? '--- No description ---',
+            'license' => $config['license'] ?? '--- No license ---',
         ];
 
         $this->set([
@@ -114,6 +114,11 @@ class ThemesController extends AppController
 
         // 1. Check MIME type
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        if ($finfo === false) {
+            $this->Flash->error(__('Failed to check MIME type.'));
+
+            return $this->redirect(['action' => 'index']);
+        }
         $mimeType = finfo_file($finfo, $file->getStream()->getMetadata('uri'));
         finfo_close($finfo);
 
@@ -237,5 +242,31 @@ class ThemesController extends AppController
             throw new Exception(__('Error occured while extracting the archive.'));
         }
         $archive->close();
+    }
+
+    /**
+     * Reads composer.json into array.
+     *
+     * @param string $path
+     * @return array<string, mixed>
+     */
+    private function getConfigData(?string $path = null): array
+    {
+        if (!$path) {
+            $path = ROOT;
+        }
+
+        $configFile = $path . DS . 'composer.json';
+
+        if (!file_exists($configFile) || !is_readable($configFile)) {
+            return [];
+        }
+
+        $content = file_get_contents($configFile);
+        if ($content === false) {
+            return [];
+        }
+
+        return json_decode($content, true);
     }
 }

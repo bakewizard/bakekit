@@ -8,11 +8,13 @@ use ArrayObject;
 use Cake\Core\App;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Event\EventInterface;
+use Cake\Form\Form;
 use Cake\ORM\Behavior\Translate\ShadowTableStrategy;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
+use LogicException;
 use Override;
 use ReflectionClass;
 
@@ -197,6 +199,9 @@ class BlocksTable extends Table
             $configClass = App::classname($entity->cell_full_name . 'CellConfig', 'Form/Cell', 'Form');
             if ($configClass) {
                 $config = new $configClass();
+                if (!$config instanceof Form) {
+                    throw new LogicException(sprintf('Expected an instance of %s, got %s', Form::class, get_class($config)));
+                }
                 $fields = $config->getSchema()->fields();
                 $validator = $config->getValidator();
                 $data = [];

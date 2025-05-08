@@ -104,9 +104,9 @@ class ResourcesTable extends Table
      *
      * @param string $path The path to resource.
      * @param int $parentId The parent id to use when creating.
-     * @return \App\Model\Entity\Resource
+     * @return \App\Model\Entity\Resource|false The created resource node or false on failure.
      */
-    public function createNode(string $path, ?int $parentId = null): Resource
+    public function createNode(string $path, ?int $parentId = null): Resource|bool
     {
         $node = null;
         $aliases = explode('/', $path);

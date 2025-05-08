@@ -22,6 +22,7 @@ use Cake\Cache\Cache;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
+use Cake\Form\Form;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\I18n\I18n;
@@ -309,6 +310,7 @@ class AppController extends Controller
     /**
      * Handles configuration form
      *
+     * @throws \LogicException
      * @return \Cake\Http\Response|null|void
      */
     protected function settings()
@@ -317,6 +319,12 @@ class AppController extends Controller
         $formClass = $plugin . '\Form\ConfigForm';
         $namespace = $plugin === 'App' ? 'Cms' : $plugin;
         $settings = new $formClass();
+
+        if (!$settings instanceof Form) {
+            $this->Flash->error(__('Expected an instance of {0}, got {1}', Form::class, get_class($settings)));
+
+            return $this->redirect($this->referer());
+        }
 
         if ($this->request->is('post')) {
             if ($settings->execute($this->request->getData())) {

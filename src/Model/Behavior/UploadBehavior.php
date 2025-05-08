@@ -195,7 +195,7 @@ class UploadBehavior extends Behavior
     /**
      * Removes loaded files
      *
-     * @param array<object> $files An array of objects to remove (each expected to have an 'id' property).
+     * @param array<\Cake\ORM\Entity> $files An array of objects to remove (each expected to have an 'id' property).
      * @return void
      */
     public function remove(array $files): void
@@ -247,7 +247,7 @@ class UploadBehavior extends Behavior
             return '';
         }
         $bytes = intval(ceil($chunkLength * $sublevels / 2));
-        $hash = bin2hex(random_bytes($bytes));
+        $hash = bin2hex(random_bytes(max(1, $bytes)));
         $path = '/' . implode('/', str_split(substr($hash, 0, $sublevels * $chunkLength), $chunkLength));
 
         return $path;

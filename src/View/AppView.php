@@ -42,18 +42,12 @@ use Override;
 class AppView extends View
 {
     /**
-     * @var array<string, \Cake\ORM\Entity>
+     * @var array<string, \App\Model\Entity\Region>
      */
     private array $_regions = [];
 
     /**
-     * Initialization hook method.
-     *
-     * Use this method to add common initialization code like loading helpers.
-     *
-     * e.g. `$this->loadHelper('Html');`
-     *
-     * @return void
+     * @inheritDoc
      */
     #[Override]
     public function initialize(): void
@@ -72,7 +66,6 @@ class AppView extends View
         $this->loadHelper('Menu');
 
         if (!$this->isRenderingCell()) {
-            /** @var array<string, \Cake\ORM\Entity>|false $cachedRegions */
             $cachedRegions = Cache::read('regions', 'cms');
             $this->_regions = $cachedRegions ?: [];
             $this->Form->setTemplates([
@@ -95,7 +88,6 @@ class AppView extends View
         }
 
         $html = '';
-        /** @var string|null $lang */
         $lang = $this->request->getParam('lang');
         foreach ($this->_regions[$alias]->blocks as $block) {
             if ($block->isEmpty('cell')) {
@@ -110,12 +102,14 @@ class AppView extends View
             $options = ['block' => $block, 'parentView' => $this];
             try {
                 /** @var \Cake\View\Cell $cell */
-                $cell = $this->cell($block->cell, $arguments, $options);
+                if (!empty($block->cell)) {
+                    $cell = $this->cell($block->cell, $arguments, $options);
+                } else {
+                    continue;
+                }
                 $html .= $cell->render(!empty($block->template) ? $block->template : null);
 
-                /** @var string|null $css */
                 $css = $cell->viewBuilder()->getVar('css') ?? '';
-                /** @var string|null $script */
                 $script = $cell->viewBuilder()->getVar('script') ?? '';
                 if (!empty($css)) {
                     $this->prepend('css', $css);

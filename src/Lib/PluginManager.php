@@ -5,8 +5,10 @@ namespace App\Lib;
 
 use Cake\Core\App;
 use Cake\Datasource\ModelAwareTrait;
+use Cake\Form\Form;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
+use LogicException;
 use Migrations\Migrations;
 use ReflectionClass;
 use ReflectionMethod;
@@ -29,7 +31,7 @@ class PluginManager
      */
     public function __construct()
     {
-        $this->pluginsDir = current(App::path('plugins'));
+        $this->pluginsDir = current(App::path('plugins')) ?: '';
     }
 
     /**
@@ -93,8 +95,11 @@ class PluginManager
                     fn($method) => $method->getDeclaringClass()->getName() === $className && $method->name !== 'initialize',
                 );
 
+                // Iterate through each declared method to extract its documentation and construct
+                // an array containing the method's summary, description, and path for the plugin.
                 foreach ($declaredMethods as $method) {
-                    $docBlock = new DocBlockParser($method->getDocComment());
+                    $docComment = $method->getDocComment();
+                    $docBlock = new DocBlockParser($docComment !== false ? $docComment : null);
                     $data[$plugin][] = [
                         'summary' => $docBlock->getSummary(),
                         'description' => $docBlock->getDescription(),
@@ -269,11 +274,20 @@ class PluginManager
         }
         /** @var \App\Model\Table\ResourcesTable $table */
         $table = $this->fetchModel('Resources');
+        /** @var \App\Model\Entity\Resource $rootNode */
+        $rootNode = $table->checkNode('Site', null);
 
-        $rootNode = $table->checkNode('Site', null) ?? $table->createNode('Site', null);
+        if ($rootNode === null) {
+            $rootNode = $table->createNode('Site', null);
+        }
 
         foreach ($plugins as $plugin) {
+            /** @var \App\Model\Entity\Resource $rootNode */
             $pluginNode = $table->createNode($plugin, $rootNode->id);
+
+            if ($pluginNode === false) {
+                continue;
+            }
 
             if ($plugin === 'System') {
                 $plugin = null;
@@ -292,13 +306,18 @@ class PluginManager
                     continue;
                 }
 
-                $controller = substr(substr($file, 0, strrpos($file, '.')), 0, -10);
+                $position = strrpos($file, '.');
+                $baseName = $position !== false ? substr($file, 0, $position) : $file;
+                $controller = substr($baseName, 0, strlen($baseName) - 10);
                 $className = App::className($plugin ? "{$plugin}.{$controller}" : $controller, 'Controller/Admin', 'Controller');
                 $reflection = new ReflectionClass($className);
                 $actions = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 
                 $controllerNode = $table->createNode($controller, $pluginNode->id);
 
+                if ($controllerNode === false) {
+                    continue;
+                }
                 foreach ($actions as $action) {
                     if ($action->class === $reflection->getName() && !in_array($action->name, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter'])) {
                         $table->createNode($action->name, $controllerNode->id);
@@ -319,8 +338,8 @@ class PluginManager
         $table = $this->fetchModel('Resources');
 
         $resources = $table->find()
-                ->where(['alias is' => $plugin, 'parent_id' => 1])
-                ->first();
+            ->where(['alias is' => $plugin, 'parent_id' => 1])
+            ->first();
 
         if (!empty($resources)) {
             $table->delete($resources);
@@ -339,6 +358,11 @@ class PluginManager
         $configClass = App::className($class, 'Form', 'Form');
         if ($configClass) {
             $config = new $configClass();
+
+            if (!$config instanceof Form) {
+                throw new LogicException(sprintf('Expected an instance of %s, got %s', Form::class, get_class($config)));
+            }
+
             $fields = $config->getSchema()->fields();
             $data = [];
             foreach ($fields as $fieldName) {

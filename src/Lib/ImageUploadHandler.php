@@ -103,7 +103,7 @@ class ImageUploadHandler extends AbstractUploadHandler
 
             $foundFiles = $this->_storage->listContents($file->path)
                     ->filter(fn(StorageAttributes $attr) => $attr->isFile())
-                    ->filter(fn(StorageAttributes $attr) => preg_match($pattern, basename($attr->path())))
+                    ->filter(fn(StorageAttributes $attr) => (bool)preg_match($pattern, basename($attr->path())))
                     ->toArray();
 
             foreach ($foundFiles as $foundFile) {

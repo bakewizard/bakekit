@@ -35,7 +35,7 @@ class PluginsController extends AppController
     {
         parent::initialize();
 
-        $this->pluginsDir = current(App::path('plugins'));
+        $this->pluginsDir = (string)current(App::path('plugins')) ?: '';
     }
 
     /**
@@ -69,19 +69,20 @@ class PluginsController extends AppController
                 }
 
                 $name = $info->getFilename();
-                $configFile = $this->pluginsDir . $name . DS . 'composer.json';
-                if (is_file($configFile)) {
-                    $content = file_get_contents($configFile);
-                    $json = json_decode($content, true);
-                    $plugins[$name] = [
-                        'id' => isset($installedPlugins[$name]) ? $installedPlugins[$name]->id : null,
-                        'name' => $name,
-                        'alias' => isset($installedPlugins[$name]) ? $installedPlugins[$name]->alias : '',
-                        'description' => $json['description'],
-                        'parent_plugin' => $json['extra']['parent-plugin'] ?? null,
-                        'enabled' => isset($installedPlugins[$name]) && $installedPlugins[$name]->enabled,
-                    ];
+                $config = $this->getConfigData($this->pluginsDir . $name);
+
+                if (empty($config)) {
+                    continue;
                 }
+
+                $plugins[$name] = [
+                    'id' => $installedPlugins[$name]->id ?? null,
+                    'name' => $name,
+                    'alias' => $installedPlugins[$name]->alias ?? '',
+                    'description' => $config['description'] ?? '',
+                    'parent_plugin' => $config['extra']['parent-plugin'] ?? null,
+                    'enabled' => isset($installedPlugins[$name]) && $installedPlugins[$name]->enabled,
+                ];
             }
         }
 
@@ -323,7 +324,6 @@ class PluginsController extends AppController
      *
      * @param string $path
      * @return array<string, mixed>
-     * @throws \Exception
      */
     private function getConfigData(?string $path = null): array
     {
@@ -331,10 +331,17 @@ class PluginsController extends AppController
             $path = ROOT;
         }
 
-        if (!is_readable($path)) {
-            throw new Exception(__('Main composer file not found.'));
+        $configFile = $path . DS . 'composer.json';
+
+        if (!file_exists($configFile) || !is_readable($configFile)) {
+            return [];
         }
 
-        return json_decode(file_get_contents($path . DS . 'composer.json'), true);
+        $content = file_get_contents($configFile);
+        if ($content === false) {
+            return [];
+        }
+
+        return json_decode($content, true);
     }
 }
