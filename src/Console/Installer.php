@@ -21,13 +21,13 @@ if (!defined('STDIN')) {
     define('STDIN', fopen('php://stdin', 'r'));
 }
 
-use Cake\Codeception\Console\Installer as CodeceptionInstaller;
 use Cake\Utility\Security;
 use Composer\IO\IOInterface;
 use Composer\Script\Event;
 use Exception;
 use PDO;
 use PDOException;
+use PDOStatement;
 
 /**
  * Provides installation hooks for when this application is installed through
@@ -72,10 +72,6 @@ class Installer
         static::setSecuritySalt($rootDir, $io);
 
         static::setDatabaseSettings($rootDir, $io);
-
-        if (class_exists(CodeceptionInstaller::class)) {
-            CodeceptionInstaller::customizeCodeceptionBinary($event);
-        }
     }
 
     /**
@@ -166,7 +162,6 @@ class Installer
         };
 
         $walker = function (string $dir) use (&$walker, $changePerms): void {
-            /** @phpstan-ignore-next-line */
             $files = array_diff(scandir($dir), ['.', '..']);
             foreach ($files as $file) {
                 $path = $dir . '/' . $file;
@@ -222,8 +217,12 @@ class Installer
 
                 $tablesList = [];
                 $result = $pdo->query('SHOW TABLES');
-                while ($row = $result->fetch(PDO::FETCH_NUM)) {
-                    $tablesList[] = $row[0];
+                if ($result instanceof PDOStatement) {
+                    while ($row = $result->fetch(PDO::FETCH_NUM)) {
+                        $tablesList[] = $row[0];
+                    }
+                } else {
+                    $io->writeError('Failed to fetch tables from the database.');
                 }
 
                 if (!empty($tablesList)) {
@@ -237,7 +236,13 @@ class Installer
         } while (!$connected);
 
         $config = $dir . '/config/app_local.php';
-        $content = str_replace(['__DB_HOST__', '__DB_NAME__', '__DB_USER__', '__DB_PASS__'], [$dbHost, $dbName, $dbUser, $dbPass], file_get_contents($config), $count);
+        $fileContent = file_get_contents($config);
+        if ($fileContent === false) {
+            $io->writeError('Failed to read the config file: ' . $config);
+
+            return;
+        }
+        $content = str_replace(['__DB_HOST__', '__DB_NAME__', '__DB_USER__', '__DB_PASS__'], [$dbHost, $dbName, $dbUser, $dbPass], $fileContent, $count);
 
         if ($count < 4) {
             $io->writeError('Not all placeholders were replaced.');

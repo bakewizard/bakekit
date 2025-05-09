@@ -77,7 +77,7 @@ class AppView extends View
     /**
      * Returns a region content by alias
      *
-     * @param string  $alias Region alias
+     * @param string $alias Region alias
      * @param array<string, mixed> $arguments Cell arguments
      * @return string Region content
      */
@@ -101,16 +101,18 @@ class AppView extends View
 
             $options = ['block' => $block, 'parentView' => $this];
             try {
-                /** @var \Cake\View\Cell $cell */
                 if (!empty($block->cell)) {
+                    /** @var \App\View\Cell\BlockCell $cell */
                     $cell = $this->cell($block->cell, $arguments, $options);
                 } else {
                     continue;
                 }
                 $html .= $cell->render(!empty($block->template) ? $block->template : null);
 
-                $css = $cell->viewBuilder()->getVar('css') ?? '';
-                $script = $cell->viewBuilder()->getVar('script') ?? '';
+                $cellView = $cell->getView();
+                $css = $cellView->fetch('css');
+                $script = $cellView->fetch('script');
+
                 if (!empty($css)) {
                     $this->prepend('css', $css);
                 }

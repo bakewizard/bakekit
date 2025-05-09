@@ -134,7 +134,12 @@ class MenuHelper extends Helper
 
         $listItemAttrs = [];
         if ($hasSubmenu) {
-            $listItemAttrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['dropdownMenuItem'], $this->_config['itemWithDropdown']) : $this->_config['dropdownMenuItem']);
+            $listItemAttrs = !empty($item['children'])
+                ? $this->mergeAttrs(
+                    $this->_config['dropdownMenuItem'],
+                    $this->_config['itemWithDropdown'],
+                )
+                : $this->_config['dropdownMenuItem'];
         } else {
             $listItemAttrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['item'], $this->_config['itemWithDropdown']) : $this->_config['item']);
         }

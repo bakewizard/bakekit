@@ -259,9 +259,14 @@ class AppController extends Controller
     protected function addPluginBreadcrumb(?string $plugin): void
     {
         if ($plugin !== null && $plugin !== 'Pages' && $this->request->getParam('controller') !== 'Dashboard') {
+            $pluginName = preg_replace('/([A-Z])/', ' $1', $plugin);
             $this->addCrumb(
-                preg_replace('/([A-Z])/', ' $1', $plugin),
-                ['plugin' => $plugin, 'controller' => 'Dashboard', 'action' => 'index'],
+                $pluginName ?? 'Undefined',
+                [
+                    'plugin' => $plugin,
+                    'controller' => 'Dashboard',
+                    'action' => 'index',
+                ],
             );
         }
     }
@@ -285,8 +290,9 @@ class AppController extends Controller
                     preg_replace('/([A-Z])/', ' $1', $refererParams['controller']),
                     ['plugin' => $refererParams['plugin'], 'controller' => $refererParams['controller'], 'action' => 'index'],
                 );
+                $controllerName = preg_replace('/([A-Z])/', ' $1', $controller);
                 $this->addCrumb(
-                    preg_replace('/([A-Z])/', ' $1', $controller),
+                    $controllerName ?? 'Undefined',
                     [
                         'plugin' => $plugin,
                         'controller' => $refererParams['controller'],
@@ -300,9 +306,14 @@ class AppController extends Controller
         }
 
         if ($action !== 'index') {
+            $controllerName = preg_replace('/([A-Z])/', ' $1', $controller);
             $this->addCrumb(
-                preg_replace('/([A-Z])/', ' $1', $controller),
-                ['plugin' => $plugin, 'controller' => $controller, 'action' => 'index'],
+                $controllerName ?? 'Undefined',
+                [
+                    'plugin' => $plugin,
+                    'controller' => $controller,
+                    'action' => 'index',
+                ],
             );
         }
     }

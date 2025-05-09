@@ -16,7 +16,7 @@ class CmsPlugin extends BasePlugin
      *
      * @var \App\Application
      */
-    protected ?Application $app;
+    protected Application $app;
 
     /**
      * The alias of this plugin
@@ -43,9 +43,11 @@ class CmsPlugin extends BasePlugin
     #[Override]
     public function bootstrap(PluginApplicationInterface $app): void
     {
-        $this->app = $app instanceof Application ? $app : null;
-
         parent::bootstrap($app);
+
+        if ($app instanceof Application) {
+            $this->app = $app;
+        }
     }
 
     /**
@@ -62,11 +64,15 @@ class CmsPlugin extends BasePlugin
                 if ($languages) {
                     foreach ($languages as $i => $lang) {
                         if ($i !== 0) {
-                            $routes->plugin($this->name, ['path' => ('/' . $lang . '/' . $this->alias), 'lang' => $lang], $return($routes));
+                            if (is_string($this->name)) {
+                                $routes->plugin($this->name, ['path' => ('/' . $lang . '/' . $this->alias), 'lang' => $lang], $return($routes));
+                            }
                         }
                     }
                 }
-                $routes->plugin($this->name, ['path' => '/' . $this->alias], $return($routes));
+                if (is_string($this->name)) {
+                    $routes->plugin($this->name, ['path' => '/' . $this->alias], $return($routes));
+                }
             }
         }
     }
