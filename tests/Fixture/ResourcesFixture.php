@@ -1,0 +1,381 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Test\Fixture;
+
+use Cake\TestSuite\Fixture\TestFixture;
+
+/**
+ * ResourcesFixture
+ */
+class ResourcesFixture extends TestFixture
+{
+    /**
+     * Init method
+     *
+     * @return void
+     */
+    public function init(): void
+    {
+        $this->records = [
+            [
+                'id' => 1,
+                'parent_id' => null,
+                'lft' => 1,
+                'rght' => 102,
+                'alias' => 'Site',
+            ],
+            [
+                'id' => 2,
+                'parent_id' => 1,
+                'lft' => 2,
+                'rght' => 101,
+                'alias' => 'System',
+            ],
+            [
+                'id' => 3,
+                'parent_id' => 2,
+                'lft' => 3,
+                'rght' => 18,
+                'alias' => 'Blocks',
+            ],
+            [
+                'id' => 4,
+                'parent_id' => 3,
+                'lft' => 4,
+                'rght' => 5,
+                'alias' => 'add',
+            ],
+            [
+                'id' => 5,
+                'parent_id' => 3,
+                'lft' => 6,
+                'rght' => 7,
+                'alias' => 'edit',
+            ],
+            [
+                'id' => 6,
+                'parent_id' => 3,
+                'lft' => 8,
+                'rght' => 9,
+                'alias' => 'delete',
+            ],
+            [
+                'id' => 7,
+                'parent_id' => 3,
+                'lft' => 10,
+                'rght' => 11,
+                'alias' => 'moveUp',
+            ],
+            [
+                'id' => 8,
+                'parent_id' => 3,
+                'lft' => 12,
+                'rght' => 13,
+                'alias' => 'moveDown',
+            ],
+            [
+                'id' => 9,
+                'parent_id' => 3,
+                'lft' => 14,
+                'rght' => 15,
+                'alias' => 'config',
+            ],
+            [
+                'id' => 10,
+                'parent_id' => 3,
+                'lft' => 16,
+                'rght' => 17,
+                'alias' => 'getCells',
+            ],
+            [
+                'id' => 11,
+                'parent_id' => 2,
+                'lft' => 19,
+                'rght' => 26,
+                'alias' => 'Dashboard',
+            ],
+            [
+                'id' => 12,
+                'parent_id' => 11,
+                'lft' => 20,
+                'rght' => 21,
+                'alias' => 'index',
+            ],
+            [
+                'id' => 13,
+                'parent_id' => 11,
+                'lft' => 22,
+                'rght' => 23,
+                'alias' => 'info',
+            ],
+            [
+                'id' => 14,
+                'parent_id' => 11,
+                'lft' => 24,
+                'rght' => 25,
+                'alias' => 'settings',
+            ],
+            [
+                'id' => 15,
+                'parent_id' => 2,
+                'lft' => 27,
+                'rght' => 40,
+                'alias' => 'MenuLinks',
+            ],
+            [
+                'id' => 16,
+                'parent_id' => 15,
+                'lft' => 28,
+                'rght' => 29,
+                'alias' => 'add',
+            ],
+            [
+                'id' => 17,
+                'parent_id' => 15,
+                'lft' => 30,
+                'rght' => 31,
+                'alias' => 'edit',
+            ],
+            [
+                'id' => 18,
+                'parent_id' => 15,
+                'lft' => 32,
+                'rght' => 33,
+                'alias' => 'delete',
+            ],
+            [
+                'id' => 19,
+                'parent_id' => 15,
+                'lft' => 34,
+                'rght' => 35,
+                'alias' => 'moveUp',
+            ],
+            [
+                'id' => 20,
+                'parent_id' => 15,
+                'lft' => 36,
+                'rght' => 37,
+                'alias' => 'moveDown',
+            ],
+            [
+                'id' => 21,
+                'parent_id' => 15,
+                'lft' => 38,
+                'rght' => 39,
+                'alias' => 'getLinks',
+            ],
+            [
+                'id' => 22,
+                'parent_id' => 2,
+                'lft' => 41,
+                'rght' => 52,
+                'alias' => 'Menus',
+            ],
+            [
+                'id' => 23,
+                'parent_id' => 22,
+                'lft' => 42,
+                'rght' => 43,
+                'alias' => 'index',
+            ],
+            [
+                'id' => 24,
+                'parent_id' => 22,
+                'lft' => 44,
+                'rght' => 45,
+                'alias' => 'view',
+            ],
+            [
+                'id' => 25,
+                'parent_id' => 22,
+                'lft' => 46,
+                'rght' => 47,
+                'alias' => 'add',
+            ],
+            [
+                'id' => 26,
+                'parent_id' => 22,
+                'lft' => 48,
+                'rght' => 49,
+                'alias' => 'edit',
+            ],
+            [
+                'id' => 27,
+                'parent_id' => 22,
+                'lft' => 50,
+                'rght' => 51,
+                'alias' => 'delete',
+            ],
+            [
+                'id' => 28,
+                'parent_id' => 2,
+                'lft' => 53,
+                'rght' => 62,
+                'alias' => 'Meta',
+            ],
+            [
+                'id' => 29,
+                'parent_id' => 28,
+                'lft' => 54,
+                'rght' => 55,
+                'alias' => 'index',
+            ],
+            [
+                'id' => 30,
+                'parent_id' => 28,
+                'lft' => 56,
+                'rght' => 57,
+                'alias' => 'add',
+            ],
+            [
+                'id' => 31,
+                'parent_id' => 28,
+                'lft' => 58,
+                'rght' => 59,
+                'alias' => 'edit',
+            ],
+            [
+                'id' => 32,
+                'parent_id' => 28,
+                'lft' => 60,
+                'rght' => 61,
+                'alias' => 'delete',
+            ],
+            [
+                'id' => 33,
+                'parent_id' => 2,
+                'lft' => 63,
+                'rght' => 76,
+                'alias' => 'Plugins',
+            ],
+            [
+                'id' => 34,
+                'parent_id' => 33,
+                'lft' => 64,
+                'rght' => 65,
+                'alias' => 'index',
+            ],
+            [
+                'id' => 35,
+                'parent_id' => 33,
+                'lft' => 66,
+                'rght' => 67,
+                'alias' => 'edit',
+            ],
+            [
+                'id' => 36,
+                'parent_id' => 33,
+                'lft' => 68,
+                'rght' => 69,
+                'alias' => 'install',
+            ],
+            [
+                'id' => 37,
+                'parent_id' => 33,
+                'lft' => 70,
+                'rght' => 71,
+                'alias' => 'uninstall',
+            ],
+            [
+                'id' => 38,
+                'parent_id' => 33,
+                'lft' => 72,
+                'rght' => 73,
+                'alias' => 'activate',
+            ],
+            [
+                'id' => 39,
+                'parent_id' => 33,
+                'lft' => 74,
+                'rght' => 75,
+                'alias' => 'deactivate',
+            ],
+            [
+                'id' => 40,
+                'parent_id' => 2,
+                'lft' => 77,
+                'rght' => 88,
+                'alias' => 'Regions',
+            ],
+            [
+                'id' => 41,
+                'parent_id' => 40,
+                'lft' => 78,
+                'rght' => 79,
+                'alias' => 'index',
+            ],
+            [
+                'id' => 42,
+                'parent_id' => 40,
+                'lft' => 80,
+                'rght' => 81,
+                'alias' => 'view',
+            ],
+            [
+                'id' => 43,
+                'parent_id' => 40,
+                'lft' => 82,
+                'rght' => 83,
+                'alias' => 'add',
+            ],
+            [
+                'id' => 44,
+                'parent_id' => 40,
+                'lft' => 84,
+                'rght' => 85,
+                'alias' => 'edit',
+            ],
+            [
+                'id' => 45,
+                'parent_id' => 40,
+                'lft' => 86,
+                'rght' => 87,
+                'alias' => 'delete',
+            ],
+            [
+                'id' => 46,
+                'parent_id' => 2,
+                'lft' => 89,
+                'rght' => 100,
+                'alias' => 'Themes',
+            ],
+            [
+                'id' => 47,
+                'parent_id' => 46,
+                'lft' => 90,
+                'rght' => 91,
+                'alias' => 'index',
+            ],
+            [
+                'id' => 48,
+                'parent_id' => 46,
+                'lft' => 92,
+                'rght' => 93,
+                'alias' => 'view',
+            ],
+            [
+                'id' => 49,
+                'parent_id' => 46,
+                'lft' => 94,
+                'rght' => 95,
+                'alias' => 'install',
+            ],
+            [
+                'id' => 50,
+                'parent_id' => 46,
+                'lft' => 96,
+                'rght' => 97,
+                'alias' => 'uninstall',
+            ],
+            [
+                'id' => 51,
+                'parent_id' => 46,
+                'lft' => 98,
+                'rght' => 99,
+                'alias' => 'activate',
+            ],
+        ];
+        parent::init();
+    }
+}

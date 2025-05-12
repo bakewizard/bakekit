@@ -95,12 +95,14 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             FactoryLocator::add('Table', (new TableLocator())->allowFallbackClass(true));
         }
 
-        Cache::setConfig('cms', [
-            'className' => 'File',
-            'prefix' => 'cms_',
-            'path' => CACHE . 'cms' . DS,
-            'duration' => '+999 days',
-        ]);
+        if (!Cache::getConfig('cms')) {
+            Cache::setConfig('cms', [
+                'className' => 'File',
+                'prefix' => 'cms_',
+                'path' => CACHE . 'cms' . DS,
+                'duration' => '+999 days',
+            ]);
+        }
         try {
             Configure::config('db', new DbConfig(null, 'cms'));
             Configure::load('Cms', 'db');
@@ -193,12 +195,12 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         // Register scoped middleware for use in routes.php
         $routes->registerMiddleware('authentication', new AuthenticationMiddleware($this));
         $routes->registerMiddleware('authorization', new AuthorizationMiddleware($this, [
-                    'identityDecorator' => function ($auth, $user) {
-                        return $user->setAuthorization($auth);
-                    },
-                    'unauthorizedHandler' => [
-                        'className' => 'RefererRedirect',
-                    ],
+            'identityDecorator' => function ($auth, $user) {
+                return $user->setAuthorization($auth);
+            },
+            'unauthorizedHandler' => [
+                'className' => 'RefererRedirect',
+            ],
         ]));
         $routes->registerMiddleware('request_authorization', new RequestAuthorizationMiddleware());
         $routes->middlewareGroup('auth', ['authentication', 'authorization', 'request_authorization']);
@@ -227,7 +229,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         });
 
         Router::addUrlFilter(function ($params, $request) {
-            if ($request->getParam('lang') && !isset($params['lang'])) {
+            if ($request && $request->getParam('lang') && !isset($params['lang'])) {
                 $params['lang'] = $request->getParam('lang');
             }
 
@@ -246,30 +248,30 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     {
         $middlewareQueue
 
-                // Maintenance middleware
-                ->add(new MaintenanceMiddleware($this->getConfig('Cms.maintenance')))
+            // Maintenance middleware
+            ->add(new MaintenanceMiddleware((array)$this->getConfig('Cms.maintenance', [])))
 
-                // Catch any exceptions in the lower layers,
-                // and make an error page/response
-                ->add(new ErrorHandlerMiddleware($this->getConfig('Error'), $this))
+            // Catch any exceptions in the lower layers,
+            // and make an error page/response
+            ->add(new ErrorHandlerMiddleware($this->getConfig('Error'), $this))
 
-                // Handle plugin/theme assets like CakePHP normally does.
-                ->add(new AssetMiddleware(['cacheTime' => $this->getConfig('Asset.cacheTime')]))
+            // Handle plugin/theme assets like CakePHP normally does.
+            ->add(new AssetMiddleware(['cacheTime' => $this->getConfig('Asset.cacheTime')]))
 
-                // Add routing middleware.
-                // If you have a large number of routes connected, turning on routes
-                // caching in production could improve performance.
-                // See https://github.com/CakeDC/cakephp-cached-routing
-                ->add(new RoutingMiddleware($this))
+            // Add routing middleware.
+            // If you have a large number of routes connected, turning on routes
+            // caching in production could improve performance.
+            // See https://github.com/CakeDC/cakephp-cached-routing
+            ->add(new RoutingMiddleware($this))
 
-                // Parse various types of encoded request bodies so that they are
-                // available as array through $request->getData()
-                // https://book.cakephp.org/5/en/controllers/middleware.html#body-parser-middleware
-                ->add(new BodyParserMiddleware())
+            // Parse various types of encoded request bodies so that they are
+            // available as array through $request->getData()
+            // https://book.cakephp.org/5/en/controllers/middleware.html#body-parser-middleware
+            ->add(new BodyParserMiddleware())
 
-                // Cross Site Request Forgery (CSRF) Protection Middleware
-                // https://book.cakephp.org/5/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
-                ->add(new CsrfProtectionMiddleware(['httponly' => true]));
+            // Cross Site Request Forgery (CSRF) Protection Middleware
+            // https://book.cakephp.org/5/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
+            ->add(new CsrfProtectionMiddleware(['httponly' => true]));
 
         return $middlewareQueue;
     }
@@ -279,7 +281,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      *
      * @param \Cake\Core\ContainerInterface $container The Container to update.
      * @return void
-     * @link https://book.cakephp.org/4/en/development/dependency-injection.html#dependency-injection
+     * @link https://book.cakephp.org/5/en/development/dependency-injection.html#dependency-injection
      */
     #[Override]
     public function services(ContainerInterface $container): void
