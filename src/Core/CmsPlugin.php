@@ -23,7 +23,7 @@ class CmsPlugin extends BasePlugin
      *
      * @var string
      */
-    protected string $alias;
+    protected ?string $alias;
 
     /**
      * Constructor for the plugin.
