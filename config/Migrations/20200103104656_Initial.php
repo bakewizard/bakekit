@@ -1,9 +1,11 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class Initial extends AbstractMigration
+class Initial extends BaseMigration
 {
+    public bool $autoId = false;
+
     public function up(): void
     {
         $this->table('resources')
