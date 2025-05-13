@@ -28,8 +28,8 @@ class UsersFixture extends TestFixture
                 'email' => 'neo@matrix.net',
                 'password' => (new DefaultPasswordHasher())->hash('admin'),
                 'role_id' => 1,
-                'created' => '2025-05-12 08:22:11',
-                'modified' => '2025-05-12 08:22:11',
+                'created' => date('Y-m-d H:i:s'),
+                'modified' => date('Y-m-d H:i:s'),
                 'files' => [],
             ],
             [
@@ -40,8 +40,8 @@ class UsersFixture extends TestFixture
                 'email' => 'test@test.net',
                 'password' => (new DefaultPasswordHasher())->hash('test'),
                 'role_id' => 2,
-                'created' => '2025-05-12 08:30:12',
-                'modified' => '2025-05-12 08:30:12',
+                'created' => date('Y-m-d H:i:s'),
+                'modified' => date('Y-m-d H:i:s'),
                 'files' => [],
             ],
         ];

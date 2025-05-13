@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5badee6d61e862e10d21718efab3454a",
+    "content-hash": "f9b9a300882aadff84ca7b8266841fff",
     "packages": [
         {
             "name": "admad/cakephp-sequence",
@@ -371,16 +371,16 @@
         },
         {
             "name": "cakephp/migrations",
-            "version": "4.6.3",
+            "version": "4.6.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/migrations.git",
-                "reference": "895054bfb8422052a36bcea7233cfef8a7254cfc"
+                "reference": "a735a6f39e8452727b6281834529d40bc6efe741"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/migrations/zipball/895054bfb8422052a36bcea7233cfef8a7254cfc",
-                "reference": "895054bfb8422052a36bcea7233cfef8a7254cfc",
+                "url": "https://api.github.com/repos/cakephp/migrations/zipball/a735a6f39e8452727b6281834529d40bc6efe741",
+                "reference": "a735a6f39e8452727b6281834529d40bc6efe741",
                 "shasum": ""
             },
             "require": {
@@ -390,8 +390,8 @@
                 "robmorgan/phinx": "^0.16.0"
             },
             "require-dev": {
-                "cakephp/bake": "dev-3.next",
-                "cakephp/cakephp": "dev-5.next as 5.1.0",
+                "cakephp/bake": "^3.0",
+                "cakephp/cakephp": "^5.0.11",
                 "cakephp/cakephp-codesniffer": "^5.0",
                 "phpunit/phpunit": "^10.5.5 || ^11.1.3"
             },
@@ -419,6 +419,7 @@
             "homepage": "https://github.com/cakephp/migrations",
             "keywords": [
                 "cakephp",
+                "cli",
                 "migrations"
             ],
             "support": {
@@ -427,7 +428,7 @@
                 "issues": "https://github.com/cakephp/migrations/issues",
                 "source": "https://github.com/cakephp/migrations"
             },
-            "time": "2025-04-07T16:34:36+00:00"
+            "time": "2025-04-20T02:44:53+00:00"
         },
         {
             "name": "cakephp/plugin-installer",
@@ -2783,16 +2784,16 @@
         },
         {
             "name": "cakephp/bake",
-            "version": "3.3.0",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/bake.git",
-                "reference": "42708a248a1ca9549ee7db10e9ddfabf56bbc3ae"
+                "reference": "91d32beebfc63acc15308b0663acf0e288d2a9d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/bake/zipball/42708a248a1ca9549ee7db10e9ddfabf56bbc3ae",
-                "reference": "42708a248a1ca9549ee7db10e9ddfabf56bbc3ae",
+                "url": "https://api.github.com/repos/cakephp/bake/zipball/91d32beebfc63acc15308b0663acf0e288d2a9d5",
+                "reference": "91d32beebfc63acc15308b0663acf0e288d2a9d5",
                 "shasum": ""
             },
             "require": {
@@ -2827,14 +2828,16 @@
             "homepage": "https://github.com/cakephp/bake",
             "keywords": [
                 "bake",
-                "cakephp"
+                "cakephp",
+                "cli",
+                "dev"
             ],
             "support": {
                 "forum": "https://stackoverflow.com/tags/cakephp",
                 "issues": "https://github.com/cakephp/bake/issues",
                 "source": "https://github.com/cakephp/bake"
             },
-            "time": "2025-03-30T15:48:44+00:00"
+            "time": "2025-04-18T22:59:57+00:00"
         },
         {
             "name": "cakephp/cakephp-codesniffer",
@@ -6724,7 +6727,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.1"
+        "php": ">=8.3"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"

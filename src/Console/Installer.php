@@ -37,6 +37,8 @@ class Installer
 {
     /**
      * An array of directories to be made writable
+     *
+     * @var list<string>
      */
     public const WRITABLE_DIRS = [
         'logs',
@@ -162,7 +164,7 @@ class Installer
         };
 
         $walker = function (string $dir) use (&$walker, $changePerms): void {
-            $files = array_diff(scandir($dir), ['.', '..']);
+            $files = array_diff(scandir($dir) ?: [], ['.', '..']);
             foreach ($files as $file) {
                 $path = $dir . '/' . $file;
 
@@ -194,6 +196,42 @@ class Installer
     }
 
     /**
+     * Set the security.salt value in a given file
+     *
+     * @param string $dir The application's root directory.
+     * @param \Composer\IO\IOInterface $io IO interface to write to console.
+     * @param string $newKey key to set in the file
+     * @param string $file A path to a file relative to the application's root
+     * @return void
+     */
+    public static function setSecuritySaltInFile(string $dir, IOInterface $io, string $newKey, string $file): void
+    {
+        $config = $dir . '/config/' . $file;
+        $content = file_get_contents($config);
+        if ($content === false) {
+            $io->write('Config file not readable or not found: config/' . $file);
+
+            return;
+        }
+
+        $content = str_replace('__SALT__', $newKey, $content, $count);
+
+        if ($count == 0) {
+            $io->write('No Security.salt placeholder to replace.');
+
+            return;
+        }
+
+        $result = file_put_contents($config, $content);
+        if ($result) {
+            $io->write('Updated Security.salt value in config/' . $file);
+
+            return;
+        }
+        $io->write('Unable to update Security.salt value.');
+    }
+
+    /**
      * Set database settings values in a given file
      *
      * @param string $dir The application's root directory.
@@ -202,38 +240,45 @@ class Installer
      */
     public static function setDatabaseSettings(string $dir, IOInterface $io): void
     {
-        do {
-            $io->write('Enter database settings:');
+        if ($io->isInteractive()) {
+            do {
+                $io->write('Enter database settings:');
 
-            $dbHost = $io->ask('<info>host (Default to localhost)</info>: ', 'localhost');
-            $dbName = $io->ask('<info>name (Default to bakekit)</info>: ', 'bakekit');
-            $dbUser = $io->ask('<info>user (Default to root)</info>: ', 'root');
-            $dbPass = $io->ask('<info>password (Default to root)</info>: ', 'root');
+                $dbHost = $io->ask('<info>host (Default to localhost)</info>: ', 'localhost');
+                $dbName = $io->ask('<info>name (Default to bakekit)</info>: ', 'bakekit');
+                $dbUser = $io->ask('<info>user (Default to root)</info>: ', 'root');
+                $dbPass = $io->ask('<info>password (Default to root)</info>: ', 'root');
 
-            try {
-                $pdo = new PDO("mysql:dbname={$dbName};host={$dbHost}", $dbUser, $dbPass);
-                $connected = true;
-                $io->write('Connection established!');
+                try {
+                    $pdo = new PDO("mysql:dbname={$dbName};host={$dbHost}", $dbUser, $dbPass);
+                    $connected = true;
+                    $io->write('Connection established!');
 
-                $tablesList = [];
-                $result = $pdo->query('SHOW TABLES');
-                if ($result instanceof PDOStatement) {
-                    while ($row = $result->fetch(PDO::FETCH_NUM)) {
-                        $tablesList[] = $row[0];
+                    $tablesList = [];
+                    $result = $pdo->query('SHOW TABLES');
+                    if ($result instanceof PDOStatement) {
+                        while ($row = $result->fetch(PDO::FETCH_NUM)) {
+                            $tablesList[] = $row[0];
+                        }
+                    } else {
+                        $io->writeError('Failed to fetch tables from the database.');
                     }
-                } else {
-                    $io->writeError('Failed to fetch tables from the database.');
-                }
 
-                if (!empty($tablesList)) {
+                    if (!empty($tablesList)) {
+                        $connected = false;
+                        $io->writeError('Database is not empty!');
+                    }
+                } catch (PDOException $e) {
                     $connected = false;
-                    $io->writeError('Database is not empty!');
+                    $io->writeError($e->getMessage());
                 }
-            } catch (PDOException $e) {
-                $connected = false;
-                $io->writeError($e->getMessage());
-            }
-        } while (!$connected);
+            } while (!$connected);
+        } else {
+            $dbHost = 'localhost';
+            $dbName = 'my_app';
+            $dbUser = 'my_app';
+            $dbPass = 'secret';
+        }
 
         $config = $dir . '/config/app_local.php';
         $fileContent = file_get_contents($config);
@@ -256,68 +301,5 @@ class Installer
         } else {
             $io->writeError('Unable to update database values.');
         }
-    }
-
-    /**
-     * Set the security.salt value in a given file
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
-     * @param string $newKey key to set in the file
-     * @param string $file A path to a file relative to the application's root
-     * @return void
-     */
-    public static function setSecuritySaltInFile(string $dir, IOInterface $io, string $newKey, string $file): void
-    {
-        $config = $dir . '/config/' . $file;
-        $content = file_get_contents($config);
-
-        /** @phpstan-ignore-next-line */
-        $content = str_replace('__SALT__', $newKey, $content, $count);
-
-        if ($count == 0) {
-            $io->write('No Security.salt placeholder to replace.');
-
-            return;
-        }
-
-        $result = file_put_contents($config, $content);
-        if ($result) {
-            $io->write('Updated Security.salt value in config/' . $file);
-
-            return;
-        }
-        $io->write('Unable to update Security.salt value.');
-    }
-
-    /**
-     * Set the APP_NAME value in a given file
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
-     * @param string $appName app name to set in the file
-     * @param string $file A path to a file relative to the application's root
-     * @return void
-     */
-    public static function setAppNameInFile(string $dir, IOInterface $io, string $appName, string $file): void
-    {
-        $config = $dir . '/config/' . $file;
-        $content = file_get_contents($config);
-        /** @phpstan-ignore-next-line */
-        $content = str_replace('__APP_NAME__', $appName, $content, $count);
-
-        if ($count == 0) {
-            $io->write('No __APP_NAME__ placeholder to replace.');
-
-            return;
-        }
-
-        $result = file_put_contents($config, $content);
-        if ($result) {
-            $io->write('Updated __APP_NAME__ value in config/' . $file);
-
-            return;
-        }
-        $io->write('Unable to update __APP_NAME__ value.');
     }
 }
