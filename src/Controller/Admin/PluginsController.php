@@ -128,7 +128,7 @@ class PluginsController extends AppController
 
         $file = $this->request->getUploadedFile('plugin');
         if ($file === null) {
-            $this->Flash->error(__('No file was uploaded.'));
+            $this->Flash->error(__('No plugin upload field was submitted.'));
 
             return $this->redirect(['action' => 'index']);
         }

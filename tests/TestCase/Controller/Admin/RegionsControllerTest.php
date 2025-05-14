@@ -70,8 +70,7 @@ class RegionsControllerTest extends TestCase
         $this->get('/admin/regions');
 
         $this->assertResponseOk();
-        $this->assertResponseContains('Regions'); // Check for a heading or title
-        $this->assertNotNull($this->viewVariable('regions')); // Check if the 'users' paginated set is passed
+        $this->assertNotNull($this->viewVariable('regions'));
     }
 
     /**

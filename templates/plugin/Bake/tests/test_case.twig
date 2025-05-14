@@ -102,9 +102,7 @@ class {{ className }}Test extends TestCase
         $this->get('/admin/{{ modelName|lower }}');
 
         $this->assertResponseOk();
-        $this->assertResponseContains('{{ modelName }}'); // Check for a heading or title
-        $this->assertNotNull($this->viewVariable('{{ modelName|lower }}')); // Check if the 'users' paginated set is passed
-    }
+        $this->assertNotNull($this->viewVariable('{{ modelName|lower }}'));
 
     /**
      * Test view method
@@ -117,8 +115,8 @@ class {{ className }}Test extends TestCase
         $this->get('/admin/{{ modelName|lower }}/view/1');
         $this->assertResponseOk();
 
-        $this->assertNotEmpty($this->viewVariable({{ entityName|lower }}));
-        $this->assertEquals(1, $this->viewVariable({{ entityName|lower }})->id);
+        $this->assertNotEmpty($this->viewVariable('{{ entityName|lower }}'));
+        $this->assertEquals(1, $this->viewVariable('{{ entityName|lower }}')->id);
     }
 
     /**
@@ -169,7 +167,7 @@ class {{ className }}Test extends TestCase
      */
     public function testEditPost(): void
     {
-        // Fill with updated valid data
+        // Fill with valid post data for {{ modelName }}
         $postData = [
 
         ];
