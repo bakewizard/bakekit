@@ -27,6 +27,13 @@ class UsersControllerTest extends TestCase
 
     private $adminUser; // To store admin user data from fixture
 
+    /**
+     * setUp method
+     *
+     * This method is called before each test method.
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();

@@ -1,0 +1,193 @@
+{% set modelName = className | split('\\') | last | replace({'ControllerTest': '', 'Controller': ''}) %}
+{% set entityName = modelName | singularize %}
+{% set isController = type|lower == 'controller' %}
+{% set isCommand = type|lower == 'command' %}
+{% if isController %}
+    {%- set traitName = 'IntegrationTestTrait' %}
+    {%- set uses = uses|merge(['Cake\\TestSuite\\IntegrationTestTrait']) %}
+{% elseif isCommand %}
+    {%- set traitName = 'ConsoleIntegrationTestTrait' %}
+    {%- set uses = uses|merge(['Cake\\Console\\TestSuite\\ConsoleIntegrationTestTrait']) %}
+{% endif %}
+{%- set uses = uses|merge(["Cake\\TestSuite\\TestCase"]) %}
+
+{{- element('Bake.file_header', {
+    namespace: "#{baseNamespace}\\Test\\TestCase\\#{subNamespace}",
+    classImports: uses,
+}) }}
+
+/**
+ * {{ fullClassName }} Test Case
+ *
+ * @uses \{{ fullClassName }}
+ */
+class {{ className }}Test extends TestCase
+{
+{% if traitName is defined %}
+    use {{ traitName }};
+{% if properties or fixtures or construction or methods %}
+
+{% endif %}
+{% endif %}
+{% if properties %}
+{% for propertyInfo in properties %}
+{% if loop.index > 1 %}
+
+{% endif %}
+    /**
+     * {{ propertyInfo.description }}
+     *
+     * @var {{ propertyInfo.type }}
+     */
+    protected ${{ propertyInfo.name }}{% if propertyInfo.value is defined and propertyInfo.value %} = {{ propertyInfo.value }}{% endif %};
+{% if loop.last and (fixtures or construction or methods) %}
+
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{%- if fixtures %}
+    /**
+     * Fixtures
+     *
+     * @var list<string>
+     */
+    protected array $fixtures = {{ Bake.exportVar(['app.Users', 'app.Roles']|merge(fixtures|default([])|values), 1)|raw }};
+{% if construction or methods %}
+
+{% endif %}
+{% endif %}
+    /**
+     * setUp method
+     *
+     * This method is called before each test method.
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->enableCsrfToken();
+        $this->enableSecurityToken();
+        $user = $this->fetchTable('Users')->get(1);
+
+        $this->session([
+            'Auth' => [
+                'User' => $user,
+            ]
+        ]);
+
+    }
+
+    /**
+     * tearDown method
+     *
+     * This method is called after each test method.
+     *
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
+    /**
+     * Test view method
+     *
+     * @return void
+     * @uses \{{ fullClassName }}::index()
+     */
+    public function testIndex(): void
+    {
+        $this->get('/admin/{{ modelName|lower }}');
+
+        $this->assertResponseOk();
+        $this->assertResponseContains('{{ modelName }}'); // Check for a heading or title
+        $this->assertNotNull($this->viewVariable('{{ modelName|lower }}')); // Check if the 'users' paginated set is passed
+    }
+
+    /**
+     * Test view method
+     *
+     * @return void
+     * @uses \{{ fullClassName }}::view()
+     */
+    public function testView(): void
+    {
+        $this->get('/admin/{{ modelName|lower }}/view/1');
+        $this->assertResponseOk();
+
+        $this->assertNotEmpty($this->viewVariable({{ entityName|lower }}));
+        $this->assertEquals(1, $this->viewVariable({{ entityName|lower }})->id);
+    }
+
+    /**
+     * Test add method
+     *
+     * @return void
+     * @uses \{{ fullClassName }}::add()
+     */
+    public function testAddGet(): void
+    {
+        $this->get('/admin/{{ modelName|lower }}/add');
+        $this->assertResponseOk();
+    }
+
+    /**
+     * Test add post method
+     *
+     * @return void
+     * @uses \{{ fullClassName }}::add()
+     */
+    public function testAddPost(): void
+    {
+        // Fill with valid post data for {{ modelName }}
+        $postData = [
+
+        ];
+        $this->post('/admin/{{ modelName|lower }}/add', $postData);
+        $this->assertResponseCode(302); // redirect
+        $this->assertRedirectContains('/admin/{{ modelName|lower }}');
+    }
+    /**
+     * Test edit method
+     *
+     * @return void
+     * @uses \{{ fullClassName }}::edit()
+     */
+    public function testEditGet(): void
+    {
+        $this->get('/admin/{{ modelName|lower }}/edit/1');
+        $this->assertResponseOk();
+    }
+
+    /**
+     * Test edit post method
+     *
+     * @return void
+     * @uses \{{ fullClassName }}::edit()
+     */
+    public function testEditPost(): void
+    {
+        // Fill with updated valid data
+        $postData = [
+
+        ];
+        $this->post('/admin/{{ modelName|lower }}/edit/1', $postData);
+        $this->assertResponseCode(302); // redirect
+        $this->assertRedirectContains('/admin/{{ modelName|lower }}');
+    }
+
+    /**
+     * Test delete method
+     *
+     * @return void
+     * @uses \{{ fullClassName }}::delete()
+     */
+    public function testDeletePost(): void
+    {
+        $this->post('/admin/{{ modelName|lower }}/delete/1');
+        $this->assertResponseCode(302);
+        $this->assertRedirectContains('/admin/{{ modelName|lower }}');
+    }
+}
