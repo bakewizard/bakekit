@@ -175,26 +175,22 @@ class PluginsController extends AppController
         $this->request->allowMethod(['post', 'delete']);
 
         try {
-            $plugin = $this->Plugins->find()->where(['name' => $name])->first();
+            $plugin = $this->Plugins->find()->where(['name' => $name])->firstOrFail();
 
-            if ($plugin) {
-                if ($plugin->name == $this->getConfig('Cms.defaultDashboard')) {
-                    $this->Flash->error(__('The plugin could not be uninstalled. Its dashboard is set as the default one.'));
+            if ($plugin->name == $this->getConfig('Cms.defaultDashboard')) {
+                throw new Exception(__('The plugin could not be uninstalled. Its dashboard is set as the default one.'));
+            }
 
-                    return $this->redirect(['action' => 'index']);
-                }
+            $pm = new PluginManager();
+            $pm->deleteMigrations($plugin->name);
+            $pm->deleteSettings($plugin->name);
+            $pm->deleteResources($plugin->name);
 
-                $pm = new PluginManager();
-                $pm->deleteMigrations($plugin->name);
-                $pm->deleteSettings($plugin->name);
-                $pm->deleteResources($plugin->name);
+            Cache::delete('plugins', 'cms');
+            Cache::clear('permissions');
 
-                Cache::delete('plugins', 'cms');
-                Cache::clear('permissions');
-
-                if (!$this->Plugins->delete($plugin)) {
-                    throw new Exception(__('The plugin folder could not be deleted. Please, delete it by hand.'));
-                }
+            if (!$this->Plugins->delete($plugin)) {
+                throw new Exception(__('The plugin data could not be deleted from database.'));
             }
 
             $this->clean($name);
@@ -245,7 +241,7 @@ class PluginsController extends AppController
                 ]);
 
                 if (!$this->Plugins->save($entity)) {
-                    throw new Exception(__('The plugin data could not be saved to database. Please, do it by hand.'));
+                    throw new Exception(__('The plugin data could not be saved to database.'));
                 }
             }
             Cache::delete('plugins', 'cms');

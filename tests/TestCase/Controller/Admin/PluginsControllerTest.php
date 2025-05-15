@@ -62,6 +62,12 @@ class PluginsControllerTest extends TestCase
     protected function tearDown(): void
     {
         parent::tearDown();
+        // Remove the plugin directory after each test
+        $zipPath = ROOT . DS . 'plugins' . DS . self::PLUGIN_NAME . '.zip';
+
+        if (file_exists($zipPath)) {
+            unlink($zipPath);
+        }
     }
 
     /**
@@ -135,6 +141,7 @@ class PluginsControllerTest extends TestCase
 
         $this->assertResponseCode(302);
         $this->assertRedirectContains('/admin/plugins');
+        $this->assertTrue($this->fetchTable('Plugins')->exists(['name' => self::PLUGIN_NAME]));
         $this->assertFlashMessage('The plugin has been installed.');
         $this->assertDirectoryExists(ROOT . '/plugins/' . self::PLUGIN_NAME, 'The plugin directory does not exist.');
     }
@@ -185,15 +192,43 @@ class PluginsControllerTest extends TestCase
     }
 
     /**
-     * Test delete method
+     * Test activate method
+     *
+     * @return void
+     * @uses \App\Controller\Admin\PluginsController::activate()
+     */
+    public function testActivateExistingPlugin(): void
+    {
+        $table = $this->fetchTable('Plugins');
+
+        $plugin = $table->newEntity([
+            'name' => self::PLUGIN_NAME,
+            'alias' => 'example-plugin',
+            'description' => 'Test plugin',
+            'enabled' => false,
+        ]);
+
+        $table->save($plugin);
+
+        $this->post('/plugins/activate/' . self::PLUGIN_NAME);
+
+        $this->assertRedirectContains('/admin/plugins');
+        $this->assertFlashMessage('The plugin has been activated.');
+        $this->assertTrue($table->exists(['name' => self::PLUGIN_NAME]));
+    }
+
+    /**
+     * Test uninstall success method
      *
      * @return void
      * @uses \App\Controller\Admin\PluginsController::uninstall()
      */
-    // public function testuninstall(): void
-    // {
-    //     $this->post('/admin/plugins/delete/1');
-    //     $this->assertResponseCode(302);
-    //     $this->assertRedirectContains('/admin/plugins');
-    // }
+    public function testUninstall(): void
+    {
+        $this->post('/admin/plugins/uninstall/' . self::PLUGIN_NAME);
+
+        $this->assertRedirectContains('/admin/plugins');
+        $this->assertFlashMessage('The plugin has been uninstalled.');
+        $this->assertFalse($this->fetchTable('Plugins')->exists(['name' => self::PLUGIN_NAME]));
+    }
 }
