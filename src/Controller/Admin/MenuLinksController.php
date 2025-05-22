@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Lib\PluginManager;
+use App\Lib\PluginExplorer;
 use Cake\Cache\Cache;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
@@ -149,17 +149,15 @@ class MenuLinksController extends AppController
      * @param string $id
      * @return void
      */
-    public function getLinks(?string $id = null)
+    public function getLinks(PluginExplorer $pe, ?string $id = null)
     {
         $menu = $this->MenuLinks->Menus->get($id);
 
-        $pm = new PluginManager();
+        /** @var \App\Model\Table\PluginsTable $table */
+        $table = $this->fetchTable('Plugins');
+        $activePlugins = $table->getActivePlugins();
 
-        if ($menu->prefix) {
-            $data = $pm->getAdminLinks();
-        } else {
-            $data = $pm->getLinks();
-        }
+        $data = $menu->prefix ? $pe->getAdminLinks($activePlugins) : $pe->getLinks($activePlugins);
 
         $this->set(compact('data'));
     }

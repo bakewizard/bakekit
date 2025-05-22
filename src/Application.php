@@ -19,6 +19,7 @@ namespace App;
 
 use App\Core\Configure\Engine\DbConfig;
 use App\Lib\ComposerManager;
+use App\Lib\PluginExplorer;
 use App\Middleware\MaintenanceMiddleware;
 use App\Policy\RequestPolicy;
 use Authentication\AuthenticationService;
@@ -288,6 +289,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     public function services(ContainerInterface $container): void
     {
         $container->add(ComposerManager::class);
+        $container->add(PluginExplorer::class);
     }
 
     /**

@@ -102,4 +102,28 @@ class PluginsTable extends Table
 
         return $rules;
     }
+
+    /**
+     * Gets a list of loaded plugins.
+     *
+     * @param bool $includeSystem Include System plugin if true.
+     * @param bool $includeSubPlugins Include sub plugins if true.
+     * @return array<string> List of plugin names.
+     */
+    public function getActivePlugins(bool $includeSystem = false, bool $includeSubPlugins = false): array
+    {
+        $query = $this->find()->select('name')->where(['enabled' => true])->orderByAsc('name');
+
+        if (!$includeSubPlugins) {
+            $query->where(['parent_plugin is' => null]);
+        }
+
+        $plugins = $query->all()->extract('name')->toList();
+
+        if ($includeSystem) {
+            array_unshift($plugins, 'System');
+        }
+
+        return $plugins;
+    }
 }
