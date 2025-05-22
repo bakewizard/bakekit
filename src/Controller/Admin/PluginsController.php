@@ -95,10 +95,10 @@ class PluginsController extends AppController
      * Edit method
      *
      * @param string|null $id Plugin id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
+     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit(?string $id = null): ?Response
+    public function edit(?string $id = null)
     {
         $plugin = $this->Plugins->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -112,8 +112,6 @@ class PluginsController extends AppController
         }
 
         $this->set(compact('plugin'));
-
-        return null;
     }
 
     /**
@@ -122,7 +120,7 @@ class PluginsController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Exception When error is encountered.
      */
-    public function install()
+    public function install(ComposerManager $composer)
     {
         $this->request->allowMethod(['post', 'put']);
 
@@ -154,7 +152,7 @@ class PluginsController extends AppController
 
         try {
             $this->unpack($file->getStream()->getMetadata('uri'), $this->pluginsDir);
-            (new ComposerManager())->dumpAutoload(['--optimize' => true]);
+            $composer->dumpAutoload(['--optimize' => true]);
             $this->Flash->success(__('The plugin has been installed.'));
         } catch (Exception $e) {
             $this->Flash->error($e->getMessage());
@@ -170,31 +168,32 @@ class PluginsController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Exception When error is encountered.
      */
-    public function uninstall(string $name)
+    public function uninstall(ComposerManager $composer, string $name)
     {
         $this->request->allowMethod(['post', 'delete']);
 
         try {
-            $plugin = $this->Plugins->find()->where(['name' => $name])->firstOrFail();
+            $plugin = $this->Plugins->find()->where(['name' => $name])->first();
+            if ($plugin) {
+                if ($plugin->name == $this->getConfig('Cms.defaultDashboard')) {
+                    throw new Exception(__('The plugin could not be uninstalled. Its dashboard is set as the default one.'));
+                }
 
-            if ($plugin->name == $this->getConfig('Cms.defaultDashboard')) {
-                throw new Exception(__('The plugin could not be uninstalled. Its dashboard is set as the default one.'));
-            }
+                $pm = new PluginManager();
+                $pm->deleteMigrations($plugin->name);
+                $pm->deleteSettings($plugin->name);
+                $pm->deleteResources($plugin->name);
 
-            $pm = new PluginManager();
-            $pm->deleteMigrations($plugin->name);
-            $pm->deleteSettings($plugin->name);
-            $pm->deleteResources($plugin->name);
+                Cache::delete('plugins', 'cms');
+                Cache::clear('permissions');
 
-            Cache::delete('plugins', 'cms');
-            Cache::clear('permissions');
-
-            if (!$this->Plugins->delete($plugin)) {
-                throw new Exception(__('The plugin data could not be deleted from database.'));
+                if (!$this->Plugins->delete($plugin)) {
+                    throw new Exception(__('The plugin data could not be deleted from database.'));
+                }
             }
 
             $this->clean($name);
-            (new ComposerManager())->dumpAutoload(['--optimize' => true]);
+            $composer->dumpAutoload(['--optimize' => true]);
             $this->Flash->success(__('The plugin has been uninstalled.'));
         } catch (Exception $e) {
             $this->Flash->error(__('There were errors while uninstalling the plugin.'));

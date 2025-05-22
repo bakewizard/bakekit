@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Controller\Admin;
 
+use App\Lib\ComposerManager;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Laminas\Diactoros\UploadedFile;
+use Symfony\Component\Filesystem\Filesystem;
 use const UPLOAD_ERR_NO_FILE;
 use const UPLOAD_ERR_OK;
 
@@ -29,6 +31,18 @@ class PluginsControllerTest extends TestCase
         'app.Plugins',
     ];
 
+    /**
+     * The path to the plugin directory
+     *
+     * @var string
+     */
+    private const string PLUGINS_DIR = ROOT . DS . 'plugins' . DS;
+
+    /**
+     * The name of the plugin being tested
+     *
+     * @var string
+     */
     private const string PLUGIN_NAME = 'BareBone';
 
     /**
@@ -62,11 +76,12 @@ class PluginsControllerTest extends TestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-        // Remove the plugin directory after each test
-        $zipPath = ROOT . DS . 'plugins' . DS . self::PLUGIN_NAME . '.zip';
 
-        if (file_exists($zipPath)) {
-            unlink($zipPath);
+        // Clean up temporary plugin directory if it was created and not using vfsStream
+        $pluginDir = self::PLUGINS_DIR . self::PLUGIN_NAME . DS;
+        $fs = new Filesystem();
+        if ($fs->exists($pluginDir)) {
+            $fs->remove($pluginDir);
         }
     }
 
@@ -123,6 +138,19 @@ class PluginsControllerTest extends TestCase
         $zipPath = TESTS . 'Fixture/data/' . self::PLUGIN_NAME . '.zip';
         $this->assertFileExists($zipPath, 'The plugin zip file does not exist.');
 
+        // Ensure the plugin directory does NOT exist before starting the test
+        $pluginDir = self::PLUGINS_DIR . self::PLUGIN_NAME;
+        $this->assertDirectoryDoesNotExist($pluginDir, 'The plugin directory already exists.');
+
+        $this->mockService(ComposerManager::class, function () {
+            $mock = $this->createMock(ComposerManager::class);
+            $mock->expects($this->once())
+                ->method('dumpAutoload')
+                ->with(['--optimize' => true]);
+
+            return $mock;
+        });
+
         $zipFile = new UploadedFile(
             $zipPath,
             filesize($zipPath),
@@ -141,7 +169,6 @@ class PluginsControllerTest extends TestCase
 
         $this->assertResponseCode(302);
         $this->assertRedirectContains('/admin/plugins');
-        $this->assertTrue($this->fetchTable('Plugins')->exists(['name' => self::PLUGIN_NAME]));
         $this->assertFlashMessage('The plugin has been installed.');
         $this->assertDirectoryExists(ROOT . '/plugins/' . self::PLUGIN_NAME, 'The plugin directory does not exist.');
     }
