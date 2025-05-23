@@ -136,4 +136,50 @@ class ResourcesTable extends Table
 
         return !empty($node) ? $node : null;
     }
+
+    /**
+     * Saves plugin resource structure to the database using nested nodes.
+     *
+     * @param array<string, array<string, array<string>>> $resourceTree Structured plugin resource tree.
+     * @return void
+     */
+    public function addResources(array $resourceTree): void
+    {
+        $rootNode = $this->checkNode('Site', null) ?? $this->createNode('Site', null);
+
+        foreach ($resourceTree as $plugin => $controllers) {
+            $pluginNode = $this->createNode($plugin, $rootNode->id);
+            if ($pluginNode === false) {
+                continue;
+            }
+
+            foreach ($controllers as $controller => $actions) {
+                $controllerNode = $this->createNode($controller, $pluginNode->id);
+                if ($controllerNode === false) {
+                    continue;
+                }
+
+                foreach ($actions as $action) {
+                    $this->createNode($action, $controllerNode->id);
+                }
+            }
+        }
+    }
+
+    /**
+     * Deletes plugin resources.
+     *
+     * @param string $plugin Plugin name.
+     * @return void
+     */
+    public function deleteResources(string $plugin): void
+    {
+        $resources = $this->find()
+            ->where(['alias is' => $plugin, 'parent_id' => 1])
+            ->first();
+
+        if (!empty($resources)) {
+            $this->delete($resources);
+        }
+    }
 }
