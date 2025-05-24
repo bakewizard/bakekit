@@ -147,6 +147,10 @@ class ResourcesTable extends Table
     {
         $rootNode = $this->checkNode('Site', null) ?? $this->createNode('Site', null);
 
+        if (!$rootNode instanceof Resource) {
+            return;
+        }
+
         foreach ($resourceTree as $plugin => $controllers) {
             $pluginNode = $this->createNode($plugin, $rootNode->id);
             if ($pluginNode === false) {
@@ -167,15 +171,15 @@ class ResourcesTable extends Table
     }
 
     /**
-     * Deletes plugin resources.
+     * Deletes resources.
      *
-     * @param string $plugin Plugin name.
+     * @param string $alias Resource alias.
      * @return void
      */
-    public function deleteResources(string $plugin): void
+    public function deleteResources(string $alias): void
     {
         $resources = $this->find()
-            ->where(['alias is' => $plugin, 'parent_id' => 1])
+            ->where(['alias is' => $alias, 'parent_id' => 1])
             ->first();
 
         if (!empty($resources)) {

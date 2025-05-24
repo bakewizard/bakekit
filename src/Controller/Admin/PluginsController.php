@@ -168,7 +168,7 @@ class PluginsController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Exception When error is encountered.
      */
-    public function uninstall(ComposerManager $composer, string $name)
+    public function uninstall(PluginManager $pluginManager, ComposerManager $composer, string $name)
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -179,10 +179,7 @@ class PluginsController extends AppController
                     throw new Exception(__('The plugin could not be uninstalled. Its dashboard is set as the default one.'));
                 }
 
-                $pm = new PluginManager();
-                $pm->deleteMigrations($plugin->name);
-                $pm->deleteSettings($plugin->name);
-                $pm->deleteResources($plugin->name);
+                $pluginManager->uninstall($name);
 
                 Cache::delete('plugins', 'cms');
                 Cache::clear('permissions');
@@ -210,7 +207,7 @@ class PluginsController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful activation, renders view otherwise.
      * @throws \Exception
      */
-    public function activate(string $name)
+    public function activate(PluginManager $pluginManager, string $name)
     {
         $this->request->allowMethod(['post', 'put']);
 
@@ -224,10 +221,7 @@ class PluginsController extends AppController
                     throw new Exception(__('The plugin could not be activated. Please, try again.'));
                 }
             } else {
-                $pm = new PluginManager();
-                $pm->addMigrations($name);
-                $pm->addSettings($name);
-                $pm->addResources($name);
+                $pluginManager->activate($name);
 
                 $config = $this->getConfigData($this->pluginsDir . $name);
 
@@ -244,6 +238,7 @@ class PluginsController extends AppController
                 }
             }
             Cache::delete('plugins', 'cms');
+            Cache::clear('permissions');
             $this->Flash->success(__('The plugin has been activated.'));
         } catch (Exception $e) {
             $this->Flash->error(__('There were errors while activating the plugin.'));

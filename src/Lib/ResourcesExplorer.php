@@ -8,8 +8,78 @@ use Cake\Routing\Router;
 use ReflectionClass;
 use ReflectionMethod;
 
-class PluginExplorer
+class ResourcesExplorer
 {
+    /**
+     * Discovers plugin controllers and actions.
+     *
+     * Returns a nested array in the format:
+     * [
+     *     'PluginName' => [
+     *         'ControllerName' => ['actionOne', 'actionTwo', ...],
+     *         'AnotherController' => ['index', 'edit', ...],
+     *     ],
+     *     ...
+     * ]
+     *
+     * @param array|string $plugins List of plugins to check for controllers and actions.
+     * @return array<string, array<string, array<string>>> Structured list of plugins, controllers, and actions.
+     */
+    public function getResources(string|array $plugins): array
+    {
+        $plugins = is_string($plugins) ? [$plugins] : $plugins;
+        $resourceTree = [];
+
+        foreach ($plugins as $pluginName) {
+            $path = App::classPath('Controller/Admin', $pluginName === 'System' ? null : $pluginName)[0];
+
+            if (!is_dir($path)) {
+                continue;
+            }
+
+            $controllers = array_diff(
+                scandir($path),
+                ['.', '..', 'AppController.php', 'ErrorController.php', 'UsersController.php', 'RolesController.php'],
+            );
+
+            foreach ($controllers as $file) {
+                if (is_dir($path . $file)) {
+                    continue;
+                }
+
+                $position = strrpos($file, '.');
+                $baseName = $position !== false ? substr($file, 0, $position) : $file;
+                $controller = substr($baseName, 0, strlen($baseName) - 10);
+                $className = App::className(
+                    $pluginName === 'System' ? $controller : "{$pluginName}.{$controller}",
+                    'Controller/Admin',
+                    'Controller',
+                );
+
+                if ($className === null) {
+                        continue;
+                }
+
+                $reflection = new ReflectionClass($className);
+                $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+                $actions = [];
+
+                foreach ($methods as $method) {
+                    if (
+                        $method->class === $reflection->getName() &&
+                        !in_array($method->name, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter'])
+                    ) {
+                        $actions[] = $method->name;
+                    }
+                }
+
+                $resourceTree[$pluginName][$controller] = $actions;
+            }
+        }
+
+        return $resourceTree;
+    }
+
     /**
      * Gets all available cells from all loaded plugins.
      *
@@ -177,6 +247,10 @@ class PluginExplorer
      */
     private function getPhpFiles(string $path, string $suffix, array $excludeFiles = []): array
     {
+        if (!is_dir($path)) {
+            return [];
+        }
+
         return array_filter(
             array_diff(scandir($path), array_merge(['.', '..'], $excludeFiles)),
             fn($file) => is_file($path . $file) && str_ends_with($file, $suffix),
@@ -192,6 +266,7 @@ class PluginExplorer
      */
     private function getDeclaredPublicMethods(string $className, array $excludedMethods): array
     {
+        /** @var class-string $className */
         $reflection = new ReflectionClass($className);
 
         return array_filter(

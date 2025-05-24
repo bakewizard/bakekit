@@ -9,173 +9,103 @@ use Cake\Form\Form;
 use Cake\Utility\Hash;
 use LogicException;
 use Migrations\Migrations;
-use ReflectionClass;
-use ReflectionMethod;
 
-/**
- * @property \App\Model\Table\PluginsTable $Plugins
- * @property \App\Model\Table\ResourcesTable $Resources
- * @property \App\Model\Table\SettingsTable $Settings
- */
 class PluginManager
 {
     use ModelAwareTrait;
 
+    /**
+     * Directory where plugins are stored
+     *
+     * @var string
+     */
     private string $pluginsDir;
+
+    /**
+     * ResourcesExplorer instance
+     *
+     * @var \App\Lib\ResourcesExplorer
+     */
+    private ResourcesExplorer $resourcesExplorer;
+
+    /**
+     * Migrations instance
+     *
+     * @var \Migrations\Migrations
+     */
+    private Migrations $migrations;
 
     /**
      * PluginManager constructor
      *
      * Sets plugins dir
      */
-    public function __construct()
+    public function __construct(ResourcesExplorer $resourcesExplorer, Migrations $migrations)
     {
+        $this->resourcesExplorer = $resourcesExplorer;
+        $this->migrations = $migrations;
         $this->pluginsDir = current(App::path('plugins')) ?: '';
     }
 
     /**
-     * Gets a list of loaded plugins.
+     * Activates a plugin by adding its migrations, settings, and resources.
      *
-     * @param bool $includeSystem Include System plugin if true.
-     * @param bool $includeSubPlugins Include sub plugins if true.
-     * @return array<string> List of plugin names.
+     * @param string $plugin Plugin name to activate.
+     * @return void
      */
-    public function getPlugins(bool $includeSystem = false, bool $includeSubPlugins = false): array
+    public function activate(string $plugin): void
     {
-        /** @var \App\Model\Table\PluginsTable $table */
-        $table = $this->fetchModel('Plugins');
-        $query = $table->find()->select('name')->where(['enabled' => true])->orderByAsc('name');
-
-        if (!$includeSubPlugins) {
-            $query->where(['parent_plugin is' => null]);
-        }
-
-        $plugins = $query->all()->extract('name')->toList();
-
-        if ($includeSystem) {
-            array_unshift($plugins, 'System');
-        }
-
-        return $plugins;
+        $this->addMigrations($plugin);
+        $this->addSettings($plugin);
+        $this->addResources($plugin);
     }
 
     /**
-     * Adds migrations for the plugin
+     * Uninstalls a plugin by removing its migrations, settings, and resources.
      *
-     * @param string $plugin
+     * @param string $plugin Plugin name to uninstall.
      * @return void
      */
-    public function addMigrations(string $plugin): void
+    public function uninstall(string $plugin): void
     {
-        if (is_dir($this->pluginsDir . $plugin . DS . 'config' . DS . 'Migrations')) {
-            $migration = new Migrations(['plugin' => $plugin]);
-            $migration->migrate();
-            $migration->seed();
+        $this->deleteMigrations($plugin);
+        $this->deleteSettings($plugin);
+        $this->deleteResources($plugin);
+    }
+
+    /**
+     * Adds migrations for the plugin.
+     *
+     * If the plugin has a 'config/Migrations' directory, it runs the migrations and seeds.
+     *
+     * @param string|null $plugin Plugin name or null if it's a System plugin.
+     * @return bool
+     */
+    public function addMigrations(?string $plugin = null): bool
+    {
+        $migrationsPath = 'config' . DS . 'Migrations';
+        $path = $plugin === null
+            ? ROOT . DS . $migrationsPath
+            : $this->pluginsDir . $plugin . DS . $migrationsPath;
+
+        if (!is_dir($path)) {
+            return false;
         }
+
+        return $this->migrations->migrate(['plugin' => $plugin]) &&
+            $this->migrations->seed(['plugin' => $plugin]);
     }
 
     /**
      * Deletes migrations for the plugin
      *
-     * @param string $plugin
+     * @param string $plugin Plugin name.
      * @return void
      */
     public function deleteMigrations(string $plugin): void
     {
         if (is_dir($this->pluginsDir . $plugin . DS . 'config' . DS . 'Migrations')) {
-            $migration = new Migrations(['plugin' => $plugin]);
-            $migration->rollback();
-        }
-    }
-
-    /**
-     * Scans plugin for resources (controllers, actions).
-     * Adds every found resource into db.
-     *
-     * @param string|null $plugin Plugin name, null if all plugins are needed.
-     * @return void
-     */
-    public function addResources(?string $plugin = null): void
-    {
-        if (is_null($plugin)) {
-            $plugins = $this->getPlugins(true, true);
-        } else {
-            $plugins = [$plugin];
-        }
-        /** @var \App\Model\Table\ResourcesTable $table */
-        $table = $this->fetchModel('Resources');
-        /** @var \App\Model\Entity\Resource $rootNode */
-        $rootNode = $table->checkNode('Site', null);
-
-        if ($rootNode === null) {
-            $rootNode = $table->createNode('Site', null);
-        }
-
-        foreach ($plugins as $plugin) {
-            /** @var \App\Model\Entity\Resource $rootNode */
-            $pluginNode = $table->createNode($plugin, $rootNode->id);
-
-            if ($pluginNode === false) {
-                continue;
-            }
-
-            if ($plugin === 'System') {
-                $plugin = null;
-            }
-
-            $path = App::classPath('Controller/Admin', $plugin)[0];
-
-            if (!is_dir($path)) {
-                continue;
-            }
-
-            $files = array_diff(scandir($path), ['.', '..', 'AppController.php', 'ErrorController.php', 'UsersController.php', 'RolesController.php']);
-
-            foreach ($files as $file) {
-                if (is_dir($path . $file)) {
-                    continue;
-                }
-
-                $position = strrpos($file, '.');
-                $baseName = $position !== false ? substr($file, 0, $position) : $file;
-                $controller = substr($baseName, 0, strlen($baseName) - 10);
-                $className = App::className($plugin ? "{$plugin}.{$controller}" : $controller, 'Controller/Admin', 'Controller');
-                if ($className === null) {
-                    continue;
-                }
-                $reflection = new ReflectionClass($className);
-                $actions = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
-
-                $controllerNode = $table->createNode($controller, $pluginNode->id);
-
-                if ($controllerNode === false) {
-                    continue;
-                }
-                foreach ($actions as $action) {
-                    if ($action->class === $reflection->getName() && !in_array($action->name, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter'])) {
-                        $table->createNode($action->name, $controllerNode->id);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Deletes plugin resources.
-     *
-     * @param string $plugin Plugin name.
-     * @return void
-     */
-    public function deleteResources(string $plugin): void
-    {
-        $table = $this->fetchModel('Resources');
-
-        $resources = $table->find()
-            ->where(['alias is' => $plugin, 'parent_id' => 1])
-            ->first();
-
-        if (!empty($resources)) {
-            $table->delete($resources);
+            $this->migrations->rollback(['plugin' => $plugin]);
         }
     }
 
@@ -215,7 +145,36 @@ class PluginManager
      */
     public function deleteSettings(string $plugin): void
     {
-        $settings = $this->fetchModel('Settings');
-        $settings->deleteAll(['namespace' => $plugin]);
+        $settingsTable = $this->fetchModel('Settings');
+        $settingsTable->deleteAll(['namespace' => $plugin]);
+    }
+
+    /**
+     * Scans plugin for resources (controllers, actions).
+     * Adds every found resource into db.
+     *
+     * @param string $plugin Plugin name.
+     * @return void
+     */
+    public function addResources(string $plugin): void
+    {
+        /** @var \App\Model\Table\ResourcesTable $resourcesTable */
+        $resourcesTable = $this->fetchModel('Resources');
+
+        $resources = $this->resourcesExplorer->getResources($plugin);
+        $resourcesTable->addResources($resources);
+    }
+
+    /**
+     * Deletes plugin resources.
+     *
+     * @param string $plugin Plugin name.
+     * @return void
+     */
+    public function deleteResources(string $plugin): void
+    {
+        /** @var \App\Model\Table\ResourcesTable $resourcesTable */
+        $resourcesTable = $this->fetchModel('Resources');
+        $resourcesTable->deleteResources($plugin);
     }
 }

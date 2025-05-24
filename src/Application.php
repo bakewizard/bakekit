@@ -17,9 +17,11 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Command\InstallCommand;
 use App\Core\Configure\Engine\DbConfig;
 use App\Lib\ComposerManager;
-use App\Lib\PluginExplorer;
+use App\Lib\PluginManager;
+use App\Lib\ResourcesExplorer;
 use App\Middleware\MaintenanceMiddleware;
 use App\Policy\RequestPolicy;
 use Authentication\AuthenticationService;
@@ -55,6 +57,7 @@ use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Exception;
+use Migrations\Migrations;
 use Override;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -289,7 +292,15 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     public function services(ContainerInterface $container): void
     {
         $container->add(ComposerManager::class);
-        $container->add(PluginExplorer::class);
+        $container->add(ResourcesExplorer::class);
+        $container->add(Migrations::class);
+
+        $container->add(PluginManager::class)
+            ->addArgument(ResourcesExplorer::class)
+            ->addArgument(Migrations::class);
+
+        $container->add(InstallCommand::class)
+        ->addArgument(PluginManager::class);
     }
 
     /**

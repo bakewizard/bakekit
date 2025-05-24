@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Lib\PluginManager;
 use Cake\Http\Response;
 use Override;
 
@@ -48,12 +47,12 @@ class DashboardController extends AppController
     {
         parent::settings();
 
-        $pm = new PluginManager();
-
-        $loadedPlugins = $pm->getPlugins(true);
+        /** @var \App\Model\Table\PluginsTable $table */
+        $table = $this->fetchTable('Plugins');
+        $activePlugins = $table->getActivePlugins(true);
         $plugins = [];
 
-        foreach ($loadedPlugins as $plugin) {
+        foreach ($activePlugins as $plugin) {
             $plugins[$plugin] = $plugin;
         }
 

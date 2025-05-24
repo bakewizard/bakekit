@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Lib\PluginManager;
+use App\Lib\ResourcesExplorer;
 use Cake\Cache\Cache;
 use Cake\Event\EventInterface;
 use Override;
@@ -186,9 +186,12 @@ class RolesController extends AppController
     /**
      * Reloads resources
      *
+     * This will delete all existing resources and recreate them from plugins.
+     *
+     * @param \App\Lib\ResourcesExplorer $re Resources explorer instance.
      * @return \Cake\Http\Response|null
      */
-    public function reloadResources()
+    public function reloadResources(ResourcesExplorer $re)
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -196,8 +199,16 @@ class RolesController extends AppController
         $conn->execute('DELETE FROM resources');
         $conn->execute('ALTER TABLE resources AUTO_INCREMENT = 1');
 
-        $pm = new PluginManager();
-        $pm->addResources();
+        /** @var \App\Model\Table\PluginsTable $pluginsTable */
+        $pluginsTable = $this->fetchTable('Plugins');
+        /** @var \App\Model\Table\ResourcesTable $resourcesTable */
+        $resourcesTable = $this->fetchTable('Resources');
+
+        $plugins = $pluginsTable->getActivePlugins(true, true);
+
+        $resources = $re->getResources($plugins);
+
+        $resourcesTable->addResources($resources);
 
         $this->Roles->Permissions->allow(1, 1);
 

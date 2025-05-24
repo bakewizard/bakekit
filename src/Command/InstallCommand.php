@@ -9,7 +9,6 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Exception;
-use Migrations\Migrations;
 use Override;
 
 /**
@@ -17,6 +16,22 @@ use Override;
  */
 class InstallCommand extends Command
 {
+    /**
+     * The plugin manager instance.
+     *
+     * @var \App\Lib\PluginManager
+     */
+    protected PluginManager $pluginManager;
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct(PluginManager $pluginManager)
+    {
+        parent::__construct();
+        $this->pluginManager = $pluginManager;
+    }
+
     /**
      * Installs the application.
      *
@@ -62,8 +77,7 @@ class InstallCommand extends Command
     {
         $io->out('Setting up database objects... - ', 0);
 
-        $migration = new Migrations();
-        if ($migration->migrate() && $migration->seed()) {
+        if ($this->pluginManager->addMigrations()) {
             $io->out('success!');
         } else {
             $io->abort('failure!');
@@ -153,7 +167,8 @@ class InstallCommand extends Command
     {
         $io->out('Generating system resources... - ', 0);
 
-        (new PluginManager())->addResources('System');
+        $this->pluginManager->addResources('System');
+
         $io->out('success!');
     }
 
@@ -181,7 +196,7 @@ class InstallCommand extends Command
     {
         $io->out('Loading default settings... - ', 0);
 
-        (new PluginManager())->addSettings();
+        $this->pluginManager->addSettings();
 
         $io->out('success!');
     }

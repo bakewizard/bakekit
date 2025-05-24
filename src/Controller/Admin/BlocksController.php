@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Lib\PluginExplorer;
+use App\Lib\ResourcesExplorer;
 use Cake\Core\App;
 use Cake\Http\Response;
 
@@ -171,15 +171,16 @@ class BlocksController extends AppController
     /**
      * Gets plugin cells
      *
+     * @param \App\Lib\ResourcesExplorer $re
      * @return void
      */
-    public function getCells(PluginExplorer $pe)
+    public function getCells(ResourcesExplorer $re): void
     {
         /** @var \App\Model\Table\PluginsTable $table */
         $table = $this->fetchTable('Plugins');
         $activePlugins = $table->getActivePlugins(true);
 
-        $data = $pe->getCells($activePlugins);
+        $data = $re->getCells($activePlugins);
 
         $this->set(compact('data'));
     }
