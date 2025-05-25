@@ -5,11 +5,19 @@ namespace App\Lib;
 
 use Cake\Core\App;
 use Cake\Routing\Router;
+use DirectoryIterator;
 use ReflectionClass;
 use ReflectionMethod;
 
 class ResourcesExplorer
 {
+    /**
+     * Common controller methods that should not be included in the action list.
+     *
+     * @var array<string>
+     */
+    private const COMMON_CONTROLLER_METHODS = ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter'];
+
     /**
      * Discovers plugin controllers and actions.
      *
@@ -31,49 +39,32 @@ class ResourcesExplorer
         $resourceTree = [];
 
         foreach ($plugins as $pluginName) {
-            $path = App::classPath('Controller/Admin', $pluginName === 'System' ? null : $pluginName)[0];
+            $path = App::classPath('Controller/Admin', $pluginName === 'System' ? null : $pluginName)[0] ?? null;
 
-            if (!is_dir($path)) {
+            if (!$path) {
                 continue;
             }
 
-            $controllers = array_diff(
-                scandir($path),
-                ['.', '..', 'AppController.php', 'ErrorController.php', 'UsersController.php', 'RolesController.php'],
+            $files = $this->getPhpFiles(
+                $path,
+                'Controller.php',
+                ['AppController.php', 'ErrorController.php', 'UsersController.php', 'RolesController.php'],
             );
 
-            foreach ($controllers as $file) {
-                if (is_dir($path . $file)) {
-                    continue;
-                }
-
-                $position = strrpos($file, '.');
-                $baseName = $position !== false ? substr($file, 0, $position) : $file;
-                $controller = substr($baseName, 0, strlen($baseName) - 10);
+            foreach ($files as $file) {
+                $controller = substr(pathinfo($file, PATHINFO_FILENAME), 0, -10);
                 $className = App::className(
                     $pluginName === 'System' ? $controller : "{$pluginName}.{$controller}",
                     'Controller/Admin',
                     'Controller',
                 );
 
-                if ($className === null) {
-                        continue;
+                if (!$className || !class_exists($className)) {
+                    continue;
                 }
 
-                $reflection = new ReflectionClass($className);
-                $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
-                $actions = [];
-
-                foreach ($methods as $method) {
-                    if (
-                        $method->class === $reflection->getName() &&
-                        !in_array($method->name, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter'])
-                    ) {
-                        $actions[] = $method->name;
-                    }
-                }
-
-                $resourceTree[$pluginName][$controller] = $actions;
+                $methods = $this->getDeclaredPublicMethods($className, self::COMMON_CONTROLLER_METHODS);
+                $resourceTree[$pluginName][$controller] = array_map(fn($m) => $m->name, $methods);
             }
         }
 
@@ -150,7 +141,7 @@ class ResourcesExplorer
                     continue;
                 }
 
-                foreach ($this->getDeclaredPublicMethods($className, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter']) as $method) {
+                foreach ($this->getDeclaredPublicMethods($className, self::COMMON_CONTROLLER_METHODS) as $method) {
                     $docBlock = $this->parseDocBlock($method);
                     $showModal = $method->getNumberOfParameters() === 1;
 
@@ -199,7 +190,7 @@ class ResourcesExplorer
                     continue;
                 }
 
-                foreach ($this->getDeclaredPublicMethods($className, ['initialize', 'beforeFilter', 'beforeRender', 'afterFilter']) as $method) {
+                foreach ($this->getDeclaredPublicMethods($className, self::COMMON_CONTROLLER_METHODS) as $method) {
                     if ($method->name !== 'index' && $method->getNumberOfParameters() !== 0) {
                         continue;
                     }
@@ -251,10 +242,21 @@ class ResourcesExplorer
             return [];
         }
 
-        return array_filter(
-            array_diff(scandir($path), array_merge(['.', '..'], $excludeFiles)),
-            fn($file) => is_file($path . $file) && str_ends_with($file, $suffix),
-        );
+        $files = [];
+        foreach (new DirectoryIterator($path) as $fileInfo) {
+            if (
+                $fileInfo->isDot() ||
+                !$fileInfo->isFile() ||
+                !str_ends_with($fileInfo->getFilename(), $suffix) ||
+                in_array($fileInfo->getFilename(), $excludeFiles, true)
+            ) {
+                continue;
+            }
+
+            $files[] = $fileInfo->getFilename();
+        }
+
+        return $files;
     }
 
     /**
