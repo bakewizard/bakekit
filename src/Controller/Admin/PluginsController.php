@@ -4,18 +4,16 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Lib\ComposerManager;
+use App\Lib\ExtensionHandler;
 use App\Lib\PluginManager;
 use Cake\Cache\Cache;
 use Cake\Core\App;
-use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\Utility\Inflector;
 use DirectoryIterator;
 use Exception;
 use Laminas\Diactoros\UploadedFile;
 use Override;
-use Symfony\Component\Filesystem\Filesystem;
-use ZipArchive;
 
 /**
  * @property \App\Model\Table\PluginsTable $Plugins
@@ -35,20 +33,7 @@ class PluginsController extends AppController
     {
         parent::initialize();
 
-        $this->pluginsDir = (string)current(App::path('plugins')) ?: '';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function beforeFilter(EventInterface $event)
-    {
-        parent::beforeFilter($event);
-
-        if (!$this->request->is('get') && $this->request->getParam('action') !== 'add') {
-            Cache::delete('plugins', 'cms');
-        }
+        $this->pluginsDir = current(App::path('plugins')) ?: '';
     }
 
     /**
@@ -115,45 +100,41 @@ class PluginsController extends AppController
     }
 
     /**
-     * Installs a plugin.
+     * Installs a plugin from an uploaded ZIP file.
      *
-     * @return \Cake\Http\Response|null Redirects to index.
+     * This method handles the file upload, extraction, and subsequent Composer autoload
+     * dump to ensure the new plugin is recognized by the application.
+     *
+     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
+     * @param \App\Lib\ComposerManager $composer ComposerManager instance for autoloading.
+     * @return \Cake\Http\Response|null Redirects to the index page.
      * @throws \Exception When error is encountered.
      */
-    public function install(ComposerManager $composer)
+    public function install(ExtensionHandler $extensionHandler, ComposerManager $composer): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
 
         $file = $this->request->getUploadedFile('plugin');
-        if ($file === null) {
-            $this->Flash->error(__('No plugin upload field was submitted.'));
+
+        if (!$file instanceof UploadedFile) {
+            $this->Flash->error(__('No file was uploaded.'));
 
             return $this->redirect(['action' => 'index']);
         }
+
         $error = $file->getError();
 
         if ($error) {
-            $this->Flash->error(UploadedFile::ERROR_MESSAGES[$error]);
-
-            return $this->redirect(['action' => 'index']);
-        }
-
-        $filename = $file->getClientFilename();
-        if ($filename === null) {
-            throw new Exception(__('Uploaded file does not have a valid filename.'));
-        }
-        $plugin = basename($filename, '.zip');
-
-        if (is_dir($this->pluginsDir . $plugin)) {
-            $this->Flash->error(__('Folder with the name "{0}" already exists', $plugin));
+            $message = UploadedFile::ERROR_MESSAGES[$error] ?? 'Unknown upload error.';
+            $this->Flash->error($message);
 
             return $this->redirect(['action' => 'index']);
         }
 
         try {
-            $this->unpack($file->getStream()->getMetadata('uri'), $this->pluginsDir);
+            $name = $extensionHandler->load($file, $this->pluginsDir);
             $composer->dumpAutoload(['--optimize' => true]);
-            $this->Flash->success(__('The plugin has been installed.'));
+            $this->Flash->success(__('The plugin "{0}" has been installed.', $name));
         } catch (Exception $e) {
             $this->Flash->error($e->getMessage());
         }
@@ -164,11 +145,17 @@ class PluginsController extends AppController
     /**
      * Uninstalls a plugin.
      *
-     * @param string $name Plugin name.
-     * @return \Cake\Http\Response|null Redirects to index.
+     * This method removes the plugin's database entry, clears relevant caches,
+     * deletes plugin files, and updates the Composer autoloader.
+     *
+     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
+     * @param \App\Lib\PluginManager $pluginManager PluginManager instance for uninstall logic.
+     * @param \App\Lib\ComposerManager $composer ComposerManager instance for autoloading.
+     * @param string $name The name of the plugin to uninstall.
+     * @return \Cake\Http\Response|null Redirects to the index page.
      * @throws \Exception When error is encountered.
      */
-    public function uninstall(PluginManager $pluginManager, ComposerManager $composer, string $name)
+    public function uninstall(ExtensionHandler $extensionHandler, PluginManager $pluginManager, ComposerManager $composer, string $name): ?Response
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -189,7 +176,8 @@ class PluginsController extends AppController
                 }
             }
 
-            $this->clean($name);
+            $extensionHandler->unload($name, $this->pluginsDir);
+            Cache::drop(Inflector::dasherize($name));
             $composer->dumpAutoload(['--optimize' => true]);
             $this->Flash->success(__('The plugin has been uninstalled.'));
         } catch (Exception $e) {
@@ -201,13 +189,17 @@ class PluginsController extends AppController
     }
 
     /**
-     * Activates a plugin
+     * Activates a plugin, either by enabling an existing entry or creating a new one.
      *
-     * @param string $name Plugin name
-     * @return \Cake\Http\Response|null Redirects on successful activation, renders view otherwise.
+     * This method handles updating the database, clearing caches, and
+     * setting the plugin as active.
+     *
+     * @param \App\Lib\PluginManager $pluginManager PluginManager instance for activation logic.
+     * @param string $name The name of the plugin to activate.
+     * @return \Cake\Http\Response|null Redirects to the index page.
      * @throws \Exception
      */
-    public function activate(PluginManager $pluginManager, string $name)
+    public function activate(PluginManager $pluginManager, string $name): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
 
@@ -249,10 +241,13 @@ class PluginsController extends AppController
     }
 
     /**
-     * Deactivates a plugin
+     * Deactivates a plugin.
      *
-     * @param string|int $id Plugin id
-     * @return \Cake\Http\Response|null
+     * This method updates the plugin's status in the database and clears relevant cache.
+     * It prevents deactivation if the plugin's dashboard is set as the default.
+     *
+     * @param string|int $id The ID of the plugin to deactivate.
+     * @return \Cake\Http\Response|null Redirects to the index page.
      */
     public function deactivate(string|int $id): ?Response
     {
@@ -276,46 +271,6 @@ class PluginsController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
-    }
-
-    /**
-     * Removes plugin files and cleans cache.
-     *
-     * @param string $plugin Plugin name.
-     * @return void
-     */
-    private function clean(string $plugin): void
-    {
-        $cacheConfig = Inflector::dasherize($plugin);
-        $fs = new Filesystem();
-
-        if ($fs->exists(CACHE . $cacheConfig . DS)) {
-            $fs->remove(CACHE . $cacheConfig . DS);
-        }
-        $fs->remove(ROOT . DS . 'plugins' . DS . $plugin . DS);
-    }
-
-    /**
-     * Extracts an archive to a folder.
-     *
-     * @param string $input Input path.
-     * @param string $output Output path.
-     * @return void
-     * @throws \Exception
-     */
-    private function unpack(string $input, string $output): void
-    {
-        $archive = new ZipArchive();
-
-        if (!$archive->open($input)) {
-            throw new Exception(__('Error occured while opening the archive.'));
-        }
-
-        if (!$archive->extractTo($output)) {
-            $archive->close();
-            throw new Exception(__('Error occured while extracting the archive.'));
-        }
-        $archive->close();
     }
 
     /**

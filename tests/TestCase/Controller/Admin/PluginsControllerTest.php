@@ -168,10 +168,9 @@ class PluginsControllerTest extends TestCase
         ]);
 
         $this->post('/admin/plugins/install');
-
         $this->assertResponseCode(302);
         $this->assertRedirectContains('/admin/plugins');
-        $this->assertFlashMessage('The plugin has been installed.');
+        $this->assertFlashMessage('The plugin\"' . self::PLUGIN_NAME . '\" has been installed.');
         $this->assertDirectoryExists(ROOT . '/plugins/' . self::PLUGIN_NAME, 'The plugin directory does not exist.');
     }
 
@@ -203,21 +202,6 @@ class PluginsControllerTest extends TestCase
         $this->assertResponseCode(302);
         $this->assertRedirectContains('/admin/plugins');
         $this->assertFlashMessage('No file was uploaded');
-    }
-
-    /**
-     * Test install method with missing file field
-     *
-     * @return void
-     * @uses \App\Controller\Admin\PluginsController::install()
-     */
-    public function testInstallMissingFileField(): void
-    {
-        $this->post('/admin/plugins/install');
-
-        $this->assertResponseCode(302);
-        $this->assertRedirectContains('/admin/plugins');
-        $this->assertFlashMessage('No plugin upload field was submitted.');
     }
 
     /**

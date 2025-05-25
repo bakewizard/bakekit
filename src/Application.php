@@ -20,6 +20,7 @@ namespace App;
 use App\Command\InstallCommand;
 use App\Core\Configure\Engine\DbConfig;
 use App\Lib\ComposerManager;
+use App\Lib\ExtensionHandler;
 use App\Lib\PluginManager;
 use App\Lib\ResourcesExplorer;
 use App\Middleware\MaintenanceMiddleware;
@@ -293,6 +294,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     {
         $container->add(ComposerManager::class);
         $container->add(ResourcesExplorer::class);
+        $container->add(ExtensionHandler::class);
         $container->add(Migrations::class);
 
         $container->add(PluginManager::class)

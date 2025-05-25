@@ -10,6 +10,10 @@ use Cake\Utility\Hash;
 use LogicException;
 use Migrations\Migrations;
 
+/**
+ * @property \App\Model\Table\SettingsTable $Settings
+ * @property \App\Model\Table\ResourcesTable $Resources
+ */
 class PluginManager
 {
     use ModelAwareTrait;
