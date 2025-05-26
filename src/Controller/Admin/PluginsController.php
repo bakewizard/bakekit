@@ -116,16 +116,15 @@ class PluginsController extends AppController
 
         $file = $this->request->getUploadedFile('plugin');
 
-        if (!$file instanceof UploadedFile) {
+        if ($file === null || $file->getError() === UPLOAD_ERR_NO_FILE) {
             $this->Flash->error(__('No file was uploaded.'));
 
             return $this->redirect(['action' => 'index']);
         }
 
         $error = $file->getError();
-
-        if ($error) {
-            $message = UploadedFile::ERROR_MESSAGES[$error] ?? 'Unknown upload error.';
+        if ($error !== UPLOAD_ERR_OK) {
+            $message = UploadedFile::ERROR_MESSAGES[$error] ?? __('Unknown upload error.');
             $this->Flash->error($message);
 
             return $this->redirect(['action' => 'index']);

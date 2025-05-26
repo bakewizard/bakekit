@@ -160,7 +160,7 @@ class UsersControllerTest extends TestCase
 
         $this->post('/admin/users/login', [
             'email' => 'neo@matrix.net',
-            'password' => 'admin',
+            'password' => 'matrix',
         ]);
 
         $this->assertResponseCode(302);

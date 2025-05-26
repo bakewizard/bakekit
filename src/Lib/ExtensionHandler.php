@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Lib;
 
 use Exception;
-use Laminas\Diactoros\UploadedFile;
+use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use ZipArchive;
 
@@ -16,12 +16,12 @@ class ExtensionHandler
     /**
      * Complete logic to install (load) an extension from upload.
      *
-     * @param \Laminas\Diactoros\UploadedFile $file The uploaded ZIP file.
+     * @param \Psr\Http\Message\UploadedFileInterface $file The uploaded ZIP file.
      * @param string $baseDir Base directory where the extension should go (e.g. themesDir or pluginsDir).
      * @return string Installed name (folder)
      * @throws \Exception
      */
-    public function load(UploadedFile $file, string $baseDir): string
+    public function load(UploadedFileInterface $file, string $baseDir): string
     {
         $this->validateZipMime($file);
 
@@ -87,11 +87,11 @@ class ExtensionHandler
     /**
      * Validates the MIME type of an uploaded ZIP file.
      *
-     * @param \Laminas\Diactoros\UploadedFile $file
+     * @param \Psr\Http\Message\UploadedFileInterface $file
      * @return void
      * @throws \Exception
      */
-    public function validateZipMime(UploadedFile $file): void
+    public function validateZipMime(UploadedFileInterface $file): void
     {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         if ($finfo === false) {
@@ -110,11 +110,11 @@ class ExtensionHandler
     /**
      * Moves an uploaded ZIP file to a safe temporary location.
      *
-     * @param \Laminas\Diactoros\UploadedFile $file
+     * @param \Psr\Http\Message\UploadedFileInterface $file
      * @return string Path to the temporary file
      * @throws \Exception
      */
-    public function moveToTemp(UploadedFile $file): string
+    public function moveToTemp(UploadedFileInterface $file): string
     {
         $tempPath = TMP . uniqid('extension_', true) . '.zip';
         $file->moveTo($tempPath);

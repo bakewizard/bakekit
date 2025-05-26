@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Test\TestCase\Controller\Admin;
 
 use App\Lib\ComposerManager;
+use App\Lib\ExtensionHandler;
 use App\Lib\PluginManager;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
@@ -202,9 +203,9 @@ class PluginsControllerTest extends TestCase
 
         $this->post('/admin/plugins/install');
 
+        $this->assertFlashMessage('No file was uploaded.');
         $this->assertResponseCode(302);
         $this->assertRedirectContains('/admin/plugins');
-        $this->assertFlashMessage('No file was uploaded.');
     }
 
     /**
@@ -348,6 +349,16 @@ class PluginsControllerTest extends TestCase
             $mock->expects($this->once())
                 ->method('dumpAutoload')
                 ->with(['--optimize' => true]);
+
+            return $mock;
+        });
+
+        // Mock ExtensionHandler
+        $this->mockService(ExtensionHandler::class, function () {
+            $mock = $this->createMock(ExtensionHandler::class);
+            $mock->expects($this->once())
+                ->method('unload')
+                ->with(self::PLUGIN_NAME, self::PLUGINS_DIR);
 
             return $mock;
         });
