@@ -138,7 +138,10 @@ class PluginsControllerTest extends TestCase
     public function testInstall(): void
     {
         $zipPath = TESTS . 'Fixture/data/' . self::PLUGIN_NAME . '.zip';
-        $this->assertFileExists($zipPath, 'The plugin zip file does not exist.');
+        $tmpName = tempnam(sys_get_temp_dir(), 'php');
+        copy($zipPath, $tmpName);
+
+        $this->assertFileExists($tmpName, 'The plugin zip file does not exist.');
 
         // Ensure the plugin directory does NOT exist before starting the test
         $pluginDir = self::PLUGINS_DIR . self::PLUGIN_NAME;
@@ -154,8 +157,8 @@ class PluginsControllerTest extends TestCase
         });
 
         $zipFile = new UploadedFile(
-            $zipPath,
-            filesize($zipPath),
+            $tmpName,
+            filesize($tmpName),
             UPLOAD_ERR_OK,
             self::PLUGIN_NAME . '.zip',
             'application/zip',
@@ -170,7 +173,7 @@ class PluginsControllerTest extends TestCase
         $this->post('/admin/plugins/install');
         $this->assertResponseCode(302);
         $this->assertRedirectContains('/admin/plugins');
-        $this->assertFlashMessage('The plugin\"' . self::PLUGIN_NAME . '\" has been installed.');
+        $this->assertFlashMessage('The plugin "' . self::PLUGIN_NAME . '" has been installed.');
         $this->assertDirectoryExists(ROOT . '/plugins/' . self::PLUGIN_NAME, 'The plugin directory does not exist.');
     }
 
@@ -201,7 +204,7 @@ class PluginsControllerTest extends TestCase
 
         $this->assertResponseCode(302);
         $this->assertRedirectContains('/admin/plugins');
-        $this->assertFlashMessage('No file was uploaded');
+        $this->assertFlashMessage('No file was uploaded.');
     }
 
     /**

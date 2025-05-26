@@ -26,7 +26,7 @@ class UsersFixture extends TestFixture
                 'last_name' => 'Matrix',
                 'alias' => 'root',
                 'email' => 'neo@matrix.net',
-                'password' => (new DefaultPasswordHasher())->hash('admin'),
+                'password' => (new DefaultPasswordHasher())->hash('matrix'),
                 'role_id' => 1,
                 'created' => date('Y-m-d H:i:s'),
                 'modified' => date('Y-m-d H:i:s'),
