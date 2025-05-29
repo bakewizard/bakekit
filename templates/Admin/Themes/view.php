@@ -17,11 +17,11 @@
             </tr>
             <tr>
                 <th><?= __('Description') ?></th>
-                <td><?= h($theme['description']) ?></td>
+                <td><?= h($theme['description'] ?? '--- No description ---') ?></td>
             </tr>
             <tr>
                 <th><?= __('License') ?></th>
-                <td><?= h($theme['license']) ?></td>
+                <td><?= h($theme['license'] ?? '--- No license ---') ?></td>
             </tr>
             <tr>
                 <th><?= __('Active') ?></th>

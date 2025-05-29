@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Lib;
 
+use DirectoryIterator;
 use Exception;
 use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -13,6 +14,52 @@ use ZipArchive;
  */
 class ExtensionHandler
 {
+    /**
+     * Discovers extensions in the given base directory by scanning for subdirectories
+     * that contain a valid composer.json file.
+     *
+     * @param string $baseDir Base directory where extensions are stored.
+     * @return array<string, array{
+     *     name: string,
+     *     description: string,
+     *     license: string|array<int, string>,
+     *     extra: array<string, mixed>
+     * }>
+     */
+    public function discover(string $baseDir): array
+    {
+        $results = [];
+
+        if (!is_dir($baseDir)) {
+            return [];
+        }
+
+        $dir = new DirectoryIterator($baseDir);
+        foreach ($dir as $info) {
+            if (!$info->isDir() || $info->isDot()) {
+                continue;
+            }
+
+            $name = $info->getFilename();
+            $config = $this->readComposerConfig($baseDir . $name);
+
+            if (empty($config)) {
+                continue;
+            }
+
+            $results[$name] = [
+                'name' => $name,
+                'description' => $config['description'] ?? '--- No description ---',
+                'license' => $config['license'] ?? '--- No license ---',
+                'extra' => $config['extra'] ?? [],
+            ];
+        }
+
+        ksort($results);
+
+        return $results;
+    }
+
     /**
      * Complete logic to install (load) an extension from upload.
      *
@@ -179,7 +226,11 @@ class ExtensionHandler
      */
     public function readComposerConfig(string $path): array
     {
-        $configFile = $path . DIRECTORY_SEPARATOR . 'composer.json';
+        // if (!$path) {
+        //     $path = ROOT;
+        // }
+
+        $configFile = $path . DS . 'composer.json';
 
         if (!file_exists($configFile) || !is_readable($configFile)) {
             return [];

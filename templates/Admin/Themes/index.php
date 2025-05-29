@@ -45,8 +45,8 @@
                                     <?= $this->Html->link($theme['name'], ['action' => 'view', $theme['name']], ['class' => 'text-decoration-none']) ?>
                                 </h5>
                             </td>
-                            <td><?= h($theme['description']) ?></td>
-                            <td><?= h($theme['license']) ?></td>
+                            <td><?= h($theme['description'] ?? '--- No description ---') ?></td>
+                            <td><?= h($theme['license']) ?? '--- No license ---' ?></td>
                             <td class="text-center">
                                 <?php if ($theme['name'] !== $activeTheme): ?>
                                     <?= $this->Form->postLink('Activate', ['action' => 'activate', $theme['name']], ['class' => 'btn btn-sm btn-success']) ?>

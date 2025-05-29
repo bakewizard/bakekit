@@ -10,7 +10,6 @@ use Cake\Cache\Cache;
 use Cake\Core\App;
 use Cake\Http\Response;
 use Cake\Utility\Inflector;
-use DirectoryIterator;
 use Exception;
 use Laminas\Diactoros\UploadedFile;
 use Override;
@@ -41,39 +40,13 @@ class PluginsController extends AppController
      *
      * @return \Cake\Http\Response|void
      */
-    public function index()
+    public function index(ExtensionHandler $extensionHandler)
     {
         $installedPlugins = $this->Plugins->find('all')->all()->indexBy('name')->toArray();
-        $plugins = [];
 
-        if (is_dir($this->pluginsDir)) {
-            $dir = new DirectoryIterator($this->pluginsDir);
-            foreach ($dir as $info) {
-                if (!$info->isDir() || $info->isDot()) {
-                    continue;
-                }
+        $plugins = $extensionHandler->discover($this->pluginsDir);
 
-                $name = $info->getFilename();
-                $config = $this->getConfigData($this->pluginsDir . $name);
-
-                if (empty($config)) {
-                    continue;
-                }
-
-                $plugins[$name] = [
-                    'id' => $installedPlugins[$name]->id ?? null,
-                    'name' => $name,
-                    'alias' => $installedPlugins[$name]->alias ?? '',
-                    'description' => $config['description'] ?? '',
-                    'parent_plugin' => $config['extra']['parent-plugin'] ?? null,
-                    'enabled' => isset($installedPlugins[$name]) && $installedPlugins[$name]->enabled,
-                ];
-            }
-        }
-
-        ksort($plugins);
-
-        $this->set(compact('plugins'));
+        $this->set(compact('plugins', 'installedPlugins'));
     }
 
     /**
@@ -194,11 +167,12 @@ class PluginsController extends AppController
      * setting the plugin as active.
      *
      * @param \App\Lib\PluginManager $pluginManager PluginManager instance for activation logic.
+     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
      * @param string $name The name of the plugin to activate.
      * @return \Cake\Http\Response|null Redirects to the index page.
      * @throws \Exception
      */
-    public function activate(PluginManager $pluginManager, string $name): ?Response
+    public function activate(PluginManager $pluginManager, ExtensionHandler $extensionHandler, string $name): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
 
@@ -214,12 +188,12 @@ class PluginsController extends AppController
             } else {
                 $pluginManager->activate($name);
 
-                $config = $this->getConfigData($this->pluginsDir . $name);
+                $config = $extensionHandler->readComposerConfig($this->pluginsDir . $name);
 
                 $entity = $this->Plugins->newEntity([
                     'name' => $name,
                     'alias' => Inflector::dasherize($name),
-                    'description' => $config['description'],
+                    'description' => $config['description'] ?? null,
                     'parent_plugin' => $config['extra']['parent-plugin'] ?? null,
                     'enabled' => true,
                 ]);
@@ -270,31 +244,5 @@ class PluginsController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
-    }
-
-    /**
-     * Reads composer.json into array.
-     *
-     * @param string $path
-     * @return array<string, mixed>
-     */
-    private function getConfigData(?string $path = null): array
-    {
-        if (!$path) {
-            $path = ROOT;
-        }
-
-        $configFile = $path . DS . 'composer.json';
-
-        if (!file_exists($configFile) || !is_readable($configFile)) {
-            return [];
-        }
-
-        $content = file_get_contents($configFile);
-        if ($content === false) {
-            return [];
-        }
-
-        return json_decode($content, true);
     }
 }

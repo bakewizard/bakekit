@@ -36,8 +36,8 @@
                             <td>
                                 <h5><?= h($plugin['name']) ?></h5>
                                 <div class="pt-1">
-                                    <?php if (isset($plugin['id']) && $plugin['enabled']): ?>
-                                        <?= $this->Form->postLink('Deactivate', ['action' => 'deactivate', $plugin['id']], ['block' => true, 'class' => 'btn btn-sm btn-warning']) ?>
+                                    <?php if (isset($installedPlugins[$plugin['name']]->id) && $installedPlugins[$plugin['name']]->enabled): ?>
+                                        <?= $this->Form->postLink('Deactivate', ['action' => 'deactivate', $installedPlugins[$plugin['name']]->id], ['block' => true, 'class' => 'btn btn-sm btn-warning']) ?>
                                     <?php else: ?>
                                         <?= $this->Form->postLink('Activate', ['action' => 'activate', $plugin['name']], ['block' => true, 'class' => 'btn btn-sm btn-success']) ?>
                                         <?=
@@ -55,15 +55,15 @@
                                 </div>
                             </td>
                             <td>
-                                <strong><?= $plugin['alias'] ?? '-------' ?></strong>
+                                <strong><?= $installedPlugins[$plugin['name']]->alias ?? '-------' ?></strong>
                             </td>
                             <td><?= h($plugin['description']) ?></td>
                             <td class="text-center">
-                                <strong><?= $plugin['parent_plugin'] ?? '-------' ?></strong>
+                                <strong><?= $installedPlugins[$plugin['name']]->parent_plugin ?? '-------' ?></strong>
                             </td>
                             <td class="text-center">
-                                <?php if (isset($plugin['id'])): ?>
-                                    <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['action' => 'edit', $plugin['id']], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
+                                <?php if (isset($installedPlugins[$plugin['name']]->id)): ?>
+                                    <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['action' => 'edit', $installedPlugins[$plugin['name']]->id], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
                                 <?php endif; ?>
                             </td>
                         </tr>

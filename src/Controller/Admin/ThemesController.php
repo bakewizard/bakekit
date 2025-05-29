@@ -7,7 +7,6 @@ use App\Lib\ExtensionHandler;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Http\Response;
-use DirectoryIterator;
 use Exception;
 use Laminas\Diactoros\UploadedFile;
 
@@ -30,65 +29,38 @@ class ThemesController extends AppController
     /**
      * Index method
      *
+     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function index()
+    public function index(ExtensionHandler $extensionHandler)
     {
         $activeTheme = $this->getConfig('Cms.theme');
-        $themes = [];
 
-        if (is_dir($this->themesDir)) {
-            $dir = new DirectoryIterator($this->themesDir);
-            foreach ($dir as $info) {
-                if (!$info->isDir() || $info->isDot()) {
-                    continue;
-                }
+        $themes = $extensionHandler->discover($this->themesDir);
 
-                $name = $info->getFilename();
-                $config = $this->getConfigData($this->themesDir . $name);
-
-                if (empty($config)) {
-                    continue;
-                }
-
-                $themes[$name] = [
-                    'name' => $name,
-                    'description' => $config['description'] ?? '--- No description ---',
-                    'license' => $config['license'] ?? '--- No license ---',
-                ];
-            }
-        }
-
-        ksort($themes);
-
-        $this->set([
-            'activeTheme' => $activeTheme,
-            'themes' => $themes,
-        ]);
+        $this->set(compact('activeTheme', 'themes'));
     }
 
     /**
      * View method
      *
+     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
      * @param string $name Theme name.
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function view(string $name)
+    public function view(ExtensionHandler $extensionHandler, string $name)
     {
         $activeTheme = $this->getConfig('Cms.theme');
 
-        $config = $this->getConfigData($this->themesDir . $name);
+        $config = $extensionHandler->readComposerConfig($this->themesDir . $name);
 
         $theme = [
             'name' => $name,
-            'description' => $config['description'] ?? '--- No description ---',
-            'license' => $config['license'] ?? '--- No license ---',
+            'description' => $config['description'] ?? null,
+            'license' => $config['license'] ?? null,
         ];
 
-        $this->set([
-            'activeTheme' => $activeTheme,
-            'theme' => $theme,
-        ]);
+         $this->set(compact('activeTheme', 'theme'));
     }
 
     /**
@@ -170,31 +142,5 @@ class ThemesController extends AppController
         Cache::delete('settings', 'cms');
 
         return $this->redirect(['action' => 'index']);
-    }
-
-    /**
-     * Reads composer.json into array.
-     *
-     * @param string $path
-     * @return array<string, mixed>
-     */
-    private function getConfigData(?string $path = null): array
-    {
-        if (!$path) {
-            $path = ROOT;
-        }
-
-        $configFile = $path . DS . 'composer.json';
-
-        if (!file_exists($configFile) || !is_readable($configFile)) {
-            return [];
-        }
-
-        $content = file_get_contents($configFile);
-        if ($content === false) {
-            return [];
-        }
-
-        return json_decode($content, true);
     }
 }
