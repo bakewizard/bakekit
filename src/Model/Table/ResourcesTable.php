@@ -72,14 +72,14 @@ class ResourcesTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-                ->nonNegativeInteger('id')
-                ->allowEmptyString('id', null, 'create');
+            ->nonNegativeInteger('id')
+            ->allowEmptyString('id', null, 'create');
 
         $validator
-                ->scalar('alias')
-                ->maxLength('alias', 255)
-                ->requirePresence('alias', 'create')
-                ->notEmptyString('alias');
+            ->scalar('alias')
+            ->maxLength('alias', 255)
+            ->requirePresence('alias', 'create')
+            ->notEmptyString('alias');
 
         return $validator;
     }
@@ -104,20 +104,22 @@ class ResourcesTable extends Table
      *
      * @param string $path The path to resource.
      * @param int $parentId The parent id to use when creating.
-     * @return \App\Model\Entity\Resource|false The created resource node or false on failure.
+     * @return \App\Model\Entity\Resource|null The created resource node or false on failure.
      */
-    public function createNode(string $path, ?int $parentId = null): Resource|bool
+    public function createNode(string $path, ?int $parentId = null): ?Resource
     {
         $node = null;
-        $aliases = explode('/', $path);
 
-        foreach ($aliases as $alias) {
-            $parentId = !empty($node) ? $node->id : $parentId;
+        foreach (explode('/', $path) as $alias) {
             $entity = $this->newEntity([
-                'parent_id' => $parentId,
+                'parent_id' => $node->id ?? $parentId,
                 'alias' => $alias,
             ]);
+
             $node = $this->save($entity);
+            if (!$node) {
+                return null; // Stop if any level fails
+            }
         }
 
         return $node;
@@ -132,9 +134,9 @@ class ResourcesTable extends Table
      */
     public function checkNode(string $alias, ?int $parentId = null): ?Resource
     {
-        $node = $this->find()->where(['alias' => $alias, 'parent_id is' => $parentId])->first();
-
-        return !empty($node) ? $node : null;
+        return $this->find()
+            ->where(['alias' => $alias, 'parent_id IS' => $parentId])
+            ->first() ?: null;
     }
 
     /**
@@ -145,29 +147,32 @@ class ResourcesTable extends Table
      */
     public function addResources(array $resourceTree): void
     {
-        $rootNode = $this->checkNode('Site', null) ?? $this->createNode('Site', null);
+        $this->getConnection()->transactional(function () use ($resourceTree): void {
 
-        if (!$rootNode instanceof Resource) {
-            return;
-        }
+            $rootNode = $this->checkNode('Site', null) ?? $this->createNode('Site', null);
 
-        foreach ($resourceTree as $plugin => $controllers) {
-            $pluginNode = $this->createNode($plugin, $rootNode->id);
-            if ($pluginNode === false) {
-                continue;
+            if (!$rootNode instanceof Resource) {
+                return;
             }
 
-            foreach ($controllers as $controller => $actions) {
-                $controllerNode = $this->createNode($controller, $pluginNode->id);
-                if ($controllerNode === false) {
+            foreach ($resourceTree as $plugin => $controllers) {
+                $pluginNode = $this->createNode($plugin, $rootNode->id);
+                if (!$pluginNode) {
                     continue;
                 }
 
-                foreach ($actions as $action) {
-                    $this->createNode($action, $controllerNode->id);
+                foreach ($controllers as $controller => $actions) {
+                    $controllerNode = $this->createNode($controller, $pluginNode->id);
+                    if (!$controllerNode) {
+                        continue;
+                    }
+
+                    foreach ($actions as $action) {
+                        $this->createNode($action, $controllerNode->id);
+                    }
                 }
             }
-        }
+        });
     }
 
     /**

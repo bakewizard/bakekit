@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Lib;
 
-use Cake\Core\App;
-use Cake\Routing\Router;
 use DirectoryIterator;
 use ReflectionClass;
 use ReflectionMethod;
@@ -39,32 +37,28 @@ class ResourcesExplorer
         $resourceTree = [];
 
         foreach ($plugins as $pluginName) {
-            $path = App::classPath('Controller/Admin', $pluginName === 'System' ? null : $pluginName)[0] ?? null;
-
+            $path = $this->resolvePath($pluginName, 'Controller/Admin');
             if (!$path) {
                 continue;
             }
 
-            $files = $this->getPhpFiles(
-                $path,
-                'Controller.php',
-                ['AppController.php', 'ErrorController.php', 'UsersController.php', 'RolesController.php'],
-            );
+            $files = $this->getPhpFiles($path, 'Controller.php', ['AppController.php', 'ErrorController.php']);
+            $controllers = [];
 
             foreach ($files as $file) {
                 $controller = substr(pathinfo($file, PATHINFO_FILENAME), 0, -10);
-                $className = App::className(
-                    $pluginName === 'System' ? $controller : "{$pluginName}.{$controller}",
-                    'Controller/Admin',
-                    'Controller',
-                );
+                $fqcn = $this->fqcn($pluginName, "Controller\\Admin\\{$controller}Controller");
 
-                if (!$className || !class_exists($className)) {
+                if (!class_exists($fqcn)) {
                     continue;
                 }
 
-                $methods = $this->getDeclaredPublicMethods($className, self::COMMON_CONTROLLER_METHODS);
-                $resourceTree[$pluginName][$controller] = array_map(fn($m) => $m->name, $methods);
+                $methods = $this->getDeclaredPublicMethods($fqcn, self::COMMON_CONTROLLER_METHODS);
+                $controllers[$controller] = array_map(fn($m) => $m->name, $methods);
+            }
+
+            if ($controllers) {
+                $resourceTree[$pluginName] = $controllers;
             }
         }
 
@@ -82,9 +76,7 @@ class ResourcesExplorer
         $data = [];
 
         foreach ($plugins as $plugin) {
-            $pluginName = $plugin === 'System' ? null : $plugin;
-            $path = $this->getPath('View/Cell', $pluginName);
-
+            $path = $this->resolvePath($plugin, 'View/Cell');
             if (!$path) {
                 continue;
             }
@@ -93,19 +85,20 @@ class ResourcesExplorer
 
             foreach ($files as $file) {
                 $cell = substr(pathinfo($file, PATHINFO_FILENAME), 0, -4);
-                $pluginAndCell = $pluginName ? "{$pluginName}.{$cell}" : $cell;
-                $className = App::className($pluginAndCell, 'View/Cell', 'Cell');
+                $fqcn = $this->fqcn($plugin, "View\\Cell\\{$cell}Cell");
 
-                if (!$className || !class_exists($className)) {
+                if (!class_exists($fqcn)) {
                     continue;
                 }
 
-                foreach ($this->getDeclaredPublicMethods($className, ['initialize']) as $method) {
+                foreach ($this->getDeclaredPublicMethods($fqcn, ['initialize']) as $method) {
                     $docBlock = $this->parseDocBlock($method);
                     $data[$plugin][] = [
                         'summary' => $docBlock->getSummary(),
                         'description' => $docBlock->getDescription(),
-                        'path' => $method->name === 'display' ? $pluginAndCell : "$pluginAndCell::{$method->name}",
+                        'path' => $method->name === 'display'
+                            ? ($plugin ? "{$plugin}.{$cell}" : $cell)
+                            : ($plugin ? "{$plugin}.{$cell}::{$method->name}" : "{$cell}::{$method->name}"),
                     ];
                 }
             }
@@ -125,8 +118,7 @@ class ResourcesExplorer
         $data = [];
 
         foreach ($plugins as $plugin) {
-            $path = $this->getPath('Controller', $plugin);
-
+            $path = $this->resolvePath($plugin, 'Controller');
             if (!$path) {
                 continue;
             }
@@ -135,25 +127,25 @@ class ResourcesExplorer
 
             foreach ($files as $file) {
                 $controller = substr(pathinfo($file, PATHINFO_FILENAME), 0, -10);
-                $className = App::className("{$plugin}.{$controller}", 'Controller', 'Controller');
+                $fqcn = $this->fqcn($plugin, "Controller\\{$controller}Controller");
 
-                if (!$className || !class_exists($className)) {
+                if (!class_exists($fqcn)) {
                     continue;
                 }
 
-                foreach ($this->getDeclaredPublicMethods($className, self::COMMON_CONTROLLER_METHODS) as $method) {
+                foreach ($this->getDeclaredPublicMethods($fqcn, self::COMMON_CONTROLLER_METHODS) as $method) {
                     $docBlock = $this->parseDocBlock($method);
                     $showModal = $method->getNumberOfParameters() === 1;
 
                     $data[$plugin][] = [
                         'summary' => $docBlock->getSummary(),
                         'description' => $docBlock->getDescription(),
-                        'url' => Router::url([
+                        'url' => [
                             'plugin' => $plugin,
                             'prefix' => $showModal ? 'Admin' : false,
                             'controller' => $showModal ? $docBlock->getTag('items') : $controller,
                             'action' => $showModal ? 'index' : $method->name,
-                        ]),
+                        ],
                         'target' => $showModal ? '_blank' : '_self',
                     ];
                 }
@@ -174,8 +166,7 @@ class ResourcesExplorer
         $data = [];
 
         foreach ($plugins as $plugin) {
-            $path = $this->getPath('Controller/Admin', $plugin);
-
+            $path = $this->resolvePath($plugin, 'Controller/Admin');
             if (!$path) {
                 continue;
             }
@@ -184,13 +175,13 @@ class ResourcesExplorer
 
             foreach ($files as $file) {
                 $controller = substr(pathinfo($file, PATHINFO_FILENAME), 0, -10);
-                $className = App::className("{$plugin}.{$controller}", 'Controller/Admin', 'Controller');
+                $fqcn = $this->fqcn($plugin, "Controller\\Admin\\{$controller}Controller");
 
-                if (!$className || !class_exists($className)) {
+                if (!class_exists($fqcn)) {
                     continue;
                 }
 
-                foreach ($this->getDeclaredPublicMethods($className, self::COMMON_CONTROLLER_METHODS) as $method) {
+                foreach ($this->getDeclaredPublicMethods($fqcn, self::COMMON_CONTROLLER_METHODS) as $method) {
                     if ($method->name !== 'index' && $method->getNumberOfParameters() !== 0) {
                         continue;
                     }
@@ -200,11 +191,11 @@ class ResourcesExplorer
                     $data[$plugin][] = [
                         'summary' => $docBlock->getSummary(),
                         'description' => $docBlock->getDescription(),
-                        'url' => Router::url([
+                        'url' => [
                             'plugin' => $plugin,
                             'controller' => $controller,
                             'action' => $method->name,
-                        ]),
+                        ],
                         'target' => '_self',
                     ];
                 }
@@ -215,17 +206,56 @@ class ResourcesExplorer
     }
 
     /**
-     * Returns the filesystem path for a given namespace and optional plugin.
+     * Resolves the absolute filesystem path for a given plugin and subpath.
      *
-     * @param string $namespace The namespace to resolve (e.g., 'Controller', 'View/Cell').
-     * @param string|null $plugin The plugin name or null for the app namespace.
-     * @return string|null The resolved path or null if not found.
+     * For the main application (plugin = 'System'), this points to the 'src' directory under ROOT.
+     * For plugins, this points to the plugin's 'src' directory under ROOT/plugins/{PluginName}/src.
+     *
+     * The provided subpath is appended to the base directory and directory separators are normalized.
+     *
+     * Example:
+     *  - resolvePath('System', 'Controller/Admin')
+     *    => /path/to/app/src/Controller/Admin (if it exists)
+     *  - resolvePath('MyPlugin', 'Controller/Admin')
+     *    => /path/to/app/plugins/MyPlugin/src/Controller/Admin (if it exists)
+     *
+     * @param string $plugin The plugin name, or 'System' for the main application.
+     * @param string $subpath The subdirectory path relative to 'src', with '/' separators.
+     * @return string|null The full directory path if it exists, or null if not found.
      */
-    private function getPath(string $namespace, ?string $plugin): ?string
+    private function resolvePath(string $plugin, string $subpath): ?string
     {
-        $paths = App::classPath($namespace, $plugin);
+        if ($plugin === 'System') {
+            $base = ROOT . '/src/';
+        } else {
+            $base = ROOT . "/plugins/{$plugin}/src/";
+        }
 
-        return $paths[0] ?? null;
+        $full = $base . str_replace('/', DIRECTORY_SEPARATOR, $subpath);
+
+        return is_dir($full) ? $full : null;
+    }
+
+    /**
+     * Builds the fully qualified class name (FQCN) for a given plugin and relative class path.
+     *
+     * Converts a relative class path (using slashes) into a proper PHP namespaced class name.
+     * Uses 'App' as the base namespace for the main application (plugin 'System'),
+     * or the plugin name as the base namespace for plugins.
+     *
+     * Examples:
+     *  - fqcn('System', 'Controller/Admin/Users') => 'App\Controller\Admin\Users'
+     *  - fqcn('MyPlugin', 'Controller/Admin/Users') => 'MyPlugin\Controller\Admin\Users'
+     *
+     * @param string $plugin The plugin name, or 'System' for the main application.
+     * @param string $relativeClass Relative class path with '/' separators (e.g. 'Controller/Admin/Users').
+     * @return string The fully qualified class name.
+     */
+    private function fqcn(string $plugin, string $relativeClass): string
+    {
+        $base = $plugin === 'System' ? 'App' : $plugin;
+
+        return $base . '\\' . str_replace('/', '\\', $relativeClass);
     }
 
     /**
@@ -244,16 +274,17 @@ class ResourcesExplorer
 
         $files = [];
         foreach (new DirectoryIterator($path) as $fileInfo) {
+            $filename = $fileInfo->getFilename();
             if (
                 $fileInfo->isDot() ||
                 !$fileInfo->isFile() ||
-                !str_ends_with($fileInfo->getFilename(), $suffix) ||
-                in_array($fileInfo->getFilename(), $excludeFiles, true)
+                !str_ends_with($filename, $suffix) ||
+                in_array($filename, $excludeFiles, true)
             ) {
                 continue;
             }
 
-            $files[] = $fileInfo->getFilename();
+            $files[] = $filename;
         }
 
         return $files;
@@ -262,18 +293,18 @@ class ResourcesExplorer
     /**
      * Helper method to get public methods of a class, excluding common and specified methods.
      *
-     * @param string $className The class name to reflect on.
+     * @param class-string $className The class name to reflect on.
      * @param array<string> $excludedMethods An array of method names to exclude.
      * @return array<\ReflectionMethod>
      */
     private function getDeclaredPublicMethods(string $className, array $excludedMethods): array
     {
-        /** @var class-string $className */
         $reflection = new ReflectionClass($className);
 
         return array_filter(
             $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
-            fn($method) => $method->getDeclaringClass()->getName() === $className && !in_array($method->name, $excludedMethods),
+            fn($method) => $method->getDeclaringClass()->getName() === $className &&
+                !in_array($method->name, $excludedMethods),
         );
     }
 
@@ -285,8 +316,6 @@ class ResourcesExplorer
      */
     private function parseDocBlock(ReflectionMethod $method): DocBlockParser
     {
-        $docComment = $method->getDocComment();
-
-        return new DocBlockParser($docComment ?: null);
+        return new DocBlockParser($method->getDocComment() ?: null);
     }
 }

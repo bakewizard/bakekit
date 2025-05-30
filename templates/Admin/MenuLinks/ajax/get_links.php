@@ -19,7 +19,7 @@
                 <div class="card-body">
                     <div class="list-group">
                         <?php foreach ($links as $link): ?>
-                            <a href="<?= $link['url'] ?>" target="<?= $link['target'] ?>" class="list-group-item list-group-item-action">
+                            <a href="<?= $this->Url->build($link['url']) ?>" target="<?= $link['target'] ?>" class="list-group-item list-group-item-action">
                                 <strong><?= $link['summary'] ?></strong> - <small class="text-muted"><?= $link['description'] ?></small>
                             </a>
                         <?php endforeach; ?>
