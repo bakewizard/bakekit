@@ -10,12 +10,13 @@ use Cake\Form\Form;
 use Cake\Utility\Hash;
 use LogicException;
 use Migrations\Migrations;
+use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * @property \App\Model\Table\SettingsTable $Settings
  * @property \App\Model\Table\ResourcesTable $Resources
  */
-class PluginManager
+class PluginHandler extends ExtensionHandler
 {
     /**
      * Directory where plugins are stored
@@ -39,16 +40,21 @@ class PluginManager
     private Migrations $migrations;
 
     /**
-     * Undocumented variable
+     * SettingsTable instance
      *
      * @var \App\Model\Table\SettingsTable
      */
     private SettingsTable $settingsTable;
 
+    /**
+     * ResourcesTable instance
+     *
+     * @var \App\Model\Table\ResourcesTable
+     */
     private ResourcesTable $resourcesTable;
 
     /**
-     * PluginManager constructor
+     * PluginHandler constructor
      *
      * Sets plugins dir
      */
@@ -62,29 +68,58 @@ class PluginManager
     }
 
     /**
-     * Activates a plugin by adding its migrations, settings, and resources.
+     * Reads the composer.json file from the plugin directory.
      *
-     * @param string $plugin Plugin name to activate.
-     * @return void
+     * @return array<string, mixed> Parsed composer.json data.
      */
-    public function activate(string $plugin): void
+    public function list(): array
     {
-        $this->addMigrations($plugin);
-        $this->addSettings($plugin);
-        $this->addResources($plugin);
+        return $this->discover($this->pluginsDir);
+    }
+
+    /**
+     * Installs a plugin by loading it from an uploaded file.
+     *
+     * @param \Psr\Http\Message\UploadedFileInterface $file Uploaded file containing the plugin.
+     * @return string Installed name (folder)
+     * @throws \Exception If the plugin cannot be loaded.
+     */
+    public function install(UploadedFileInterface $file): string
+    {
+        return $this->load($file, $this->pluginsDir);
     }
 
     /**
      * Uninstalls a plugin by removing its migrations, settings, and resources.
      *
      * @param string $plugin Plugin name to uninstall.
+     * @param bool $isActive Whether the plugin is currently active.
      * @return void
      */
-    public function uninstall(string $plugin): void
+    public function uninstall(string $plugin, bool $isActive): void
     {
-        $this->deleteMigrations($plugin);
-        $this->deleteSettings($plugin);
-        $this->deleteResources($plugin);
+        if ($isActive) {
+            $this->deleteMigrations($plugin);
+            $this->deleteSettings($plugin);
+            $this->deleteResources($plugin);
+        }
+
+        $this->unload($plugin, $this->pluginsDir);
+    }
+
+    /**
+     * Activates a plugin by adding its migrations, settings, and resources.
+     *
+     * @param string $plugin Plugin name to activate.
+     * @return array
+     */
+    public function activate(string $plugin): array
+    {
+        $this->addMigrations($plugin);
+        $this->addSettings($plugin);
+        $this->addResources($plugin);
+
+        return $this->readComposerConfig($this->pluginsDir . $plugin);
     }
 
     /**

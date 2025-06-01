@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Lib\PluginManager;
+use App\Lib\PluginHandler;
 use Cake\Cache\Cache;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
@@ -19,17 +19,17 @@ class InstallCommand extends Command
     /**
      * The plugin manager instance.
      *
-     * @var \App\Lib\PluginManager
+     * @var \App\Lib\PluginHandler
      */
-    protected PluginManager $pluginManager;
+    protected PluginHandler $PluginHandler;
 
     /**
      * @inheritDoc
      */
-    public function __construct(PluginManager $pluginManager)
+    public function __construct(PluginHandler $PluginHandler)
     {
         parent::__construct();
-        $this->pluginManager = $pluginManager;
+        $this->PluginHandler = $PluginHandler;
     }
 
     /**
@@ -77,7 +77,7 @@ class InstallCommand extends Command
     {
         $io->out('Setting up database objects... - ', 0);
 
-        if ($this->pluginManager->addMigrations()) {
+        if ($this->PluginHandler->addMigrations()) {
             $io->out('success!');
         } else {
             $io->abort('failure!');
@@ -167,7 +167,7 @@ class InstallCommand extends Command
     {
         $io->out('Generating system resources... - ', 0);
 
-        $this->pluginManager->addResources('System');
+        $this->PluginHandler->addResources('System');
 
         $io->out('success!');
     }
@@ -196,7 +196,7 @@ class InstallCommand extends Command
     {
         $io->out('Loading default settings... - ', 0);
 
-        $this->pluginManager->addSettings();
+        $this->PluginHandler->addSettings();
 
         $io->out('success!');
     }

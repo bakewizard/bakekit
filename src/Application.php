@@ -21,7 +21,7 @@ use App\Command\InstallCommand;
 use App\Core\Configure\Engine\DbConfig;
 use App\Lib\ComposerManager;
 use App\Lib\ExtensionHandler;
-use App\Lib\PluginManager;
+use App\Lib\PluginHandler;
 use App\Lib\ResourcesExplorer;
 use App\Middleware\MaintenanceMiddleware;
 use App\Model\Table\ResourcesTable;
@@ -301,14 +301,14 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $container->add(SettingsTable::class);
         $container->add(ResourcesTable::class);
 
-        $container->add(PluginManager::class)
+        $container->add(PluginHandler::class)
             ->addArgument(ResourcesExplorer::class)
             ->addArgument(Migrations::class)
             ->addArgument(SettingsTable::class)
             ->addArgument(ResourcesTable::class);
 
         $container->add(InstallCommand::class)
-            ->addArgument(PluginManager::class);
+            ->addArgument(PluginHandler::class);
     }
 
     /**

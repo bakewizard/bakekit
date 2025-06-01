@@ -4,15 +4,12 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Lib\ComposerManager;
-use App\Lib\ExtensionHandler;
-use App\Lib\PluginManager;
+use App\Lib\PluginHandler;
 use Cake\Cache\Cache;
-use Cake\Core\App;
 use Cake\Http\Response;
 use Cake\Utility\Inflector;
 use Exception;
 use Laminas\Diactoros\UploadedFile;
-use Override;
 
 /**
  * @property \App\Model\Table\PluginsTable $Plugins
@@ -22,29 +19,16 @@ use Override;
  */
 class PluginsController extends AppController
 {
-    private string $pluginsDir;
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function initialize(): void
-    {
-        parent::initialize();
-
-        $this->pluginsDir = current(App::path('plugins')) ?: '';
-    }
-
     /**
      * Index method
      *
      * @return \Cake\Http\Response|void
      */
-    public function index(ExtensionHandler $extensionHandler)
+    public function index(PluginHandler $pluginHandler)
     {
         $installedPlugins = $this->Plugins->find('all')->all()->indexBy('name')->toArray();
 
-        $plugins = $extensionHandler->discover($this->pluginsDir);
+        $plugins = $pluginHandler->list();
 
         $this->set(compact('plugins', 'installedPlugins'));
     }
@@ -78,12 +62,12 @@ class PluginsController extends AppController
      * This method handles the file upload, extraction, and subsequent Composer autoload
      * dump to ensure the new plugin is recognized by the application.
      *
-     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
+     * @param \App\Lib\PluginHandler $pluginHandler The plugin handler.
      * @param \App\Lib\ComposerManager $composer ComposerManager instance for autoloading.
      * @return \Cake\Http\Response|null Redirects to the index page.
      * @throws \Exception When error is encountered.
      */
-    public function install(ExtensionHandler $extensionHandler, ComposerManager $composer): ?Response
+    public function install(PluginHandler $pluginHandler, ComposerManager $composer): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
 
@@ -104,7 +88,7 @@ class PluginsController extends AppController
         }
 
         try {
-            $name = $extensionHandler->load($file, $this->pluginsDir);
+            $name = $pluginHandler->install($file);
             $composer->dumpAutoload(['--optimize' => true]);
             $this->Flash->success(__('The plugin "{0}" has been installed.', $name));
         } catch (Exception $e) {
@@ -120,37 +104,38 @@ class PluginsController extends AppController
      * This method removes the plugin's database entry, clears relevant caches,
      * deletes plugin files, and updates the Composer autoloader.
      *
-     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
-     * @param \App\Lib\PluginManager $pluginManager PluginManager instance for uninstall logic.
+     * @param \App\Lib\PluginHandler $pluginHandler PluginHandler instance for uninstall logic.
      * @param \App\Lib\ComposerManager $composer ComposerManager instance for autoloading.
      * @param string $name The name of the plugin to uninstall.
      * @return \Cake\Http\Response|null Redirects to the index page.
      * @throws \Exception When error is encountered.
      */
-    public function uninstall(ExtensionHandler $extensionHandler, PluginManager $pluginManager, ComposerManager $composer, string $name): ?Response
+    public function uninstall(PluginHandler $pluginHandler, ComposerManager $composer, string $name): ?Response
     {
         $this->request->allowMethod(['post', 'delete']);
 
         try {
             $plugin = $this->Plugins->find()->where(['name' => $name])->first();
+
+            if ($plugin && $plugin->name === $this->getConfig('Cms.defaultDashboard')) {
+                throw new Exception(__('The plugin could not be uninstalled. Its dashboard is set as the default one.'));
+            }
+
+            $isActive = $plugin !== null && $plugin->enabled;
+
+            $pluginHandler->uninstall($name, $isActive);
+
             if ($plugin) {
-                if ($plugin->name == $this->getConfig('Cms.defaultDashboard')) {
-                    throw new Exception(__('The plugin could not be uninstalled. Its dashboard is set as the default one.'));
-                }
-
-                $pluginManager->uninstall($name);
-
-                Cache::delete('plugins', 'cms');
-                Cache::clear('permissions');
-
                 if (!$this->Plugins->delete($plugin)) {
                     throw new Exception(__('The plugin data could not be deleted from database.'));
                 }
+                Cache::delete('plugins', 'cms');
+                Cache::clear('permissions');
+                Cache::drop(Inflector::dasherize($name));
             }
 
-            $extensionHandler->unload($name, $this->pluginsDir);
-            Cache::drop(Inflector::dasherize($name));
             $composer->dumpAutoload(['--optimize' => true]);
+
             $this->Flash->success(__('The plugin has been uninstalled.'));
         } catch (Exception $e) {
             $this->Flash->error(__('There were errors while uninstalling the plugin.'));
@@ -166,13 +151,12 @@ class PluginsController extends AppController
      * This method handles updating the database, clearing caches, and
      * setting the plugin as active.
      *
-     * @param \App\Lib\PluginManager $pluginManager PluginManager instance for activation logic.
-     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
+     * @param \App\Lib\PluginHandler $pluginHandler PluginHandler instance for activation logic.
      * @param string $name The name of the plugin to activate.
      * @return \Cake\Http\Response|null Redirects to the index page.
      * @throws \Exception
      */
-    public function activate(PluginManager $pluginManager, ExtensionHandler $extensionHandler, string $name): ?Response
+    public function activate(PluginHandler $pluginHandler, string $name): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
 
@@ -186,9 +170,7 @@ class PluginsController extends AppController
                     throw new Exception(__('The plugin could not be activated. Please, try again.'));
                 }
             } else {
-                $pluginManager->activate($name);
-
-                $config = $extensionHandler->readComposerConfig($this->pluginsDir . $name);
+                $config = $pluginHandler->activate($name);
 
                 $entity = $this->Plugins->newEntity([
                     'name' => $name,

@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace App\Test\TestCase\Controller\Admin;
 
 use App\Lib\ComposerManager;
-use App\Lib\ExtensionHandler;
-use App\Lib\PluginManager;
+use App\Lib\PluginHandler;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Laminas\Diactoros\UploadedFile;
@@ -226,8 +225,8 @@ class PluginsControllerTest extends TestCase
 
         $this->assertDirectoryExists(self::PLUGINS_DIR, 'Plugin directory should exist after extraction');
 
-        $this->mockService(PluginManager::class, function () {
-            $mock = $this->createMock(PluginManager::class);
+        $this->mockService(PluginHandler::class, function () {
+            $mock = $this->createMock(PluginHandler::class);
             $mock->expects($this->once())
                 ->method('activate')
                 ->with(self::PLUGIN_NAME);
@@ -333,9 +332,9 @@ class PluginsControllerTest extends TestCase
             'enabled' => true,
         ]));
 
-        // Mock PluginManager
-        $this->mockService(PluginManager::class, function () {
-            $mock = $this->createMock(PluginManager::class);
+        // Mock PluginHandler
+        $this->mockService(PluginHandler::class, function () {
+            $mock = $this->createMock(PluginHandler::class);
             $mock->expects($this->once())
                 ->method('uninstall')
                 ->with(self::PLUGIN_NAME);
@@ -349,16 +348,6 @@ class PluginsControllerTest extends TestCase
             $mock->expects($this->once())
                 ->method('dumpAutoload')
                 ->with(['--optimize' => true]);
-
-            return $mock;
-        });
-
-        // Mock ExtensionHandler
-        $this->mockService(ExtensionHandler::class, function () {
-            $mock = $this->createMock(ExtensionHandler::class);
-            $mock->expects($this->once())
-                ->method('unload')
-                ->with(self::PLUGIN_NAME, self::PLUGINS_DIR);
 
             return $mock;
         });
