@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace App\Lib;
 
+use App\Model\Table\ResourcesTable;
+use App\Model\Table\SettingsTable;
 use Cake\Core\App;
-use Cake\Datasource\ModelAwareTrait;
 use Cake\Form\Form;
 use Cake\Utility\Hash;
 use LogicException;
@@ -16,8 +17,6 @@ use Migrations\Migrations;
  */
 class PluginManager
 {
-    use ModelAwareTrait;
-
     /**
      * Directory where plugins are stored
      *
@@ -40,14 +39,25 @@ class PluginManager
     private Migrations $migrations;
 
     /**
+     * Undocumented variable
+     *
+     * @var \App\Model\Table\SettingsTable
+     */
+    private SettingsTable $settingsTable;
+
+    private ResourcesTable $resourcesTable;
+
+    /**
      * PluginManager constructor
      *
      * Sets plugins dir
      */
-    public function __construct(ResourcesExplorer $resourcesExplorer, Migrations $migrations)
+    public function __construct(ResourcesExplorer $resourcesExplorer, Migrations $migrations, SettingsTable $settingsTable, ResourcesTable $resourcesTable)
     {
         $this->resourcesExplorer = $resourcesExplorer;
         $this->migrations = $migrations;
+        $this->settingsTable = $settingsTable;
+        $this->resourcesTable = $resourcesTable;
         $this->pluginsDir = current(App::path('plugins')) ?: '';
     }
 
@@ -121,25 +131,27 @@ class PluginManager
      */
     public function addSettings(?string $plugin = null): void
     {
-        $class = isset($plugin) ? $plugin . '.Config' : 'Config';
-        $configClass = App::className($class, 'Form', 'Form');
-        if ($configClass) {
-            $config = new $configClass();
+        $configClass = isset($plugin) ? "\\{$plugin}\\Form\\ConfigForm" : '\\App\\Form\\ConfigForm';
 
-            if (!$config instanceof Form) {
-                throw new LogicException(sprintf('Expected an instance of %s, got %s', Form::class, get_class($config)));
-            }
-
-            $fields = $config->getSchema()->fields();
-            $data = [];
-            foreach ($fields as $fieldName) {
-                $fieldAttrs = $config->getSchema()->field($fieldName);
-                if (is_array($fieldAttrs) && array_key_exists('default', $fieldAttrs)) {
-                    $data[$fieldName] = $fieldAttrs['default'];
-                }
-            }
-            $config->execute(Hash::expand($data));
+        if (!class_exists($configClass)) {
+            return;
         }
+
+        $config = new $configClass();
+
+        if (!$config instanceof Form) {
+            throw new LogicException(sprintf('Expected an instance of %s, got %s', Form::class, get_class($config)));
+        }
+
+        $fields = $config->getSchema()->fields();
+        $data = [];
+        foreach ($fields as $fieldName) {
+            $fieldAttrs = $config->getSchema()->field($fieldName);
+            if (is_array($fieldAttrs) && array_key_exists('default', $fieldAttrs)) {
+                $data[$fieldName] = $fieldAttrs['default'];
+            }
+        }
+        $config->execute(Hash::expand($data));
     }
 
     /**
@@ -149,8 +161,7 @@ class PluginManager
      */
     public function deleteSettings(string $plugin): void
     {
-        $settingsTable = $this->fetchModel('Settings');
-        $settingsTable->deleteAll(['namespace' => $plugin]);
+        $this->settingsTable->deleteAll(['namespace' => $plugin]);
     }
 
     /**
@@ -162,11 +173,8 @@ class PluginManager
      */
     public function addResources(string $plugin): void
     {
-        /** @var \App\Model\Table\ResourcesTable $resourcesTable */
-        $resourcesTable = $this->fetchModel('Resources');
-
         $resources = $this->resourcesExplorer->getResources($plugin);
-        $resourcesTable->addResources($resources);
+        $this->resourcesTable->addResources($resources);
     }
 
     /**
@@ -177,8 +185,6 @@ class PluginManager
      */
     public function deleteResources(string $plugin): void
     {
-        /** @var \App\Model\Table\ResourcesTable $resourcesTable */
-        $resourcesTable = $this->fetchModel('Resources');
-        $resourcesTable->deleteResources($plugin);
+        $this->resourcesTable->deleteResources($plugin);
     }
 }

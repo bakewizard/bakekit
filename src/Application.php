@@ -24,6 +24,8 @@ use App\Lib\ExtensionHandler;
 use App\Lib\PluginManager;
 use App\Lib\ResourcesExplorer;
 use App\Middleware\MaintenanceMiddleware;
+use App\Model\Table\ResourcesTable;
+use App\Model\Table\SettingsTable;
 use App\Policy\RequestPolicy;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
@@ -296,13 +298,17 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $container->add(ResourcesExplorer::class);
         $container->add(ExtensionHandler::class);
         $container->add(Migrations::class);
+        $container->add(SettingsTable::class);
+        $container->add(ResourcesTable::class);
 
         $container->add(PluginManager::class)
             ->addArgument(ResourcesExplorer::class)
-            ->addArgument(Migrations::class);
+            ->addArgument(Migrations::class)
+            ->addArgument(SettingsTable::class)
+            ->addArgument(ResourcesTable::class);
 
         $container->add(InstallCommand::class)
-        ->addArgument(PluginManager::class);
+            ->addArgument(PluginManager::class);
     }
 
     /**
