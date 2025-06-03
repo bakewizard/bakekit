@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Test\TestCase\Controller\Admin;
 
 use App\Lib\ComposerManager;
-use App\Lib\PluginHandler;
+use App\Lib\PluginManager;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Laminas\Diactoros\UploadedFile;
@@ -225,8 +225,8 @@ class PluginsControllerTest extends TestCase
 
         $this->assertDirectoryExists(self::PLUGINS_DIR, 'Plugin directory should exist after extraction');
 
-        $this->mockService(PluginHandler::class, function () {
-            $mock = $this->createMock(PluginHandler::class);
+        $this->mockService(PluginManager::class, function () {
+            $mock = $this->createMock(PluginManager::class);
             $mock->expects($this->once())
                 ->method('activate')
                 ->with(self::PLUGIN_NAME);
@@ -332,9 +332,9 @@ class PluginsControllerTest extends TestCase
             'enabled' => true,
         ]));
 
-        // Mock PluginHandler
-        $this->mockService(PluginHandler::class, function () {
-            $mock = $this->createMock(PluginHandler::class);
+        // Mock PluginManager
+        $this->mockService(PluginManager::class, function () {
+            $mock = $this->createMock(PluginManager::class);
             $mock->expects($this->once())
                 ->method('uninstall')
                 ->with(self::PLUGIN_NAME);

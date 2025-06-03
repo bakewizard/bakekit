@@ -5,7 +5,6 @@ namespace App\Lib;
 
 use App\Model\Table\ResourcesTable;
 use App\Model\Table\SettingsTable;
-use Cake\Core\App;
 use Cake\Form\Form;
 use Cake\Utility\Hash;
 use LogicException;
@@ -16,7 +15,7 @@ use Psr\Http\Message\UploadedFileInterface;
  * @property \App\Model\Table\SettingsTable $Settings
  * @property \App\Model\Table\ResourcesTable $Resources
  */
-class PluginHandler extends ExtensionHandler
+class PluginManager
 {
     /**
      * Directory where plugins are stored
@@ -24,6 +23,13 @@ class PluginHandler extends ExtensionHandler
      * @var string
      */
     private string $pluginsDir;
+
+    /**
+     * ExtensionHandler instance
+     *
+     * @var \App\Lib\ExtensionHandler
+     */
+    private ExtensionHandler $extensionHandler;
 
     /**
      * ResourcesExplorer instance
@@ -54,17 +60,23 @@ class PluginHandler extends ExtensionHandler
     private ResourcesTable $resourcesTable;
 
     /**
-     * PluginHandler constructor
+     * PluginManager constructor
      *
      * Sets plugins dir
      */
-    public function __construct(ResourcesExplorer $resourcesExplorer, Migrations $migrations, SettingsTable $settingsTable, ResourcesTable $resourcesTable)
-    {
+    public function __construct(
+        ExtensionHandler $extensionHandler,
+        ResourcesExplorer $resourcesExplorer,
+        Migrations $migrations,
+        SettingsTable $settingsTable,
+        ResourcesTable $resourcesTable,
+    ) {
+        $this->extensionHandler = $extensionHandler;
         $this->resourcesExplorer = $resourcesExplorer;
         $this->migrations = $migrations;
         $this->settingsTable = $settingsTable;
         $this->resourcesTable = $resourcesTable;
-        $this->pluginsDir = current(App::path('plugins')) ?: '';
+        $this->pluginsDir = ROOT . DS . 'plugins' . DS;
     }
 
     /**
@@ -74,7 +86,7 @@ class PluginHandler extends ExtensionHandler
      */
     public function list(): array
     {
-        return $this->discover($this->pluginsDir);
+        return $this->extensionHandler->discover($this->pluginsDir);
     }
 
     /**
@@ -86,7 +98,7 @@ class PluginHandler extends ExtensionHandler
      */
     public function install(UploadedFileInterface $file): string
     {
-        return $this->load($file, $this->pluginsDir);
+        return $this->extensionHandler->load($file, $this->pluginsDir);
     }
 
     /**
@@ -96,7 +108,7 @@ class PluginHandler extends ExtensionHandler
      * @param bool $isActive Whether the plugin is currently active.
      * @return void
      */
-    public function uninstall(string $plugin, bool $isActive): void
+    public function uninstall(string $plugin, bool $isActive = false): void
     {
         if ($isActive) {
             $this->deleteMigrations($plugin);
@@ -104,7 +116,7 @@ class PluginHandler extends ExtensionHandler
             $this->deleteResources($plugin);
         }
 
-        $this->unload($plugin, $this->pluginsDir);
+        $this->extensionHandler->unload($plugin, $this->pluginsDir);
     }
 
     /**
@@ -119,7 +131,7 @@ class PluginHandler extends ExtensionHandler
         $this->addSettings($plugin);
         $this->addResources($plugin);
 
-        return $this->readComposerConfig($this->pluginsDir . $plugin);
+        return $this->extensionHandler->readComposerConfig($this->pluginsDir . $plugin);
     }
 
     /**

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Lib\ExtensionHandler;
+use App\Lib\ThemeManager;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Http\Response;
@@ -20,23 +20,16 @@ use Laminas\Diactoros\UploadedFile;
 class ThemesController extends AppController
 {
     /**
-     * Path to the themes directory.
-     *
-     * @var string
-     */
-    private string $themesDir = ROOT . DS . 'themes' . DS;
-
-    /**
      * Index method
      *
-     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
+     * @param \App\Lib\ThemeManager $themeManager Theme manager instance.
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function index(ExtensionHandler $extensionHandler)
+    public function index(ThemeManager $themeManager)
     {
         $activeTheme = $this->getConfig('Cms.theme');
 
-        $themes = $extensionHandler->discover($this->themesDir);
+        $themes = $themeManager->list();
 
         $this->set(compact('activeTheme', 'themes'));
     }
@@ -44,15 +37,15 @@ class ThemesController extends AppController
     /**
      * View method
      *
-     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
+     * @param \App\Lib\ThemeManager $themeManager Theme manager instance.
      * @param string $name Theme name.
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function view(ExtensionHandler $extensionHandler, string $name)
+    public function view(ThemeManager $themeManager, string $name)
     {
         $activeTheme = $this->getConfig('Cms.theme');
 
-        $config = $extensionHandler->readComposerConfig($this->themesDir . $name);
+        $config = $themeManager->view($name);
 
         $theme = [
             'name' => $name,
@@ -60,17 +53,17 @@ class ThemesController extends AppController
             'license' => $config['license'] ?? null,
         ];
 
-         $this->set(compact('activeTheme', 'theme'));
+        $this->set(compact('activeTheme', 'theme'));
     }
 
     /**
      * Install method
      *
-     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
+     * @param \App\Lib\ThemeManager $themeManager Theme manager instance.
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Exception When error is encountered.
      */
-    public function install(ExtensionHandler $extensionHandler): ?Response
+    public function install(ThemeManager $themeManager): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
 
@@ -91,7 +84,7 @@ class ThemesController extends AppController
         }
 
         try {
-            $name = $extensionHandler->load($file, $this->themesDir);
+            $name = $themeManager->install($file);
             $this->Flash->success(__('The theme "{0}" has been installed.', $name));
         } catch (Exception $e) {
             $this->Flash->error($e->getMessage());
@@ -103,12 +96,12 @@ class ThemesController extends AppController
     /**
      * Uninstall a theme.
      *
-     * @param \App\Lib\ExtensionHandler $extensionHandler The extension handler.
+     * @param \App\Lib\ThemeManager $themeManager Theme manager instance.
      * @param string $name The name of the theme to uninstall.
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Exception When error is encountered.
      */
-    public function uninstall(ExtensionHandler $extensionHandler, string $name): ?Response
+    public function uninstall(ThemeManager $themeManager, string $name): ?Response
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -118,7 +111,7 @@ class ThemesController extends AppController
             $this->Flash->error(__('Active theme cannot be uninstalled.'));
         } else {
             try {
-                $extensionHandler->unload($name, $this->themesDir);
+                $themeManager->uninstall($name);
             } catch (Exception $e) {
                 $this->Flash->error($e->getMessage());
             }

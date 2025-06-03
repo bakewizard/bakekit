@@ -8,48 +8,55 @@ use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use Exception;
+use InvalidArgumentException;
 use Override;
 
-/**
- * Configuration engine to store and retrieve settings from a database table.
- */
 class DbConfig implements ConfigEngineInterface
 {
     public const TABLE = 'Settings';
+    public const CACHE_KEY = 'settings';
 
     /**
-     * Cache configuration key.
+     * The cache configuration name to use.
      */
     protected string $_cacheConfig;
 
     /**
-     * Instance of the settings table.
+     * Instance of the configurations table.
      */
     protected Table $_table;
 
     /**
-     * Constructor
+     * Constructor to inject the table and define the cache configuration to use.
      *
      * @param \Cake\ORM\Table|string|null $table Table alias or instance.
      * @param string $cacheConfig Cache config alias.
+     * @throws \InvalidArgumentException If the table cannot be loaded.
      */
     public function __construct(Table|string|null $table = null, string $cacheConfig = 'default')
     {
-        $table ??= self::TABLE;
-
-        if (is_string($table)) {
-            $table = TableRegistry::getTableLocator()->get($table);
+        if (empty($table)) {
+            $table = self::TABLE;
         }
 
-        $this->_table = $table;
+        if (is_string($table)) {
+            try {
+                $table = TableRegistry::getTableLocator()->get($table);
+            } catch (Exception $e) {
+                throw new InvalidArgumentException(sprintf('Could not load table "%s": %s', $table, $e->getMessage()), 0, $e);
+            }
+        }
+
         $this->_cacheConfig = $cacheConfig;
+        $this->_table = $table;
     }
 
     /**
-     * Read configuration data from the database.
+     * Reads configuration information from the database.
      *
-     * @param string $key Configuration key to read. Use '*' to read all settings.
-     * @return array Associative array of settings, with keys as paths and values as setting values.
+     * @param string $key Key to read. Use '*' to read all settings.
+     * @return array<string, mixed> An array of data to merge into the runtime configuration.
      */
     #[Override]
     public function read(string $key): array
@@ -59,85 +66,106 @@ class DbConfig implements ConfigEngineInterface
             keyField: 'path',
             valueField: 'value',
             groupField: 'namespace',
-        )->formatResults(function ($results) {
-            $resultSet = $results->toArray();
-
-            if (isset($resultSet[''])) {
-                $resultSet += $resultSet[''];
-                unset($resultSet['']);
-            }
-
-            return $resultSet;
-        });
+        );
 
         if ($key !== '*') {
-            $query->where([$this->_table->aliasField('namespace') . ' IS' => $key]);
+            $query->where([
+                $this->_table->aliasField('namespace') . ' IS' => $key,
+            ]);
         }
 
-        $cacheKey = $key === '*' ? 'settings_all' : "settings_$key";
+        $data = $query
+            ->cache(self::CACHE_KEY, $this->_cacheConfig)
+            ->formatResults(function ($results) {
+                $resultSet = $results->toArray();
+                // Promote empty namespace settings to the root level
+                if (isset($resultSet[''])) {
+                    $resultSet = $resultSet[''] + $resultSet; // Merge empty namespace settings first
+                    unset($resultSet['']);
+                }
 
-        $data = $query->cache($cacheKey, $this->_cacheConfig)->toArray();
+                return $resultSet;
+            })
+            ->toArray();
 
-        if ($key === '*') {
-            return array_map([Hash::class, 'expand'], $data);
+        if (empty($data)) {
+            return [];
         }
 
-        return isset($data[$key]) ? [$key => Hash::expand($data[$key])] : [];
+        // When reading a specific key, we expect the data to be nested under that key.
+        // We also need to expand the flattened data back into a nested array.
+        if ($key !== '*' && isset($data[$key])) {
+            return [$key => Hash::expand($data[$key])];
+        } elseif ($key === '*') {
+            // If reading all keys, expand each namespace's data
+            $expandedData = [];
+            foreach ($data as $namespace => $flatData) {
+                $expandedData[$namespace] = Hash::expand($flatData);
+            }
+
+            return $expandedData;
+        }
+
+        return [];
     }
 
     /**
-     * Write configuration data to the database.
+     * Writes configuration data to the database.
      *
-     * @param string $key Configuration namespace to write.
-     * @param array $data Associative array of settings, with keys as paths and values as setting values.
-     * @return bool True on success, false on failure.
+     * @param string $key The identifier to write to (namespace).
+     * @param array<string, mixed> $data The data to dump.
+     * @return bool True on success or false on failure.
      */
     #[Override]
     public function dump(string $key, array $data): bool
     {
-        $flatData = Hash::flatten($data);
-        $successCount = 0;
+        $flattenedData = Hash::flatten($data);
+        $success = true;
 
-        foreach ($flatData as $path => $value) {
-            if ($this->_persist($value, $path, $key)) {
-                $successCount++;
+        foreach ($flattenedData as $path => $value) {
+            if (!$this->_persist($key, $path, $value)) {
+                $success = false;
+                // Optionally, you might want to break here or log the failure
             }
         }
 
-        // Invalidate cache
-        Cache::delete("settings_$key", $this->_cacheConfig);
-        if ($key === '*') {
-            Cache::delete('settings_all', $this->_cacheConfig);
+        if ($success) {
+            // Clear the cache for the settings after writing
+            Cache::clear($this->_cacheConfig);
         }
 
-        return $successCount > 0;
+        return $success;
     }
 
     /**
-     * Persist a single setting into the database.
+     * Persists a single configuration entry to the database.
      *
-     * @param mixed $value Setting value.
-     * @param string $path Dot-notated path key.
-     * @param string $namespace Configuration namespace.
+     * @param string $namespace The namespace for the setting.
+     * @param string $path The key path for the setting.
+     * @param mixed $value The value to store.
      * @return bool True on success, false on failure.
      */
-    protected function _persist(mixed $value, string $path, string $namespace): bool
+    protected function _persist(string $namespace, string $path, mixed $value): bool
     {
-        $entity = $this->_table->find()
-            ->where(['namespace' => $namespace, 'path' => $path])
+        $table = $this->_table;
+
+        $entity = $table->find()
+            ->where([
+                $table->aliasField('namespace') => $namespace,
+                $table->aliasField('path') => $path,
+            ])
             ->first();
 
-        if (!$entity) {
-            $entity = $this->_table->newEntity([
-                'namespace' => $namespace,
-                'path' => $path,
-                'value' => $value === '' ? null : $value,
-            ]);
-        } else {
-            // Ensure the value is updated even if it's not dirty
-            $entity->set('value', $value === '' ? null : $value, ['guard' => false]);
+        if ($entity === null) {
+            $entity = $table->newEmptyEntity();
         }
 
-        return (bool)$this->_table->save($entity);
+        $entity = $table->patchEntity($entity, [
+            'namespace' => $namespace,
+            'path' => $path,
+            'value' => $value,
+        ]);
+
+        return (bool)$table->save($entity);
     }
 }
