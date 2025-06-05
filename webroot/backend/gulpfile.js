@@ -28,7 +28,6 @@ const config = {
         styles: 'src/styles/**/*.scss',
         // images: [
         //     'src/images/*.*',
-        //     'node_modules/blueimp-gallery/img/*.{svg,gif,png}'
         // ],
         fonts: [
             // 'src/fonts/*.woff2',

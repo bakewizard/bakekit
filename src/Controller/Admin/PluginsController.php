@@ -118,7 +118,7 @@ class PluginsController extends AppController
             $plugin = $this->Plugins->find()->where(['name' => $name])->first();
 
             if ($plugin && $plugin->name === $this->getConfig('Cms.defaultDashboard')) {
-                throw new Exception(__('The plugin could not be uninstalled. Its dashboard is set as the default one.'));
+                throw new Exception(__('The plugin "{0}" could not be uninstalled. Its dashboard is set as the default one.', $plugin->name));
             }
 
             $pluginManager->uninstall($name, $plugin !== null);

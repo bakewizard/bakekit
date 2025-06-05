@@ -103,6 +103,7 @@ class {{ className }}Test extends TestCase
 
         $this->assertResponseOk();
         $this->assertNotNull($this->viewVariable('{{ modelName|lower }}'));
+    }
 
     /**
      * Test view method
@@ -144,7 +145,7 @@ class {{ className }}Test extends TestCase
 
         ];
         $this->post('/admin/{{ modelName|lower }}/add', $postData);
-        $this->assertResponseCode(302); // redirect
+        $this->assertResponseCode(302);
         $this->assertRedirectContains('/admin/{{ modelName|lower }}');
     }
     /**
@@ -172,7 +173,7 @@ class {{ className }}Test extends TestCase
 
         ];
         $this->post('/admin/{{ modelName|lower }}/edit/1', $postData);
-        $this->assertResponseCode(302); // redirect
+        $this->assertResponseCode(302);
         $this->assertRedirectContains('/admin/{{ modelName|lower }}');
     }
 

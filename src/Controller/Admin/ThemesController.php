@@ -107,14 +107,11 @@ class ThemesController extends AppController
 
         $activeTheme = Configure::read('Cms.theme');
 
-        if ($name === $activeTheme) {
-            $this->Flash->error(__('Active theme cannot be uninstalled.'));
-        } else {
-            try {
-                $themeManager->uninstall($name);
-            } catch (Exception $e) {
-                $this->Flash->error($e->getMessage());
-            }
+        try {
+            $themeManager->uninstall($name, $name === $activeTheme);
+            $this->Flash->success(__('The theme "{0}" has been unnstalled.', $name));
+        } catch (Exception $e) {
+            $this->Flash->error($e->getMessage());
         }
 
         return $this->redirect(['action' => 'index']);

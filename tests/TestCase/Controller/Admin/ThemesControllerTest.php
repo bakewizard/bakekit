@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Test\TestCase\Controller\Admin;
 
 use App\Lib\ThemeManager;
-use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
@@ -122,6 +121,7 @@ class ThemesControllerTest extends TestCase
                 ->method('view')
                 ->with('ModernTheme')
                 ->willReturn([
+                    'name' => 'ModernTheme',
                     'description' => 'A modern responsive theme.',
                     'license' => 'MIT',
                 ]);
@@ -129,10 +129,9 @@ class ThemesControllerTest extends TestCase
             return $mock;
         });
 
-        Configure::write('Cms.theme', 'DefaultTheme');
-
         $this->get('/admin/themes/view/ModernTheme');
         $this->assertResponseOk();
+        $this->assertResponseContains('ModernTheme');
         $this->assertResponseContains('A modern responsive theme.');
         $this->assertResponseContains('MIT');
     }
@@ -201,40 +200,12 @@ class ThemesControllerTest extends TestCase
 
         $this->delete('/admin/themes/uninstall/ModernTheme');
         $this->assertRedirect('/admin/themes');
-        // $this->assertNoFlashMessage(__('Active theme cannot be uninstalled.'));
+        $this->assertFlashMessage('The theme "ModernTheme" has been unnstalled.');
     }
-
-    // public function testUninstallActiveThemeFails(): void
-    // {
-    //     Configure::write('Cms.theme', 'ModernTheme');
-
-    //     $this->mockService(ThemeManager::class, function () {
-    //         $mock = $this->getMockBuilder(ThemeManager::class)
-    //             ->disableOriginalConstructor()
-    //             ->onlyMethods(['uninstall'])
-    //             ->getMock();
-
-    //         $mock->expects($this->once())
-    //             ->method('uninstall')
-    //             ->with('ModernTheme');
-
-    //         return $mock;
-    //     });
-
-    //     $this->delete('/admin/themes/uninstall/ModernTheme');
-    //             dd($this->getSession()->read('Flash.flash.0.message'));
-    //     $this->assertRedirect('/admin/themes');
-
-    //     $this->assertFlashMessage('Active theme cannot be uninstalled.');
-    // }
 
     public function testActivate(): void
     {
         $name = 'ModernTheme';
-
-        // Clear any config/cache that may interfere
-        Configure::delete('theme');
-        Cache::delete('settings', 'cms');
 
         $this->put("/admin/themes/activate/{$name}");
 

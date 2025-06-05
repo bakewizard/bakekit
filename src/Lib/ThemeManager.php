@@ -74,6 +74,8 @@ class ThemeManager
      */
     public function uninstall(string $theme, bool $isActive = false): void
     {
-        $this->extensionHandler->unload($theme, $this->themesDir);
+        if (!$isActive) {
+            $this->extensionHandler->unload($theme, $this->themesDir);
+        }
     }
 }
