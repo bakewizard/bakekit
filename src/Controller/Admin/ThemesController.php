@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Lib\ThemeManager;
-use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Http\Response;
 use Exception;
@@ -129,7 +128,6 @@ class ThemesController extends AppController
 
         Configure::write('theme', $name);
         Configure::dump('Cms', 'db', ['theme']);
-        Cache::delete('settings', 'cms');
 
         return $this->redirect(['action' => 'index']);
     }

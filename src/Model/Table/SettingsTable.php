@@ -5,6 +5,7 @@ namespace App\Model\Table;
 
 use ArrayObject;
 use Cake\Event\EventInterface;
+use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
@@ -56,27 +57,43 @@ class SettingsTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-                ->nonNegativeInteger('id')
-                ->allowEmptyString('id', null, 'create')
-                ->add('namespace', 'valid-namespace', ['rule' => ['custom', '@[a-z0-9\\\.]+@']]);
+            ->nonNegativeInteger('id')
+            ->allowEmptyString('id', null, 'create');
 
         $validator
-                ->scalar('namespace')
-                ->maxLength('namespace', 255)
-                ->allowEmptyString('namespace');
+            ->scalar('namespace')
+            ->maxLength('namespace', 255)
+            ->requirePresence('namespace', 'create')
+            ->notEmptyString('namespace')
+            ->add('namespace', 'valid-namespace', ['rule' => ['custom', '/^[A-Z][a-zA-Z0-9]+$/']]);
 
         $validator
-                ->scalar('path')
-                ->maxLength('path', 255)
-                ->requirePresence('path', 'create')
-                ->notEmptyString('path');
+            ->scalar('path')
+            ->maxLength('path', 255)
+            ->requirePresence('path', 'create')
+            ->notEmptyString('path');
 
         $validator
-                ->scalar('value')
-                ->maxLength('value', 255)
-                ->allowEmptyString('value');
+            ->scalar('value')
+            ->maxLength('value', 255)
+            ->allowEmptyString('value');
 
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    #[Override]
+    public function buildRules(RulesChecker $rules): RulesChecker
+    {
+        $rules->add($rules->isUnique(['namespace', 'path']));
+
+        return $rules;
     }
 
     /**

@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Event\RegionChangeListener;
-use Cake\Cache\Cache;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
@@ -76,11 +75,6 @@ class AppController extends Controller
         $locator = $this->getTableLocator();
         $locator->get('Regions')->getEventManager()->on($cacheListener);
         $locator->get('Blocks')->getEventManager()->on($cacheListener);
-
-        if ($this->request->is('post') && $this->request->getParam('action') === 'settings') {
-            $plugin = $this->getPlugin();
-            Cache::delete('settings', isset($plugin) ? strtolower($plugin) : 'cms');
-        }
     }
 
     /**

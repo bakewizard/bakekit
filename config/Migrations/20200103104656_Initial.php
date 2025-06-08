@@ -163,7 +163,7 @@ class Initial extends BaseMigration
             ->addColumn('namespace', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => true
+                'null' => false
             ])
             ->addColumn('path', 'string', [
                 'default' => null,
@@ -186,6 +186,7 @@ class Initial extends BaseMigration
                 'null' => true
             ])
             ->addPrimaryKey('id')
+            ->addIndex(['namespace', 'path'], ['unique' => true])
             ->create();
 
         $this->table('regions')

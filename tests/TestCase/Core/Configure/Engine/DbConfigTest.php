@@ -90,11 +90,12 @@ class DbConfigTest extends TestCase
     /**
      * Tests dump() returns false if data is empty
      */
-    // public function testDumpReturnsFalseOnNoData(): void
-    // {
-    //     $result = $this->dbConfig->dump('Cms', []);
-    //     $this->assertFalse($result);
-    // }
+    public function testDumpReturnsFalseOnNoData(): void
+    {
+        $result = $this->dbConfig->dump('Cms', []);
+
+        $this->assertFalse($result);
+    }
 
     /**
      * Tests overwriting an existing value with dump()

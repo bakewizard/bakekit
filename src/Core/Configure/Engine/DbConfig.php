@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Core\Configure\Engine;
 
+use App\Model\Table\SettingsTable;
 use Cake\Cache\Cache;
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\ORM\Table;
@@ -15,7 +16,6 @@ use Override;
 class DbConfig implements ConfigEngineInterface
 {
     public const TABLE = 'Settings';
-    public const CACHE_KEY = 'settings';
 
     /**
      * The cache configuration name to use.
@@ -30,11 +30,11 @@ class DbConfig implements ConfigEngineInterface
     /**
      * Constructor to inject the table and define the cache configuration to use.
      *
-     * @param \Cake\ORM\Table|string|null $table Table alias or instance.
+     * @param \App\Model\Table\SettingsTable|string|null $table Table alias or instance.
      * @param string $cacheConfig Cache config alias.
      * @throws \InvalidArgumentException If the table cannot be loaded.
      */
-    public function __construct(Table|string|null $table = null, string $cacheConfig = 'default')
+    public function __construct(SettingsTable|string|null $table = null, string $cacheConfig = 'default')
     {
         if (empty($table)) {
             $table = self::TABLE;
@@ -75,7 +75,7 @@ class DbConfig implements ConfigEngineInterface
         }
 
         $data = $query
-            ->cache(self::CACHE_KEY, $this->_cacheConfig)
+            ->cache($this->_cacheKey($key), $this->_cacheConfig)
             ->formatResults(function ($results) {
                 $resultSet = $results->toArray();
                 // Promote empty namespace settings to the root level
@@ -94,7 +94,7 @@ class DbConfig implements ConfigEngineInterface
 
         // When reading a specific key, we expect the data to be nested under that key.
         // We also need to expand the flattened data back into a nested array.
-        if ($key !== '*' && isset($data[$key])) {
+        if ($key !== '*' && array_key_exists($key, $data)) {
             return [$key => Hash::expand($data[$key])];
         } elseif ($key === '*') {
             // If reading all keys, expand each namespace's data
@@ -119,6 +119,10 @@ class DbConfig implements ConfigEngineInterface
     #[Override]
     public function dump(string $key, array $data): bool
     {
+        if (empty($data)) {
+            return false;
+        }
+
         $flattenedData = Hash::flatten($data);
         $success = true;
 
@@ -130,8 +134,8 @@ class DbConfig implements ConfigEngineInterface
         }
 
         if ($success) {
-            // Clear the cache for the settings after writing
-            Cache::clear($this->_cacheConfig);
+            // Invalidate only the specific namespace cache
+            Cache::delete($this->_cacheKey($key), $this->_cacheConfig);
         }
 
         return $success;
@@ -167,5 +171,16 @@ class DbConfig implements ConfigEngineInterface
         ]);
 
         return (bool)$table->save($entity);
+    }
+
+    /**
+     * Generates a cache key based on the namespace.
+     *
+     * @param string $namespace The namespace to generate the cache key for.
+     * @return string The generated cache key.
+     */
+    protected function _cacheKey(string $namespace): string
+    {
+        return 'settings_' . strtolower($namespace);
     }
 }

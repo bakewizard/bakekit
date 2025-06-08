@@ -54,7 +54,6 @@ use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\TableLocator;
-use Cake\ORM\TableRegistry;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\Routing\Route\DashedRoute;
@@ -75,6 +74,13 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class Application extends BaseApplication implements AuthenticationServiceProviderInterface, AuthorizationServiceProviderInterface
 {
+    /**
+     * Table locator instance
+     *
+     * @var \Cake\ORM\Locator\TableLocator
+     */
+    private TableLocator $tableLocator;
+
     /**
      * Config helper
      *
@@ -100,20 +106,24 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         // Call parent to load bootstrap from files.
         parent::bootstrap();
 
+        $this->tableLocator = new TableLocator();
+
         if (PHP_SAPI !== 'cli') {
-            FactoryLocator::add('Table', (new TableLocator())->allowFallbackClass(true));
+            FactoryLocator::add('Table', $this->tableLocator->allowFallbackClass(true));
         }
 
+        // Provide default cache config for settings, unless overridden in app_local.php
         if (!Cache::getConfig('cms')) {
             Cache::setConfig('cms', [
                 'className' => 'File',
-                'prefix' => 'cms_',
+                'prefix' => null,
                 'path' => CACHE . 'cms' . DS,
-                'duration' => '+999 days',
+                'duration' => '+1 year',
+                'serialize' => true,
             ]);
         }
         try {
-            Configure::config('db', new DbConfig(null, 'cms'));
+            Configure::config('db', new DbConfig($this->tableLocator->get('Settings'), 'cms'));
             Configure::load('Cms', 'db');
 
             $this->loadTheme();
@@ -125,7 +135,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     }
 
     /**
-     * Returns a service provider instance.
+     * Returns an authentication service instance.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request
      * @return \Authentication\AuthenticationServiceInterface
@@ -174,7 +184,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     }
 
     /**
-     * Returns a service provider instance.
+     * Returns an authorization service instance.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request
      * @return \Authorization\AuthorizationServiceInterface
@@ -340,7 +350,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      */
     private function loadPlugins(): void
     {
-        $table = TableRegistry::getTableLocator()->get('Plugins');
+        $table = $this->tableLocator->get('Plugins');
         $plugins = $table->find()->where(['enabled' => true])->cache('plugins', 'cms')->toArray();
         foreach ($plugins as $plugin) {
             $this->addPlugin($plugin->name, ['alias' => $plugin->alias]);
