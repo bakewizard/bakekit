@@ -7,16 +7,11 @@ use App\Model\Table\SettingsTable;
 use Cake\Cache\Cache;
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
-use Exception;
-use InvalidArgumentException;
 use Override;
 
 class DbConfig implements ConfigEngineInterface
 {
-    public const TABLE = 'Settings';
-
     /**
      * The cache configuration name to use.
      */
@@ -30,26 +25,13 @@ class DbConfig implements ConfigEngineInterface
     /**
      * Constructor to inject the table and define the cache configuration to use.
      *
-     * @param \App\Model\Table\SettingsTable|string|null $table Table alias or instance.
+     * @param \App\Model\Table\SettingsTable $table SettingsTable instance.
      * @param string $cacheConfig Cache config alias.
-     * @throws \InvalidArgumentException If the table cannot be loaded.
      */
-    public function __construct(SettingsTable|string|null $table = null, string $cacheConfig = 'default')
+    public function __construct(SettingsTable $table, string $cacheConfig = 'default')
     {
-        if (empty($table)) {
-            $table = self::TABLE;
-        }
-
-        if (is_string($table)) {
-            try {
-                $table = TableRegistry::getTableLocator()->get($table);
-            } catch (Exception $e) {
-                throw new InvalidArgumentException(sprintf('Could not load table "%s": %s', $table, $e->getMessage()), 0, $e);
-            }
-        }
-
-        $this->_cacheConfig = $cacheConfig;
         $this->_table = $table;
+        $this->_cacheConfig = $cacheConfig;
     }
 
     /**
