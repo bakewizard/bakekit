@@ -147,7 +147,7 @@ class AppView extends View
 
         /** @var array<string, mixed> $config */
         $config = $this->get('config');
-        $outputFormat = $config['Cms']['images']['format'];
+        $outputFormat = $config['Cms']['images']['format'] ?? 'jpeg';
 
         $imagePath = '/img/noimage.svg';
         if ($image) {

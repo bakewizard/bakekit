@@ -34,6 +34,13 @@ class MenusFixture extends TestFixture
                 'prefix' => 1,
                 'enabled' => 1,
             ],
+            [
+                'id' => 3,
+                'name' => 'Frontend menu',
+                'description' => 'Frontend menu',
+                'prefix' => 0,
+                'enabled' => 1,
+            ],
         ];
         parent::init();
     }

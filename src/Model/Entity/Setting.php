@@ -7,7 +7,7 @@ use Cake\ORM\Entity;
 
 /**
  * @property int $id
- * @property string|null $namespace
+ * @property string $namespace
  * @property string $path
  * @property string|null $value
  * @property \Cake\I18n\DateTime|null $created

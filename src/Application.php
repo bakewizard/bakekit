@@ -53,6 +53,7 @@ use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\Http\ServerRequest;
+use Cake\Log\Log;
 use Cake\ORM\Locator\TableLocator;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
@@ -130,7 +131,10 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             $this->loadPlugins();
 
             TypeFactory::map('textandjson', 'App\Database\Type\TextAndJsonType');
+        } catch (MissingPluginException $e) {
+             Log::warning($e->getMessage());
         } catch (Exception $e) {
+            Log::error($e->getMessage());
         }
     }
 
@@ -334,12 +338,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     private function loadTheme(): void
     {
         $theme = $this->getConfig('Cms.theme');
-        try {
-            if ($theme) {
-                $this->addPlugin($theme);
-            }
-        } catch (MissingPluginException $e) {
-            // Do not halt if the plugin is missing
+        if ($theme) {
+            $this->addPlugin($theme);
         }
     }
 
