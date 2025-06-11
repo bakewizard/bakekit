@@ -97,8 +97,8 @@ class ResourcesExplorer
                         'summary' => $docBlock->getSummary(),
                         'description' => $docBlock->getDescription(),
                         'path' => $method->name === 'display'
-                            ? ($plugin ? "{$plugin}.{$cell}" : $cell)
-                            : ($plugin ? "{$plugin}.{$cell}::{$method->name}" : "{$cell}::{$method->name}"),
+                            ? ($plugin != 'System' ? "{$plugin}.{$cell}" : $cell)
+                            : ($plugin != 'System' ? "{$plugin}.{$cell}::{$method->name}" : "{$cell}::{$method->name}"),
                     ];
                 }
             }

@@ -28,16 +28,15 @@ class MenuCell extends Cell
         $prefix = $this->request->getParam('prefix');
 
         if (!empty($menuId)) {
-            $menuItems = $this->fetchTable('MenuLinks')->find('threaded')
-                    ->matching('Menus', function ($q) {
-                        return $q->where(['enabled' => true]);
-                    })
-                    ->where(['menu_id is' => $menuId])
-                    ->orderByAsc('lft')
-                    ->cache(function () use ($menuId, $prefix, $lang) {
-                        return ($prefix ? $prefix . '_' : '') . $menuId . ($lang ? '_' . $lang : '');
-                    }, 'menus')
-                    ->toArray();
+            $menuItems = $this->fetchTable('MenuLinks')
+                ->find('threaded')
+                ->matching('Menus', fn($q) => $q->where(['enabled' => true]))
+                ->where(['menu_id is' => $menuId])
+                ->orderByAsc('lft')
+                ->cache(function () use ($menuId, $prefix, $lang) {
+                    return 'menu_' . $menuId . ($prefix ? "_$prefix" : '') . ($lang ? "_$lang" : '');
+                }, 'cms')
+                ->toArray();
         }
 
         $this->set(compact('menuItems', 'options', 'helper'));

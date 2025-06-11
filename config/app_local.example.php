@@ -1,5 +1,7 @@
 <?php
 
+use function Cake\Core\env;
+
 /*
  * Local configuration file to provide any overrides to your app.php configuration.
  * Copy and save this file as app_local.php and make changes as required.
@@ -17,6 +19,7 @@ return [
      * true: Errors and warnings shown.
      */
     'debug' => filter_var(env('DEBUG', false), FILTER_VALIDATE_BOOLEAN),
+
     /*
      * Security and encryption configuration
      *
@@ -27,6 +30,7 @@ return [
     'Security' => [
         'salt' => env('SECURITY_SALT', '__SALT__'),
     ],
+
     /*
      * Connection information used by the ORM to connect
      * to your application's datastores.
@@ -44,6 +48,7 @@ return [
             //'port' => 'non_standard_port_number',
             'username' => '__DB_USER__',
             'password' => '__DB_PASS__',
+
             'database' => '__DB_NAME__',
             /*
              * If not using the default 'public' schema with the PostgreSQL driver
@@ -56,6 +61,7 @@ return [
              */
             'url' => env('DATABASE_URL', null),
         ],
+
         /*
          * The test connection is used during the test suite.
          */
@@ -69,6 +75,7 @@ return [
             'url' => env('DATABASE_TEST_URL', 'sqlite://127.0.0.1/tmp/tests.sqlite'),
         ],
     ],
+
     /*
      * Email configuration.
      *

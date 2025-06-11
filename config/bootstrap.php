@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /**
@@ -15,6 +14,7 @@ declare(strict_types=1);
  * @since         0.10.8
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 /*
  * This file is loaded by your src/Application.php bootstrap method.
  * Feel free to extend/extract parts of the bootstrap process into your own files
@@ -44,6 +44,7 @@ use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
+use function Cake\Core\env;
 
 /*
  * Load global functions for collections, translations, debugging etc.
@@ -63,7 +64,7 @@ require CAKE . 'functions.php';
  * If you use .env files, be careful to not commit them to source control to avoid
  * security risks. See https://github.com/josegonzalez/php-dotenv#general-security-information
  * for more information for recommended practices.
- */
+*/
 // if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
 //     $dotenv = new \josegonzalez\Dotenv\Loader([CONFIG . '.env']);
 //     $dotenv->parse()
@@ -132,6 +133,7 @@ if (PHP_SAPI === 'cli') {
     // Set the fullBaseUrl to allow URLs to be generated in commands.
     // This is useful when sending email from commands.
     // Configure::write('App.fullBaseUrl', php_uname('n'));
+
     // Set logs to different files so they don't have permission conflicts.
     if (Configure::check('Log.debug')) {
         Configure::write('Log.debug.file', 'cli-debug');
@@ -224,6 +226,7 @@ ServerRequest::addDetector('tablet', function ($request) {
 // \Cake\Utility\Inflector::rules('plural', ['/^(inflect)or$/i' => '\1ables']);
 // \Cake\Utility\Inflector::rules('irregular', ['red' => 'redlings']);
 // \Cake\Utility\Inflector::rules('uninflected', ['dontinflectme']);
+
 // set a custom date and time format
 // see https://book.cakephp.org/5/en/core-libraries/time.html#setting-the-default-locale-and-format-string
 // and https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax

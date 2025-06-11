@@ -5,6 +5,7 @@ use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Log\Engine\FileLog;
 use Cake\Mailer\Transport\MailTransport;
+use function Cake\Core\env;
 
 return [
     /*
@@ -17,6 +18,7 @@ return [
      * true: Errors and warnings shown.
      */
     'debug' => filter_var(env('DEBUG', false), FILTER_VALIDATE_BOOLEAN),
+
     /*
      * Configure basic information about the application.
      *
@@ -65,6 +67,7 @@ return [
             'locales' => [RESOURCES . 'locales' . DS],
         ],
     ],
+
     /*
      * Security and encryption configuration
      *
@@ -75,6 +78,7 @@ return [
     'Security' => [
         'salt' => env('SECURITY_SALT'),
     ],
+
     /*
      * Apply timestamps with the last modified time to static assets (js, css, images).
      * Will append a querystring parameter containing the time the file was modified.
@@ -84,9 +88,10 @@ return [
      * enable timestamping regardless of debug value.
      */
     'Asset' => [
-    //'timestamp' => true,
-    // 'cacheTime' => '+1 year'
+        //'timestamp' => true,
+        // 'cacheTime' => '+1 year'
     ],
+
     /*
      * Configure the cache adapters.
      */
@@ -96,6 +101,7 @@ return [
             'path' => CACHE,
             'url' => env('CACHE_DEFAULT_URL', null),
         ],
+
         /*
          * Configure the cache used for general framework caching.
          * Translation cache files are stored with this configuration.
@@ -110,6 +116,7 @@ return [
             'duration' => '+1 years',
             'url' => env('CACHE_CAKECORE_URL', null),
         ],
+
         /*
          * Configure the cache for model and datasource caches. This cache
          * configuration is used to store schema descriptions, and table listings
@@ -124,19 +131,8 @@ return [
             'duration' => '+1 years',
             'url' => env('CACHE_CAKEMODEL_URL', null),
         ],
-        'menus' => [
-            'className' => FileEngine::class,
-            'path' => CACHE . 'cms' . DS . 'menus' . DS,
-            'duration' => '+1 years',
-            'prefix' => 'cms_'
-        ],
-        'permissions' => [
-            'className' => FileEngine::class,
-            'path' => CACHE . 'cms' . DS . 'permissions' . DS,
-            'duration' => '+1 years',
-            'prefix' => 'cms_'
-        ]
     ],
+
     /*
      * Configure the Error and Exception handlers used by your application.
      *
@@ -186,6 +182,7 @@ return [
         'trace' => true,
         'ignoredDeprecationPaths' => [],
     ],
+
     /*
      * Debugger configuration
      *
@@ -201,6 +198,7 @@ return [
     'Debugger' => [
         'editor' => 'phpstorm',
     ],
+
     /*
      * Email configuration.
      *
@@ -240,6 +238,7 @@ return [
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
+
     /*
      * Email delivery profiles
      *
@@ -253,13 +252,14 @@ return [
         'default' => [
             'transport' => 'default',
             'from' => 'you@localhost',
-        /*
-         * Will by default be set to config value of App.encoding, if that exists otherwise to UTF-8.
-         */
-        //'charset' => 'utf-8',
-        //'headerCharset' => 'utf-8',
+            /*
+             * Will by default be set to config value of App.encoding, if that exists otherwise to UTF-8.
+             */
+            //'charset' => 'utf-8',
+            //'headerCharset' => 'utf-8',
         ],
     ],
+
     /*
      * Connection information used by the ORM to connect
      * to your application's datastores.
@@ -289,10 +289,12 @@ return [
             'driver' => Mysql::class,
             'persistent' => false,
             'timezone' => 'UTC',
+
             /*
              * For MariaDB/MySQL the internal default changed from utf8 to utf8mb4, aka full utf-8 support
              */
             'encoding' => 'utf8mb4',
+
             /*
              * If your MySQL server is configured with `skip-character-set-client-handshake`
              * then you MUST use the `flags` config to set your charset encoding.
@@ -301,6 +303,7 @@ return [
             'flags' => [],
             'cacheMetadata' => true,
             'log' => false,
+
             /*
              * Set identifier quoting to true if you are using reserved words or
              * special characters in your table or column names. Enabling this
@@ -310,15 +313,17 @@ return [
              * manipulated before being executed.
              */
             'quoteIdentifiers' => false,
-        /*
-         * During development, if using MySQL < 5.6, uncommenting the
-         * following line could boost the speed at which schema metadata is
-         * fetched from the database. It can also be set directly with the
-         * mysql configuration directive 'innodb_stats_on_metadata = 0'
-         * which is the recommended value in production environments
-         */
-        //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+
+            /*
+             * During development, if using MySQL < 5.6, uncommenting the
+             * following line could boost the speed at which schema metadata is
+             * fetched from the database. It can also be set directly with the
+             * mysql configuration directive 'innodb_stats_on_metadata = 0'
+             * which is the recommended value in production environments
+             */
+            //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
         ],
+
         /*
          * The test connection is used during the test suite.
          */
@@ -332,9 +337,10 @@ return [
             'cacheMetadata' => true,
             'quoteIdentifiers' => false,
             'log' => false,
-        //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+            //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
         ],
     ],
+
     /*
      * Configures logging options
      */
@@ -364,6 +370,7 @@ return [
             'scopes' => ['cake.database.queries'],
         ],
     ],
+
     /*
      * Session configuration.
      *
@@ -411,6 +418,7 @@ return [
     'Session' => [
         'defaults' => 'php',
     ],
+
     /**
      * DebugKit configuration.
      *
@@ -438,5 +446,18 @@ return [
         'forceEnable' => filter_var(env('DEBUG_KIT_FORCE_ENABLE', false), FILTER_VALIDATE_BOOLEAN),
         'safeTld' => env('DEBUG_KIT_SAFE_TLD', null),
         'ignoreAuthorization' => env('DEBUG_KIT_IGNORE_AUTHORIZATION', false),
+    ],
+
+    /**
+     * TestSuite configuration.
+     *
+     * ## Options
+     *
+     *  - `errorLevel` - Defaults to `E_ALL`. Can be set to `false` to disable overwrite error level.
+     *  - `fixtureStrategy` - Defaults to TruncateStrategy. Can be set to any class implementing FixtureStrategyInterface.
+     */
+    'TestSuite' => [
+        'errorLevel' => null,
+        'fixtureStrategy' => null,
     ],
 ];

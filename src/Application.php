@@ -42,6 +42,7 @@ use Authorization\Policy\MapResolver;
 use Authorization\Policy\OrmResolver;
 use Authorization\Policy\ResolverCollection;
 use Cake\Cache\Cache;
+use Cake\Cache\Engine\FileEngine;
 use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Core\Exception\MissingPluginException;
@@ -114,12 +115,30 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         }
 
         // Provide default cache config for settings, unless overridden in app_local.php
+        if (!Cache::getConfig('menus')) {
+            Cache::setConfig('menus', [
+                'className' => FileEngine::class,
+                'path' => CACHE . 'cms' . DS . 'menus' . DS,
+                'duration' => '+1 years',
+                'prefix' => 'cms_',
+            ]);
+        }
+
+        if (!Cache::getConfig('permissions')) {
+            Cache::setConfig('permissions', [
+                'className' => FileEngine::class,
+                'path' => CACHE . 'cms' . DS . 'permissions' . DS,
+                'duration' => '+1 years',
+                'prefix' => 'cms_',
+            ]);
+        }
+
         if (!Cache::getConfig('cms')) {
             Cache::setConfig('cms', [
-                'className' => 'File',
+                'className' => FileEngine::class,
                 'prefix' => null,
                 'path' => CACHE . 'cms' . DS,
-                'duration' => '+1 year',
+                'duration' => '+1 years',
                 'serialize' => true,
             ]);
         }
@@ -132,7 +151,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
             TypeFactory::map('textandjson', 'App\Database\Type\TextAndJsonType');
         } catch (MissingPluginException $e) {
-             Log::warning($e->getMessage());
+            Log::warning($e->getMessage());
         } catch (Exception $e) {
             Log::error($e->getMessage());
         }
