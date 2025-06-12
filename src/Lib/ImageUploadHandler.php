@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Lib;
 
-use Cake\Core\InstanceConfigTrait;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
@@ -19,8 +18,6 @@ use Override;
 
 class ImageUploadHandler extends AbstractUploadHandler
 {
-    use InstanceConfigTrait;
-
     /**
      * Default configuration.
      *
@@ -64,7 +61,7 @@ class ImageUploadHandler extends AbstractUploadHandler
     /**
      * Handles image upload and thumbnail generation.
      *
-     * @param array<string, mixed> $files Uploaded files.
+     * @param array<int, \Cake\Datasource\EntityInterface> $files Uploaded files.
      * @return void
      */
     #[Override]
@@ -75,16 +72,16 @@ class ImageUploadHandler extends AbstractUploadHandler
 //        $extension = $format === 'jpeg' ? 'jpg' : $format;
 
         foreach ($files as $file) {
-            if (empty($file['tmp_name'])) {
+            if (empty($file->tmp_name)) {
                 continue;
             }
 
-            $image = $this->imagine->open($file['tmp_name']);
+            $image = $this->imagine->open($file->tmp_name);
 
             foreach ($this->_config['thumbs'] as $alias => $size) {
                 $thumbName = $file['id'] . '-' . $alias . '.' . $format;
                 [$thumbWidth, $thumbHeight] = is_array($size) ? $size : [$size, $size];
-                $this->createThumbnail($image, $file['path'], $thumbName, (int)$thumbWidth, (int)$thumbHeight);
+                $this->createThumbnail($image, $file->path, $thumbName, (int)$thumbWidth, (int)$thumbHeight);
             }
         }
     }
@@ -92,7 +89,7 @@ class ImageUploadHandler extends AbstractUploadHandler
     /**
      * Removes uploaded files and thumbnails from storage.
      *
-     * @param array<string, mixed> $files Files to remove.
+     * @param array<int, \Cake\Datasource\EntityInterface> $files Files to remove.
      * @return void
      */
     #[Override]

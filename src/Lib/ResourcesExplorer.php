@@ -92,7 +92,11 @@ class ResourcesExplorer
                 }
 
                 foreach ($this->getDeclaredPublicMethods($fqcn, ['initialize']) as $method) {
-                    $docBlock = $this->parseDocBlock($method);
+                    $docComment = $method->getDocComment();
+                    if (!$docComment) {
+                        continue;
+                    }
+                    $docBlock = $this->parseDocBlock($docComment);
                     $data[$plugin][] = [
                         'summary' => $docBlock->getSummary(),
                         'description' => $docBlock->getDescription(),
@@ -134,7 +138,11 @@ class ResourcesExplorer
                 }
 
                 foreach ($this->getDeclaredPublicMethods($fqcn, self::COMMON_CONTROLLER_METHODS) as $method) {
-                    $docBlock = $this->parseDocBlock($method);
+                    $docComment = $method->getDocComment();
+                    if (!$docComment) {
+                        continue;
+                    }
+                    $docBlock = $this->parseDocBlock($docComment);
                     $showModal = $method->getNumberOfParameters() === 1;
 
                     $data[$plugin][] = [
@@ -186,7 +194,12 @@ class ResourcesExplorer
                         continue;
                     }
 
-                    $docBlock = $this->parseDocBlock($method);
+                    $docComment = $method->getDocComment();
+                    if (!$docComment) {
+                        continue;
+                    }
+
+                    $docBlock = $this->parseDocBlock($docComment);
 
                     $data[$plugin][] = [
                         'summary' => $docBlock->getSummary(),
@@ -311,11 +324,11 @@ class ResourcesExplorer
     /**
      * Helper method to parse DocBlock comments.
      *
-     * @param \ReflectionMethod $method The reflection method to parse.
+     * @param string $docblock DocBlock comment.
      * @return \App\Lib\DocBlockParser
      */
-    private function parseDocBlock(ReflectionMethod $method): DocBlockParser
+    private function parseDocBlock(string $docblock): DocBlockParser
     {
-        return new DocBlockParser($method->getDocComment() ?: null);
+        return new DocBlockParser($docblock);
     }
 }
