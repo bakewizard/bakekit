@@ -81,7 +81,7 @@ class ImageUploadHandler extends AbstractUploadHandler
             foreach ($this->_config['thumbs'] as $alias => $size) {
                 $thumbName = $file['id'] . '-' . $alias . '.' . $format;
                 [$thumbWidth, $thumbHeight] = is_array($size) ? $size : [$size, $size];
-                $this->createThumbnail($image, $file->path, $thumbName, (int)$thumbWidth, (int)$thumbHeight);
+                $this->createThumbnail($image, $file->get('path'), $thumbName, (int)$thumbWidth, (int)$thumbHeight);
             }
         }
     }
@@ -96,9 +96,9 @@ class ImageUploadHandler extends AbstractUploadHandler
     public function remove(array $files): void
     {
         foreach ($files as $file) {
-            $pattern = '/' . preg_quote((string)$file->id, '/') . '-[A-Za-z]+\.(jpe?g|webp|avif)$/i';
+            $pattern = '/' . preg_quote((string)$file->get('id'), '/') . '-[A-Za-z]+\.(jpe?g|webp|avif)$/i';
 
-            $foundFiles = $this->_storage->listContents($file->path)
+            $foundFiles = $this->_storage->listContents($file->get('path'))
                     ->filter(fn(StorageAttributes $attr) => $attr->isFile())
                     ->filter(fn(StorageAttributes $attr) => (bool)preg_match($pattern, basename($attr->path())))
                     ->toArray();
