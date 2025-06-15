@@ -143,18 +143,29 @@ class ResourcesExplorer
                         continue;
                     }
                     $docBlock = $this->parseDocBlock($docComment);
-                    $showModal = $method->getNumberOfParameters() === 1;
+
+                    $menuTag = $docBlock->getTag('menu');
+
+                    if ($menuTag === null) {
+                        continue;
+                    }
+
+                    $paramCount = $method->getNumberOfParameters();
+                    $adminController = trim((string)$menuTag);
+
+                    $isModal = $paramCount === 1;
+                    $controllerName = $isModal ? ($adminController ?: $controller) : $controller;
 
                     $data[$plugin][] = [
                         'summary' => $docBlock->getSummary(),
                         'description' => $docBlock->getDescription(),
                         'url' => [
                             'plugin' => $plugin,
-                            'prefix' => $showModal ? 'Admin' : false,
-                            'controller' => $showModal ? $docBlock->getTag('items') : $controller,
-                            'action' => $showModal ? 'index' : $method->name,
+                            'prefix' => $isModal ? 'Admin' : false,
+                            'controller' => $controllerName,
+                            'action' => $isModal ? 'index' : $method->name,
                         ],
-                        'target' => $showModal ? '_blank' : '_self',
+                        'target' => $isModal ? '_blank' : '_self',
                     ];
                 }
             }

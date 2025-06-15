@@ -14,7 +14,6 @@ class ConfigForm extends Form
         return $schema
                       ->addField('enabled', ['type' => 'boolean', 'default' => true])
                       ->addField('title', ['type' => 'string', 'default' => 'Fake Plugin']);
-
     }
 
     protected function _buildValidator(Validator $validator): Validator
