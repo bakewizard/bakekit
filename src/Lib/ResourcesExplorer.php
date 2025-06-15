@@ -151,7 +151,9 @@ class ResourcesExplorer
                     }
 
                     $paramCount = $method->getNumberOfParameters();
-                    $adminController = trim((string)$menuTag);
+                    $adminController = is_array($menuTag)
+                        ? trim((string)reset($menuTag))
+                        : trim((string)$menuTag);
 
                     $isModal = $paramCount === 1;
                     $controllerName = $isModal ? ($adminController ?: $controller) : $controller;
