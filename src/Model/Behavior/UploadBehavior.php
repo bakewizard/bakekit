@@ -6,10 +6,10 @@ namespace App\Model\Behavior;
 use App\Lib\AbstractUploadHandler;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\FactoryLocator;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Override;
 use const UPLOAD_ERR_NO_FILE;
@@ -59,12 +59,11 @@ class UploadBehavior extends Behavior
 
         $foreignKey = strtolower($singularName) . '_id';
 
-        $filesTable = FactoryLocator::get('Table')->get($this->tableAlias, [
+        $filesTable = TableRegistry::getTableLocator()->get($this->tableAlias, [
             'table' => Inflector::singularize($this->_table->getTable()) . '_' . ($config['tablePostfix'] ?? 'files'),
         ]);
 
         if ($this->_config['multiple']) {
-            // @phpstan-ignore-next-line
             $this->_table->hasMany($this->tableAlias, [
                 'targetTable' => $filesTable,
                 'saveStrategy' => 'replace',
@@ -73,7 +72,6 @@ class UploadBehavior extends Behavior
                 'sort' => 'sort_order asc',
             ]);
         } else {
-            // @phpstan-ignore-next-line
             $this->_table->hasMany($this->tableAlias, [
                 'targetTable' => $filesTable,
                 'saveStrategy' => 'replace',

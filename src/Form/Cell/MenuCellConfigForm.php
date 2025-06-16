@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Form\Cell;
 
-use Cake\Datasource\FactoryLocator;
 use Cake\Form\Form;
 use Cake\Form\Schema;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Override;
 
@@ -22,12 +22,12 @@ class MenuCellConfigForm extends Form
     private array $menus;
 
     /**
-     * MenuCellConfigForm constructor
+     * @inheritDoc
      */
     public function __construct()
     {
         parent::__construct();
-        $labels = FactoryLocator::get('Table')->get('menus');
+        $labels = TableRegistry::getTableLocator()->get('Menus');
         $this->menus = $labels->find('list')->toArray();
     }
 
