@@ -155,7 +155,7 @@ class ImageUploadHandler extends AbstractUploadHandler
     private function createWatermark(int $width, int $height): ImageInterface
     {
         $scale = $this->_config['watermark']['scale'];
-        $watermarkPath = WWW_ROOT . ltrim($this->_config['watermark']['image'], DS);
+        $watermarkPath = $this->_config['watermark']['image'];
 
         return $this->imagine
                         ->open($watermarkPath)
