@@ -96,6 +96,14 @@ class ImageUploadHandlerTest extends TestCase
         }
     }
 
+    /**
+     * Tests the handle method with a watermark.
+     *
+     * This test creates a temporary image file, processes it with the ImageUploadHandler to generate
+     * a thumbnail with a watermark, and verifies that the expected file is created.
+     *
+     * @return void
+     */
     public function testHandleWithWatermark(): void
     {
         $watermarkPath = $this->tempDir . '/watermark.png';
@@ -106,7 +114,7 @@ class ImageUploadHandlerTest extends TestCase
             'format' => 'jpeg',
             'thumbs' => ['marked' => [120, 120]],
             'watermark' => [
-                'image' => str_replace(WWW_ROOT, '', $watermarkPath),
+                'image' => $watermarkPath,
                 'position' => 5,
                 'scale' => 0.25,
             ],
@@ -127,6 +135,13 @@ class ImageUploadHandlerTest extends TestCase
         $this->assertFileExists($expectedThumb);
     }
 
+    /**
+     * Tests that the ImageUploadHandler generates WebP format thumbnails.
+     *
+     * This test checks if the system supports WebP image generation. If not, the test is skipped.
+     * It creates a test JPEG image, configures the handler to generate a 100x100 WebP thumbnail,
+     * and verifies that the expected WebP thumbnail file is created.
+     */
     public function testHandleGeneratesWebpThumbnails(): void
     {
         if (!function_exists('imagewebp')) {
@@ -154,6 +169,14 @@ class ImageUploadHandlerTest extends TestCase
         $this->assertFileExists($expectedThumb);
     }
 
+    /**
+     * Tests that the ImageUploadHandler generates AVIF format thumbnails.
+     *
+     * This test checks if the system supports AVIF image creation. If not, the test is skipped.
+     * It sets up an ImageUploadHandler configured to generate AVIF thumbnails, creates a test image,
+     * and simulates an upload. After handling the upload, it asserts that the expected AVIF thumbnail
+     * file exists in the temporary directory.
+     */
     public function testHandleGeneratesAvifThumbnails(): void
     {
         if (!function_exists('imageavif')) {
@@ -181,6 +204,12 @@ class ImageUploadHandlerTest extends TestCase
         $this->assertFileExists($expectedThumb);
     }
 
+    /**
+     * Tests that an InvalidArgumentException is thrown when an unsupported image format ('tiff') is provided
+     * to the ImageUploadHandler constructor.
+     *
+     * @return void
+     */
     public function testInvalidFormatThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -190,6 +219,14 @@ class ImageUploadHandlerTest extends TestCase
         ]);
     }
 
+    /**
+     * Creates a test image with a gradient background, a red circle, a green rectangle, and a border.
+     *
+     * @param string $path The path where the image will be saved.
+     * @param int $width The width of the image.
+     * @param int $height The height of the image.
+     * @return void
+     */
     private function createTestImage(string $path, int $width = 400, int $height = 300): void
     {
         $image = imagecreatetruecolor($width, $height);
@@ -224,6 +261,12 @@ class ImageUploadHandlerTest extends TestCase
         imagedestroy($image);
     }
 
+    /**
+     * Creates a simple watermark image with two red diagonal lines.
+     *
+     * @param string $path The path where the watermark image will be saved.
+     * @return void
+     */
     private function createWatermarkImage(string $path): void
     {
         $size = 100;
