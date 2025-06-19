@@ -53,6 +53,7 @@ tests.sqlite
 nbproject/*
 # Visual Studio Code
 .vscode
+*.code-workspace
 # nova
 .nova
 # Sass preprocessor

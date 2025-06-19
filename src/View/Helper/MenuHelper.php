@@ -16,6 +16,8 @@ use Override;
 class MenuHelper extends Helper
 {
     /**
+     * The current path of the request.
+     *
      * @var string
      */
     private string $path;
@@ -33,30 +35,18 @@ class MenuHelper extends Helper
      * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
-        'container' => [
-            'class' => 'navbar-nav',
-        ],
-        'item' => [
-            'class' => 'nav-item',
-        ],
-        'itemLink' => [
-            'class' => 'nav-link',
-        ],
-        'itemWithDropdown' => [
-            'class' => 'dropdown',
-        ],
+        'container' => ['class' => 'navbar-nav'],
+        'item' => ['class' => 'nav-item'],
+        'itemLink' => ['class' => 'nav-link'],
+        'itemWithDropdown' => ['class' => 'dropdown'],
         'itemWithDropdownLink' => [
             'class' => 'dropdown-toggle',
             'data-bs-toggle' => 'dropdown',
             'role' => 'button',
         ],
-        'dropdownMenu' => [
-            'class' => 'dropdown-menu',
-        ],
+        'dropdownMenu' => ['class' => 'dropdown-menu'],
         'dropdownMenuItem' => [],
-        'dropdownMenuItemLink' => [
-            'class' => 'dropdown-item',
-        ],
+        'dropdownMenuItemLink' => ['class' => 'dropdown-item'],
     ];
 
     /**
@@ -84,6 +74,7 @@ class MenuHelper extends Helper
         if (!empty($options)) {
             $this->setConfig($options);
         }
+
         $html = '';
         foreach ($menuItems as $menuItem) {
             $html .= $this->renderMenuItem($menuItem);
@@ -93,81 +84,109 @@ class MenuHelper extends Helper
     }
 
     /**
-     * Renders menu item
+     * Renders a single menu item
      *
-     * @param \App\Model\Entity\MenuLink $item
-     * @param bool $hasSubmenu
+     * @param \App\Model\Entity\MenuLink $item Menu item
+     * @param bool $hasSubmenu Whether the item has a submenu
      * @return string
      */
     protected function renderMenuItem(MenuLink $item, bool $hasSubmenu = false): string
     {
-        $html = '';
-
-        $title = !empty($item['icon']) ? "<i class=\"{$item['icon']}\"></i> {$item['title']}" : $item['title'];
-
-        $linkAttrs = [];
-        if ($hasSubmenu) {
-            $linkAttrs = !empty($item['children'])
-                ? $this->mergeAttrs($this->_config['dropdownMenuItemLink'], $this->_config['itemWithDropdownLink'])
-                : $this->_config['dropdownMenuItemLink'];
-        } else {
-            $linkAttrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['itemLink'], $this->_config['itemWithDropdownLink']) : $this->_config['itemLink']);
-        }
-
-        if ($this->path === $item['link']) {
-            if (isset($linkAttrs['class'])) {
-                $linkAttrs['class'] .= ' active';
-            } else {
-                $linkAttrs['class'] = 'active';
-            }
-        }
-
-        $html .= $this->Html->link($title, $this->renderLink($item['link']), $linkAttrs + ['target' => $item['target'], 'escape' => false]);
+        $linkHtml = $this->buildLink($item, $hasSubmenu);
 
         if (!empty($item['children'])) {
-            $items = '';
+            $childrenHtml = '';
             foreach ($item['children'] as $childItem) {
-                $items .= $this->renderMenuItem($childItem, true);
+                $childrenHtml .= $this->renderMenuItem($childItem, true);
             }
-            $html .= $this->Html->tag('ul', $items, $this->_config['dropdownMenu']);
+            $linkHtml .= $this->Html->tag('ul', $childrenHtml, $this->_config['dropdownMenu']);
         }
 
-        $listItemAttrs = [];
-        if ($hasSubmenu) {
-            $listItemAttrs = !empty($item['children'])
-                ? $this->mergeAttrs(
-                    $this->_config['dropdownMenuItem'],
-                    $this->_config['itemWithDropdown'],
-                )
-                : $this->_config['dropdownMenuItem'];
-        } else {
-            $listItemAttrs = (!empty($item['children']) ? $this->mergeAttrs($this->_config['item'], $this->_config['itemWithDropdown']) : $this->_config['item']);
-        }
-
-        return $this->Html->tag('li', $html, $listItemAttrs);
+        return $this->Html->tag('li', $linkHtml, $this->getListItemAttributes($item, $hasSubmenu));
     }
 
     /**
-     * Renders menu link
+     * Builds the link HTML for a menu item
      *
-     * @param string $link Menu link
+     * @param \App\Model\Entity\MenuLink $item Menu item
+     * @param bool $hasSubmenu Whether the item has a submenu
+     * @return string
+     */
+    protected function buildLink(MenuLink $item, bool $hasSubmenu): string
+    {
+        $title = !empty($item['icon']) ? "<i class=\"{$item['icon']}\"></i> {$item['title']}" : $item['title'];
+        $attrs = $this->getLinkAttributes($item, $hasSubmenu);
+
+        return $this->Html->link(
+            $title,
+            $this->renderLink($item['link']),
+            $attrs + ['target' => $item['target'], 'escape' => false],
+        );
+    }
+
+    /**
+     * Gets the attributes for the link element
+     *
+     * @param \App\Model\Entity\MenuLink $item Menu item
+     * @param bool $hasSubmenu Whether the item has a submenu
+     * @return array<string, mixed>
+     */
+    protected function getLinkAttributes(MenuLink $item, bool $hasSubmenu): array
+    {
+        $base = $hasSubmenu
+            ? (!empty($item['children'])
+                ? $this->mergeAttrs($this->_config['dropdownMenuItemLink'], $this->_config['itemWithDropdownLink'])
+                : $this->_config['dropdownMenuItemLink'])
+            : (!empty($item['children'])
+                ? $this->mergeAttrs($this->_config['itemLink'], $this->_config['itemWithDropdownLink'])
+                : $this->_config['itemLink']);
+
+        if ($this->path === $item['link']) {
+            $base['class'] = ($base['class'] ?? '') . ' active';
+        }
+
+        return $base;
+    }
+
+    /**
+     * Gets the attributes for the list item element
+     *
+     * @param \App\Model\Entity\MenuLink $item Menu item
+     * @param bool $hasSubmenu Whether the item has a submenu
+     * @return array<string, mixed>
+     */
+    protected function getListItemAttributes(MenuLink $item, bool $hasSubmenu): array
+    {
+        return $hasSubmenu
+            ? (!empty($item['children'])
+                ? $this->mergeAttrs($this->_config['dropdownMenuItem'], $this->_config['itemWithDropdown'])
+                : $this->_config['dropdownMenuItem'])
+            : (!empty($item['children'])
+                ? $this->mergeAttrs($this->_config['item'], $this->_config['itemWithDropdown'])
+                : $this->_config['item']);
+    }
+
+    /**
+     * Renders a link with the correct locale prefix if necessary
+     *
+     * @param string $link The link to render
      * @return string
      */
     protected function renderLink(string $link): string
     {
         if (str_starts_with($link, '/') && I18n::getLocale() !== I18n::getDefaultLocale()) {
             return '/' . I18n::getLocale() . $link;
-        } else {
-            return $link;
         }
+
+        return $link;
     }
 
     /**
-     * Merges attributes
+     * Merges two arrays of attributes, concatenating values for existing keys
      *
-     * @param array<string, string> $attrs1
-     * @param array<string, string> $attrs2
-     * @return array<string, string>
+     * @param array<string, mixed> $attrs1 First set of attributes
+     * @param array<string, mixed> $attrs2 Second set of attributes
+     * @return array<string, mixed>
      */
     protected function mergeAttrs(array $attrs1, array $attrs2): array
     {

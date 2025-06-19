@@ -34,8 +34,8 @@ class MenuCell extends Cell
                 ->where(['menu_id is' => $menuId])
                 ->orderByAsc('lft')
                 ->cache(function () use ($menuId, $prefix, $lang) {
-                    return 'menu_' . $menuId . ($prefix ? "_$prefix" : '') . ($lang ? "_$lang" : '');
-                }, 'cms')
+                    return $menuId . ($prefix ? '_' . strtolower($prefix) : '') . ($lang ? "_$lang" : '');
+                }, 'menus')
                 ->toArray();
         }
 

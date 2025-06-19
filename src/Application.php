@@ -114,13 +114,14 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             FactoryLocator::add('Table', $this->tableLocator->allowFallbackClass(true));
         }
 
-        // Provide default cache config for settings, unless overridden in app_local.php
+        // Provide default cache configs, unless overridden in app_local.php
         if (!Cache::getConfig('menus')) {
             Cache::setConfig('menus', [
                 'className' => FileEngine::class,
                 'path' => CACHE . 'cms' . DS . 'menus' . DS,
                 'duration' => '+1 years',
-                'prefix' => 'cms_',
+                'prefix' => 'menu_',
+                'serialize' => true,
             ]);
         }
 
@@ -129,16 +130,17 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 'className' => FileEngine::class,
                 'path' => CACHE . 'cms' . DS . 'permissions' . DS,
                 'duration' => '+1 years',
-                'prefix' => 'cms_',
+                'prefix' => 'perm_',
+                'serialize' => true,
             ]);
         }
 
         if (!Cache::getConfig('cms')) {
             Cache::setConfig('cms', [
                 'className' => FileEngine::class,
-                'prefix' => null,
                 'path' => CACHE . 'cms' . DS,
                 'duration' => '+1 years',
+                'prefix' => null,
                 'serialize' => true,
             ]);
         }
