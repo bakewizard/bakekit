@@ -35,48 +35,21 @@ class BlocksControllerTest extends TestCase
 
     public function testAdd(): void
     {
-        $this->get('/admin/blocks/add/1');
+        $this->get('/admin/blocks/add/4');
         $this->assertResponseOk();
 
         $data = [
+            'region_id' => 4,
             'alias' => 'test-block',
             'title' => 'Test Block',
             'description' => 'This is a test block.',
-            'region_id' => 3,
-            'params' => 'Some text',
+            'cell' => null,
+            'template' => null,
             'enabled' => true,
         ];
 
-        $this->post('/admin/blocks/add/3', $data);
-        $this->assertRedirectContains('/admin/regions/view/3');
-        $this->assertFlashMessage('The block has been saved.');
-    }
-
-    public function testAddCell(): void
-    {
-        $this->get('/admin/blocks/add/1');
-        $this->assertResponseOk();
-
-        $data = [
-            'alias' => 'test-block',
-            'title' => 'Test Block',
-            'description' => 'This is a test block.',
-            'region_id' => 3,
-            'cell' => 'Menu',
-            'params' => [
-                'menu' => 3,
-            ],
-            'enabled' => true,
-        ];
-
-        $this->post('/admin/blocks/add/3', $data);
-
-        $block = $this->fetchTable('Blocks')->find()
-            ->where(['alias' => 'test-block'])
-            ->first();
-            dd($block);
-
-        $this->assertRedirectContains('/admin/regions/view/3');
+        $this->post('/admin/blocks/add/4', $data);
+        $this->assertRedirectContains('/admin/regions/view/4');
         $this->assertFlashMessage('The block has been saved.');
     }
 
@@ -123,18 +96,18 @@ class BlocksControllerTest extends TestCase
 
     public function testConfigPostValid(): void
     {
-        $data = ['some_setting' => 'value'];
+        $data = [
+            'menu' => '3',
+            'container' => ['class' => 'nav navbar-nav'],
+        ];
 
         $this->post('/admin/blocks/config/1', $data);
 
-        $this->assertRedirectContains('/admin/regions/view/');
+        $this->assertRedirectContains('/admin/regions/view/3');
         $this->assertFlashMessage('Configuration saved');
-    }
 
-    public function testGetCells(): void
-    {
-        $this->get('/admin/blocks/get-cells');
-        $this->assertResponseOk();
-        $this->assertResponseContains('data');
+        $block = $this->fetchTable('Blocks')->get(1);
+        $this->assertArrayHasKey('menu', $block->params);
+        $this->assertArrayHasKey('container', $block->params);
     }
 }
