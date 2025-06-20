@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 use Cake\Chronos\Chronos;
 use Cake\Core\Configure;
+use Cake\Database\TypeFactory;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConnectionHelper;
 use Migrations\TestSuite\Migrator;
@@ -60,6 +61,8 @@ session_id('cli');
 // Connection aliasing needs to happen before migrations are run.
 // Otherwise, table objects inside migrations would use the default datasource
 ConnectionHelper::addTestAliases();
+
+TypeFactory::map('textandjson', 'App\Database\Type\TextAndJsonType');
 
 // Use migrations to build test database schema.
 //
