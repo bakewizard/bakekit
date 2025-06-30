@@ -75,4 +75,21 @@ TypeFactory::map('textandjson', 'App\Database\Type\TextAndJsonType');
 // use Cake\TestSuite\Fixture\SchemaLoader;
 // (new SchemaLoader())->loadSqlFiles('./tests/schema.sql', 'test');
 
-(new Migrator())->run();
+$migrator = new Migrator();
+
+$pluginDir = ROOT . DS . 'plugins' . DS;
+$steps = [
+    [],// App migrations
+];
+$pluginsToTest = Configure::read('BakeKit.pluginsToTest', []);
+
+foreach ($pluginsToTest as $pluginName) {
+    $pluginPath = $pluginDir . $pluginName;
+    $migrationsPath = $pluginPath . DS . 'config' . DS . 'Migrations';
+
+    if (is_dir($migrationsPath)) {
+        $steps[] = ['plugin' => $pluginName];
+    }
+}
+
+$migrator->runMany($steps);

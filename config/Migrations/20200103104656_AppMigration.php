@@ -2,10 +2,18 @@
 
 use Migrations\BaseMigration;
 
-class Initial extends BaseMigration
+class AppMigration extends BaseMigration
 {
     public bool $autoId = false;
 
+    /**
+     * Up Method.
+     *
+     * More information on this method is available here:
+     * https://book.cakephp.org/phinx/0/en/migrations.html#the-up-method
+     *
+     * @return void
+     */
     public function up(): void
     {
         $this->table('resources')
@@ -575,6 +583,14 @@ class Initial extends BaseMigration
             ->create();
     }
 
+    /**
+     * Down Method.
+     *
+     * More information on this method is available here:
+     * https://book.cakephp.org/phinx/0/en/migrations.html#the-down-method
+     *
+     * @return void
+     */
     public function down(): void
     {
         $this->table('blocks_i18n')->drop()->save();

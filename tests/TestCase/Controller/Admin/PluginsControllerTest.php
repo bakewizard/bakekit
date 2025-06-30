@@ -5,6 +5,7 @@ namespace App\Test\TestCase\Controller\Admin;
 
 use App\Lib\ComposerManager;
 use App\Lib\PluginManager;
+use Cake\Cache\Cache;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Laminas\Diactoros\UploadedFile;
@@ -66,6 +67,8 @@ class PluginsControllerTest extends TestCase
                 'User' => $user,
             ],
         ]);
+
+        Cache::disable();
     }
 
     /**

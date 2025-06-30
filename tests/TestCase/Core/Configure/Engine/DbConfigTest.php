@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Test\TestCase\Core\Configure\Engine;
 
 use App\Core\Configure\Engine\DbConfig;
+use Cake\Cache\Cache;
 use Cake\TestSuite\TestCase;
 
 class DbConfigTest extends TestCase
@@ -15,6 +16,9 @@ class DbConfigTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Cache::disable();
+
         $table = $this->fetchTable('Settings');
         $this->dbConfig = new DbConfig($table, 'default');
     }

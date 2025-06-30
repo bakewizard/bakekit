@@ -129,7 +129,6 @@ class PluginsController extends AppController
                 }
                 Cache::delete('plugins', 'cms');
                 Cache::clear('permissions');
-                Cache::drop(Inflector::dasherize($name));
             }
 
             $composer->dumpAutoload(['--optimize' => true]);

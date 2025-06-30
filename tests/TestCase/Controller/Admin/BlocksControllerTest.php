@@ -6,6 +6,9 @@ namespace App\Test\TestCase\Controller\Admin;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
+/**
+ * @uses \App\Controller\Admin\BlocksController
+ */
 class BlocksControllerTest extends TestCase
 {
     use IntegrationTestTrait;
