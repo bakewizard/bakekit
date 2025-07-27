@@ -185,25 +185,31 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
         ];
 
+        $passwordIdentifier = [
+            'Authentication.Password' => [
+                'fields' => $fields,
+            ],
+        ];
+
         // Put form authentication first so that users can re-login via the login form if necessary.
         $service->loadAuthenticator('Authentication.Form', [
+            'identifier' => $passwordIdentifier,
             'fields' => $fields,
             'loginUrl' => $loginUrl,
         ]);
 
         // Then use sessions if they are active.
         $service->loadAuthenticator('Authentication.Session', [
+            'identifier' => $passwordIdentifier,
             'sessionKey' => 'Auth.User',
         ]);
 
         // If the user is on the login page, check for a cookie as well.
         $service->loadAuthenticator('Authentication.Cookie', [
+            'identifier' => $passwordIdentifier,
             'fields' => $fields,
             'loginUrl' => $loginUrl,
         ]);
-
-        // Load identifiers
-        $service->loadIdentifier('Authentication.Password', compact('fields'));
 
         return $service;
     }
