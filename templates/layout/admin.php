@@ -39,7 +39,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="<?= $this->Url->build(['prefix' => false, 'plugin' => false, 'controller' => 'Index'], ['fullBase' => true]) ?>" target="_blank" title="Back to site">
                                 <i class="fa-solid fa-reply"></i>
-                            </a>  
+                            </a>
                         </li>
                         <!--begin::Theme switcher-->
                         <div id="theme-switcher" class="nav-item dropdown">
@@ -94,17 +94,17 @@
             <!--begin::Sidebar-->
             <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
                 <!--begin::Sidebar Brand-->
-                <div class="sidebar-brand"> 
-                    <!--begin::Brand Link--> 
+                <div class="sidebar-brand">
+                    <!--begin::Brand Link-->
                     <a href="/admin/" class="brand-link">
                         <!--begin::Brand Image-->
-                        <img src="/img/logo.png" alt="Logo" class="brand-image opacity-75 shadow"> 
+                        <img src="/img/logo.png" alt="Logo" class="brand-image opacity-75 shadow">
                         <!--end::Brand Image-->
-                        <!--begin::Brand Text--> 
-                        <span class="brand-text fw-light">BakeKit CMS</span>
+                        <!--begin::Brand Text-->
+                        <span class="brand-text fw-light">BakeKit</span>
                         <!--end::Brand Text-->
-                    </a> 
-                    <!--end::Brand Link--> 
+                    </a>
+                    <!--end::Brand Link-->
                 </div>
                 <!--end::Sidebar Brand-->
 
@@ -181,7 +181,7 @@
                 <div class="float-end d-none d-sm-inline">
                     <a class="nav-link" href="<?= $this->Url->build(['plugin' => false, 'controller' => 'Dashboard', 'action' => 'info'], ['fullBase' => true]) ?>" target="_blank" title="PHP info">
                         <i class="fa-brands fa-php fa-xl"></i>
-                    </a>  
+                    </a>
                 </div>
                 <strong>
                     &copy; 2015-<?= date("Y") ?>

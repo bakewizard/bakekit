@@ -46,9 +46,10 @@ class PluginsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $plugin = $this->Plugins->patchEntity($plugin, $this->request->getData());
             if ($this->Plugins->save($plugin)) {
+                Cache::delete('plugins', 'cms');
                 $this->Flash->success(__('The plugin has been saved.'));
 
-                $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The plugin could not be saved. Please, try again.'));
         }
