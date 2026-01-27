@@ -1,5 +1,4 @@
 <?php
-
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -12,6 +11,7 @@
  * @since         3.0.0
  * @license       MIT License (https://opensource.org/licenses/mit-license.php)
  */
+
 /*
  * Use the DS to separate the directories in other defines
  */

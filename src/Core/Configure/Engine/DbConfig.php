@@ -6,7 +6,6 @@ namespace App\Core\Configure\Engine;
 use App\Model\Table\SettingsTable;
 use Cake\Cache\Cache;
 use Cake\Core\Configure\ConfigEngineInterface;
-use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Override;
 
@@ -20,7 +19,7 @@ class DbConfig implements ConfigEngineInterface
     /**
      * Instance of the configurations table.
      */
-    protected Table $_table;
+    protected SettingsTable $_table;
 
     /**
      * Constructor to inject the table and define the cache configuration to use.

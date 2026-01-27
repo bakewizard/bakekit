@@ -61,7 +61,7 @@ class ImageUploadHandler extends AbstractUploadHandler
     /**
      * Handles image upload and thumbnail generation.
      *
-     * @param array<int, \Cake\Datasource\EntityInterface> $files Uploaded files.
+     * @param array<int, array<string, mixed>> $files Uploaded files.
      * @return void
      */
     #[Override]
@@ -89,7 +89,7 @@ class ImageUploadHandler extends AbstractUploadHandler
     /**
      * Removes uploaded files and thumbnails from storage.
      *
-     * @param array<int, \Cake\Datasource\EntityInterface> $files Files to remove.
+     * @param array<int, array<string, mixed>> $files Files to remove.
      * @return void
      */
     #[Override]

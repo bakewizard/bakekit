@@ -41,7 +41,7 @@
                             <?= $this->Form->postLink('<i class="fa-solid fa-arrow-up"></i>', ['controller' => 'Blocks', 'action' => 'moveUp', $block->id], ['escape' => false, 'class' => 'btn btn-outline-secondary']) ?>
                         </td>
                         <td class="actions text-center">
-                            <?php if (!$block->isEmpty('cell') && $block->hasConfig()): ?>
+                            <?php if (!$block->hasValue('cell') && $block->hasConfig()): ?>
                                 <?= $this->Html->link('<i class="fa-solid fa-cog"></i>', ['controller' => 'Blocks', 'action' => 'config', $block->id], ['escape' => false, 'class' => 'btn btn-outline-secondary']); ?>
                             <?php endif; ?>
                             <?= $this->Html->link('<i class="fas fa-edit"></i>', ['controller' => 'Blocks', 'action' => 'edit', $block->id], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>

@@ -55,7 +55,10 @@ class UsersController extends AppController
     {
         $images = $this->getConfig('Cms.images');
 
-        $this->Users->getUploadHandler()->setConfig([
+        /** @var \App\Model\Behavior\UploadBehavior $upload */
+        $upload = $this->Users->getBehavior('Upload');
+
+        $upload->getUploadHandler()->setConfig([
             'format' => $images['format'],
             'quality' => $images['quality'],
         ]);
@@ -87,7 +90,10 @@ class UsersController extends AppController
     {
         $images = $this->getConfig('Cms.images');
 
-        $this->Users->getUploadHandler()->setConfig([
+        /** @var \App\Model\Behavior\UploadBehavior $upload */
+        $upload = $this->Users->getBehavior('Upload');
+
+        $upload->getUploadHandler()->setConfig([
             'format' => $images['format'],
             'quality' => $images['quality'],
         ]);

@@ -21,7 +21,7 @@ class ConfigForm extends Form
         return $validator;
     }
 
-    protected function _execute(array $data): bool
+    protected function process(array $data): bool
     {
         // Log or test $data if needed
         return true;

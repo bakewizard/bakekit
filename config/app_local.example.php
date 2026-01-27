@@ -46,6 +46,7 @@ return [
              * the following line and set the port accordingly
              */
             //'port' => 'non_standard_port_number',
+
             'username' => '__DB_USER__',
             'password' => '__DB_PASS__',
 

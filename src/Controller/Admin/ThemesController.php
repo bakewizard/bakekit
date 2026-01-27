@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Lib\ComposerManager;
 use App\Lib\ThemeManager;
 use Cake\Core\Configure;
 use Cake\Http\Response;
@@ -59,10 +60,11 @@ class ThemesController extends AppController
      * Install method
      *
      * @param \App\Lib\ThemeManager $themeManager Theme manager instance.
+     * @param \App\Lib\ComposerManager $composer ComposerManager instance for autoloading.
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Exception When error is encountered.
      */
-    public function install(ThemeManager $themeManager): ?Response
+    public function install(ThemeManager $themeManager, ComposerManager $composer): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
 
@@ -84,6 +86,7 @@ class ThemesController extends AppController
 
         try {
             $name = $themeManager->install($file);
+            $composer->dumpAutoload(['--optimize' => true]);
             $this->Flash->success(__('The theme "{0}" has been installed.', $name));
         } catch (Exception $e) {
             $this->Flash->error($e->getMessage());
@@ -96,11 +99,12 @@ class ThemesController extends AppController
      * Uninstall a theme.
      *
      * @param \App\Lib\ThemeManager $themeManager Theme manager instance.
+     * @param \App\Lib\ComposerManager $composer ComposerManager instance for autoloading.
      * @param string $name The name of the theme to uninstall.
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Exception When error is encountered.
      */
-    public function uninstall(ThemeManager $themeManager, string $name): ?Response
+    public function uninstall(ThemeManager $themeManager, ComposerManager $composer, string $name): ?Response
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -108,6 +112,7 @@ class ThemesController extends AppController
 
         try {
             $themeManager->uninstall($name, $name === $activeTheme);
+            $composer->dumpAutoload(['--optimize' => true]);
             $this->Flash->success(__('The theme "{0}" has been unnstalled.', $name));
         } catch (Exception $e) {
             $this->Flash->error($e->getMessage());

@@ -94,9 +94,9 @@ class MenuHelper extends Helper
     {
         $linkHtml = $this->buildLink($item, $hasSubmenu);
 
-        if (!empty($item['children'])) {
+        if (!empty($item->children)) {
             $childrenHtml = '';
-            foreach ($item['children'] as $childItem) {
+            foreach ($item->children as $childItem) {
                 $childrenHtml .= $this->renderMenuItem($childItem, true);
             }
             $linkHtml .= $this->Html->tag('ul', $childrenHtml, $this->_config['dropdownMenu']);
@@ -114,13 +114,13 @@ class MenuHelper extends Helper
      */
     protected function buildLink(MenuLink $item, bool $hasSubmenu): string
     {
-        $title = !empty($item['icon']) ? "<i class=\"{$item['icon']}\"></i> {$item['title']}" : $item['title'];
+        $title = !empty($item->icon) ? "<i class=\"{$item->icon}\"></i> {$item->title}" : $item->title;
         $attrs = $this->getLinkAttributes($item, $hasSubmenu);
 
         return $this->Html->link(
             $title,
-            $this->renderLink($item['link']),
-            $attrs + ['target' => $item['target'], 'escape' => false],
+            $this->renderLink((string)($item->link ?? '#')),
+            $attrs + ['target' => $item->target, 'escape' => false],
         );
     }
 
@@ -134,14 +134,14 @@ class MenuHelper extends Helper
     protected function getLinkAttributes(MenuLink $item, bool $hasSubmenu): array
     {
         $base = $hasSubmenu
-            ? (!empty($item['children'])
+            ? (!empty($item->children)
                 ? $this->mergeAttrs($this->_config['dropdownMenuItemLink'], $this->_config['itemWithDropdownLink'])
                 : $this->_config['dropdownMenuItemLink'])
-            : (!empty($item['children'])
+            : (!empty($item->children)
                 ? $this->mergeAttrs($this->_config['itemLink'], $this->_config['itemWithDropdownLink'])
                 : $this->_config['itemLink']);
 
-        if ($this->path === $item['link']) {
+        if ($this->path === $item->link) {
             $base['class'] = ($base['class'] ?? '') . ' active';
         }
 
@@ -158,10 +158,10 @@ class MenuHelper extends Helper
     protected function getListItemAttributes(MenuLink $item, bool $hasSubmenu): array
     {
         return $hasSubmenu
-            ? (!empty($item['children'])
+            ? (!empty($item->children)
                 ? $this->mergeAttrs($this->_config['dropdownMenuItem'], $this->_config['itemWithDropdown'])
                 : $this->_config['dropdownMenuItem'])
-            : (!empty($item['children'])
+            : (!empty($item->children)
                 ? $this->mergeAttrs($this->_config['item'], $this->_config['itemWithDropdown'])
                 : $this->_config['item']);
     }

@@ -121,9 +121,6 @@ class FullTextFilter extends Base
 
         if ($repository->hasBehavior('Translate')) {
             /** @var \Cake\ORM\Behavior\TranslateBehavior $translateBehavior */
-            /**
-             * @phpstan-ignore method.unresolvableReturnType
-             */
             $translateBehavior = $repository->getBehavior('Translate');
             $translatedFields = [];
             foreach ($fields as $field) {

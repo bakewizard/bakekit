@@ -43,20 +43,21 @@ class RegionChangeListener implements EventListenerInterface
         $table = $event->getSubject();
 
         if ($table->getAlias() === 'Blocks') {
-            // @phpstan-ignore-next-line
-            $table->setLocale(I18n::getDefaultLocale());
+            /** @var \Cake\ORM\Behavior\TranslateBehavior $translate */
+            $translate = $table->getBehavior('Translate');
+            $translate->setLocale(I18n::getDefaultLocale());
         }
 
         $cache = $regions
-                ->find()
-                ->contain('Blocks', function (SelectQuery $q) {
-                    return $q->find('translations')
-                                    ->where(['Blocks.enabled' => 1])
-                                    ->orderBy(['Blocks.position' => 'ASC']);
-                })
-                ->all()
-                ->indexBy('alias')
-                ->toArray();
+            ->find()
+            ->contain('Blocks', function (SelectQuery $q) {
+                return $q->find('translations')
+                    ->where(['Blocks.enabled' => 1])
+                    ->orderBy(['Blocks.position' => 'ASC']);
+            })
+            ->all()
+            ->indexBy('alias')
+            ->toArray();
 
         Cache::write('regions', $cache, 'cms');
     }

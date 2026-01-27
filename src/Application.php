@@ -366,7 +366,9 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     {
         $theme = $this->getConfig('Cms.theme');
         if ($theme) {
-            $this->addPlugin($theme);
+            $this->addPlugin($theme, [
+                'path' => ROOT . DS . 'themes' . DS . $theme . DS,
+            ]);
         }
     }
 

@@ -90,7 +90,7 @@ class AppView extends View
         $html = '';
         $lang = $this->request->getParam('lang');
         foreach ($this->_regions[$alias]->blocks as $block) {
-            if ($block->isEmpty('cell')) {
+            if (!$block->hasValue('cell')) {
                 $html .= $lang ? ($block->translation($lang)->params ?? $block->params) : $block->params;
                 continue;
             }

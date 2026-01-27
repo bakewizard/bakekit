@@ -95,7 +95,10 @@ class BlocksController extends AppController
         $this->request->allowMethod(['post', 'put']);
         $block = $this->Blocks->get($id);
 
-        if ($this->Blocks->moveUp($block)) {
+        $sequence = $this->Blocks->getBehavior('Sequence');
+
+        /** @var \ADmad\Sequence\Model\Behavior\SequenceBehavior $sequence */
+        if ($sequence->moveUp($block)) {
             $this->Flash->success('The Block has been moved Up.');
         } else {
             $this->Flash->error('The Block could not be moved up. Please, try again.');
@@ -115,7 +118,10 @@ class BlocksController extends AppController
         $this->request->allowMethod(['post', 'put']);
         $block = $this->Blocks->get($id);
 
-        if ($this->Blocks->moveDown($block)) {
+        /** @var \ADmad\Sequence\Model\Behavior\SequenceBehavior $sequence */
+        $sequence = $this->Blocks->getBehavior('Sequence');
+
+        if ($sequence->moveDown($block)) {
             $this->Flash->success('The Block has been moved down.');
         } else {
             $this->Flash->error('The Block could not be moved down. Please, try again.');
@@ -163,9 +169,7 @@ class BlocksController extends AppController
 
         $this->setName('CellConfig');
 
-        $this->render("{$pluginAndName}/{$block->cell_action}");
-
-        return null;
+        return $this->render("{$pluginAndName}/{$block->cell_action}");
     }
 
     /**
