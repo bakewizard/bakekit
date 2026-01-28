@@ -1,11 +1,13 @@
-/*!
- *   AdminLTE v4.0.0-beta3
- *   Author: Colorlib
- *   Website: AdminLTE.io <https://adminlte.io>
- *   License: Open source - MIT <https://opensource.org/licenses/MIT>
- */
+/* Font Awesome icons */
+// customize variables
+@use '../../node_modules/@fortawesome/fontawesome-free/scss/variables' with ($font-path: '../fonts'
+);
+@use '../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
+@use '../../node_modules/@fortawesome/fontawesome-free/scss/fa' as fa;
+@use '../../node_modules/@fortawesome/fontawesome-free/scss/solid' as fa-solid;
+@use '../../node_modules/@fortawesome/fontawesome-free/scss/brands' as fa-brands;
 
-// Bootstrap Configuration
+/* Bootstrap Configuration */
 // ---------------------------------------------------
 @import "../../node_modules/bootstrap/scss/functions";
 
@@ -78,13 +80,6 @@
 $bootstrap-icons-font-dir: "../fonts";
 @import "../../node_modules/bootstrap-icons/font/bootstrap-icons";
 
-/* Font Awesome icons */
-$fa-font-path: "../fonts";
-@import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
-@import "../../node_modules/@fortawesome/fontawesome-free/scss/regular";
-@import "../../node_modules/@fortawesome/fontawesome-free/scss/solid";
-@import "../../node_modules/@fortawesome/fontawesome-free/scss/brands";
-
 /* Vanilla JS Datepicker */
 @import "../../node_modules/vanillajs-datepicker/sass/datepicker-bs5";
 
@@ -107,12 +102,14 @@ table th a.desc:before {
 .star-rating {
     unicode-bidi: bidi-override;
     direction: rtl;
+
     span.star {
         display: inline-block;
         font-style: normal;
         font-variant: normal;
         text-rendering: auto;
         -webkit-font-smoothing: antialiased;
+
         &:before {
             font-family: 'Font Awesome 6 Free';
             font-weight: 400;
@@ -120,17 +117,19 @@ table th a.desc:before {
             color: #999999;
         }
     }
-    span.star.filled:before{
+
+    span.star.filled:before {
         font-family: 'Font Awesome 6 Free';
         font-weight: 900;
-        content:"\f005";
-        color:#e3cf7a;
+        content: "\f005";
+        color: #e3cf7a;
     }
 }
 
 .star-rating-small {
     @extend .star-rating;
     font-size: 15px;
+
     span.star {
         &:before {
             padding-right: 1px;
@@ -141,17 +140,21 @@ table th a.desc:before {
 .star-rating-big {
     @extend .star-rating;
     font-size: 25px;
+
     span.star {
         &:before {
             padding-right: 10px;
         }
+
         &:hover {
             cursor: pointer;
-            &:before, ~ span.star:before {
+
+            &:before,
+            ~span.star:before {
                 font-family: 'Font Awesome 6 Free';
                 font-weight: 900;
-                content:"\f005";
-                color:#e3cf7a;
+                content: "\f005";
+                color: #e3cf7a;
             }
         }
     }
@@ -159,4 +162,8 @@ table th a.desc:before {
 
 .drag-handle:hover {
     cursor: move;
+}
+
+.skip-links {
+    display: none;
 }

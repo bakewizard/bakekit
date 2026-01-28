@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Controller\Admin;
 
+use App\Lib\ComposerManager;
 use App\Lib\ThemeManager;
 use Cake\Core\Configure;
 use Cake\TestSuite\IntegrationTestTrait;
@@ -151,6 +152,15 @@ class ThemesControllerTest extends TestCase
             return $mock;
         });
 
+        $this->mockService(ComposerManager::class, function () {
+            $mock = $this->createMock(ComposerManager::class);
+            $mock->expects($this->once())
+                ->method('dumpAutoload')
+                ->with(['--optimize' => true]);
+
+            return $mock;
+        });
+
         $tmpPath = tempnam(sys_get_temp_dir(), 'upl');
         file_put_contents($tmpPath, 'fake content');
 
@@ -194,6 +204,15 @@ class ThemesControllerTest extends TestCase
             $mock->expects($this->once())
                 ->method('uninstall')
                 ->with('ModernTheme');
+
+            return $mock;
+        });
+
+        $this->mockService(ComposerManager::class, function () {
+            $mock = $this->createMock(ComposerManager::class);
+            $mock->expects($this->once())
+                ->method('dumpAutoload')
+                ->with(['--optimize' => true]);
 
             return $mock;
         });

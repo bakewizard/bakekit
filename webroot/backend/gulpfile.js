@@ -126,6 +126,6 @@ export function listen() {
     watch(config.watch.html).on('change', browser.reload);
 }
 
-export const build = parallel(styles, scripts, images, fonts);
+export const build = parallel(styles, scripts, fonts);
 
 export default series(clean, build, listen);

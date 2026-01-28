@@ -55,6 +55,7 @@ use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\Http\ServerRequest;
 use Cake\Log\Log;
+use Cake\ORM\Locator\TableContainer;
 use Cake\ORM\Locator\TableLocator;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
@@ -336,12 +337,12 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     #[Override]
     public function services(ContainerInterface $container): void
     {
+        $container->delegate(new TableContainer());
+
         $container->add(ComposerManager::class);
         $container->add(ResourcesExplorer::class);
         $container->add(ExtensionHandler::class);
         $container->add(Migrations::class);
-        $container->add(SettingsTable::class);
-        $container->add(ResourcesTable::class);
 
         $container->add(ThemeManager::class)
             ->addArgument(ExtensionHandler::class);
