@@ -1,10 +1,8 @@
 import { series, parallel, src, dest, watch, lastRun } from 'gulp';
-import imagemin, { gifsicle, mozjpeg, optipng, svgo } from 'gulp-imagemin';
 import * as dartSass from 'sass';
 import gulpSass from 'gulp-sass';
 import noop from "gulp-noop";
 import { deleteAsync } from 'del';
-import newer from 'gulp-newer';
 import browser from 'browser-sync';
 import { rollup } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
@@ -23,14 +21,10 @@ const config = {
             'src/scripts/pages/blocks/menu.js',
             'src/scripts/pages/menus/menus.js',
             'src/scripts/pages/meta/meta.js',
-            'src/scripts/pages/users/users.js'
+            'src/scripts/pages/users/users.js',
         ],
         styles: 'src/styles/**/*.scss',
-        // images: [
-        //     'src/images/*.*',
-        // ],
         fonts: [
-            // 'src/fonts/*.woff2',
             'node_modules/@fortawesome/fontawesome-free/webfonts/*.woff2',
             'node_modules/bootstrap-icons/font/fonts/*.woff2'
         ]
@@ -38,14 +32,12 @@ const config = {
     build: {
         js: 'js/',
         css: 'css/',
-        // img: 'img/',
         fonts: 'fonts/'
     },
     watch: {
         html: '../../templates/**/*.php',
         styles: 'src/styles/**/*.scss',
         scripts: 'src/scripts/**/*.js',
-        // images: 'src/images/**/*.{jpg,png,svg}'
     },
     browser: {
         proxy: 'cakecms.test',
@@ -55,7 +47,6 @@ const config = {
     clean: [
         'js/',
         'css/',
-        // 'img/',
         'fonts/'
     ]
 };
@@ -88,24 +79,6 @@ export async function scripts() {
             name: 'app'
         }).then(browser.stream());
     }));
-}
-
-export function images() {
-    return src(config.src.images, { encoding: false, since: lastRun(images) })
-        .pipe(newer(config.build.img))
-        .pipe(imagemin([
-            gifsicle({ interlaced: true }),
-            mozjpeg({ quality: 75, progressive: true }),
-            optipng({ optimizationLevel: 5 }),
-            svgo({
-                plugins: [
-                    { name: 'removeViewBox', active: true },
-                    { name: 'cleanupIDs', active: true }
-                ]
-            })
-        ]))
-        .pipe(dest(config.build.img))
-        .pipe(browser.stream());
 }
 
 export function fonts() {
