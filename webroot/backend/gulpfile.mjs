@@ -1,15 +1,16 @@
+import path from 'node:path';
 import { series, parallel, src, dest, watch, lastRun } from 'gulp';
 import * as dartSass from 'sass';
 import gulpSass from 'gulp-sass';
-import noop from "gulp-noop";
 import { deleteAsync } from 'del';
-import browser from 'browser-sync';
+import browserSync from 'browser-sync';
 import { rollup } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
 
 const sass = gulpSass(dartSass);
+const browser = browserSync.create();
 
 const isDevBuild = ((process.env.NODE_ENV || 'development').trim().toLowerCase() === 'development');
 
@@ -40,7 +41,8 @@ const config = {
         scripts: 'src/scripts/**/*.js',
     },
     browser: {
-        proxy: 'cakecms.test',
+        proxy: 'bakekit.test',
+        open: 'external',
         notify: false,
         watchEvents: ['add', 'change', 'unlink', 'addDir', 'unlinkDir']
     },
@@ -55,30 +57,36 @@ export function styles() {
     return src(config.src.styles)
         .pipe(sass({
             style: isDevBuild ? 'expanded' : 'compressed',
-            silenceDeprecations: ['legacy-js-api', 'mixed-decls', 'color-functions', 'global-builtin', 'import', 'slash-div'],
+            silenceDeprecations: ['legacy-js-api', 'color-functions', 'global-builtin', 'import', 'slash-div', 'if-function'],
         }).on('error', sass.logError))
         .pipe(dest(config.build.css))
         .pipe(browser.stream());
 }
 
 export async function scripts() {
-    await Promise.all(config.src.scripts.map(async (entry) => {
-        const bundle = await rollup({
-            input: entry,
-            plugins: [
-                resolve(),
-                commonjs(),
-                !isDevBuild ? terser({ format: { comments: false }, compress: false }) : noop()
-            ]
-        });
+    await Promise.all(
+        config.src.scripts.map(async (entry) => {
+            const name = path.parse(entry).name;
 
-        await bundle.write({
-            dir: config.build.js,
-            format: 'iife',
-            entryFileNames: '[name].js',
-            name: 'app'
-        }).then(browser.stream());
-    }));
+            const bundle = await rollup({
+                input: entry,
+                plugins: [
+                    resolve(),
+                    commonjs(),
+                    !isDevBuild && terser({ format: { comments: false } })
+                ].filter(Boolean)
+            });
+
+            await bundle.write({
+                file: `${config.build.js}${name}.js`,
+                format: 'iife',
+                name: 'app',
+                sourcemap: false
+            });
+        })
+    );
+
+    browser.reload();
 }
 
 export function fonts() {
@@ -95,7 +103,6 @@ export function listen() {
 
     watch(config.watch.styles, styles);
     watch(config.watch.scripts, scripts);
-    // watch(config.watch.images, images);
     watch(config.watch.html).on('change', browser.reload);
 }
 

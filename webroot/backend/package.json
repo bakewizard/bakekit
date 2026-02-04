@@ -1,10 +1,9 @@
 {
-    "name": "Admin",
+    "name": "admin",
     "version": "1.0.0",
     "description": "BakeKit backend theme",
     "author": "bakewizard <207716455+bakewizard@users.noreply.github.com>",
     "license": "MIT",
-    "type": "module",
     "devDependencies": {
         "@rollup/plugin-commonjs": "^29.0.0",
         "@rollup/plugin-node-resolve": "^16.0.3",
@@ -12,7 +11,6 @@
         "browser-sync": "^3.0.4",
         "del": "^8.0.1",
         "gulp": "^5.0.1",
-        "gulp-noop": "^1.0.1",
         "gulp-sass": "^6.0.1",
         "rollup": "^4.57.0",
         "sass": "^1.97.3"

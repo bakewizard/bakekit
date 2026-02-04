@@ -1,7 +1,7 @@
 import * as bootstrap from 'bootstrap';
-import * as adminlte from 'admin-lte/dist/js/adminlte';
+import 'admin-lte/dist/js/adminlte';
 import Sortable from 'sortablejs';
-import Inputmask from 'inputmask';
+import 'inputmask';
 import UseBootstrapSelect from 'use-bootstrap-select';
 import { Datepicker } from 'vanillajs-datepicker';
 import uk from 'vanillajs-datepicker/locales/uk';

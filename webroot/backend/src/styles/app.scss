@@ -1,7 +1,5 @@
 /* Font Awesome icons */
-// customize variables
-@use '../../node_modules/@fortawesome/fontawesome-free/scss/variables' with ($font-path: '../fonts'
-);
+@use '../../node_modules/@fortawesome/fontawesome-free/scss/variables' with ($font-path: '../fonts');
 @use '../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
 @use '../../node_modules/@fortawesome/fontawesome-free/scss/fa' as fa;
 @use '../../node_modules/@fortawesome/fontawesome-free/scss/solid' as fa-solid;
@@ -44,17 +42,17 @@
 @import "../../node_modules/bootstrap/scss/pagination";
 @import "../../node_modules/bootstrap/scss/badge";
 @import "../../node_modules/bootstrap/scss/alert";
-@import "../../node_modules/bootstrap/scss/progress";
+// @import "../../node_modules/bootstrap/scss/progress";
 @import "../../node_modules/bootstrap/scss/list-group";
 @import "../../node_modules/bootstrap/scss/close";
-@import "../../node_modules/bootstrap/scss/toasts";
+// @import "../../node_modules/bootstrap/scss/toasts";
 @import "../../node_modules/bootstrap/scss/modal";
-@import "../../node_modules/bootstrap/scss/tooltip";
-@import "../../node_modules/bootstrap/scss/popover";
-@import "../../node_modules/bootstrap/scss/carousel";
-@import "../../node_modules/bootstrap/scss/spinners";
+// @import "../../node_modules/bootstrap/scss/tooltip";
+// @import "../../node_modules/bootstrap/scss/popover";
+// @import "../../node_modules/bootstrap/scss/carousel";
+// @import "../../node_modules/bootstrap/scss/spinners";
 @import "../../node_modules/bootstrap/scss/offcanvas";
-@import "../../node_modules/bootstrap/scss/placeholders";
+// @import "../../node_modules/bootstrap/scss/placeholders";
 
 // Bootstrap Helpers
 @import "../../node_modules/bootstrap/scss/helpers";
@@ -89,13 +87,13 @@ $bootstrap-icons-font-dir: "../fonts";
 //////////////////////////////////////////////////////////
 table th a.asc:before {
     content: "\f161";
-    font-family: 'Font Awesome 6 Free';
+    font-family: 'Font Awesome 7 Free';
     padding-right: 5px;
 }
 
 table th a.desc:before {
     content: "\f160";
-    font-family: 'Font Awesome 6 Free';
+    font-family: 'Font Awesome 7 Free';
     padding-right: 5px;
 }
 
@@ -111,7 +109,7 @@ table th a.desc:before {
         -webkit-font-smoothing: antialiased;
 
         &:before {
-            font-family: 'Font Awesome 6 Free';
+            font-family: 'Font Awesome 7 Free';
             font-weight: 400;
             content: "\f005";
             color: #999999;
@@ -119,7 +117,7 @@ table th a.desc:before {
     }
 
     span.star.filled:before {
-        font-family: 'Font Awesome 6 Free';
+        font-family: 'Font Awesome 7 Free';
         font-weight: 900;
         content: "\f005";
         color: #e3cf7a;
@@ -151,7 +149,7 @@ table th a.desc:before {
 
             &:before,
             ~span.star:before {
-                font-family: 'Font Awesome 6 Free';
+                font-family: 'Font Awesome 7 Free';
                 font-weight: 900;
                 content: "\f005";
                 color: #e3cf7a;
