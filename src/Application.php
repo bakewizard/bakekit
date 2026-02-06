@@ -24,6 +24,7 @@ use App\Lib\ExtensionHandler;
 use App\Lib\PluginManager;
 use App\Lib\ResourcesExplorer;
 use App\Lib\ThemeManager;
+use App\Middleware\HostHeaderMiddleware;
 use App\Middleware\MaintenanceMiddleware;
 use App\Model\Table\ResourcesTable;
 use App\Model\Table\SettingsTable;
@@ -305,6 +306,11 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // Catch any exceptions in the lower layers,
             // and make an error page/response
             ->add(new ErrorHandlerMiddleware($this->getConfig('Error'), $this))
+
+            // Validate Host header to prevent Host Header Injection attacks.
+            // In production, ensures App.fullBaseUrl is configured and validates
+            // the incoming Host header against it.
+            ->add(new HostHeaderMiddleware())
 
             // Handle plugin/theme assets like CakePHP normally does.
             ->add(new AssetMiddleware(['cacheTime' => $this->getConfig('Asset.cacheTime')]))

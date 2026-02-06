@@ -35,11 +35,11 @@ require CORE_PATH . 'config' . DS . 'bootstrap.php';
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
-use Cake\Core\Exception\CakeException;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\ErrorTrap;
 use Cake\Error\ExceptionTrap;
 use Cake\Http\ServerRequest;
+use Cake\I18n\Date;
 use Cake\Log\Log;
 use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
@@ -146,12 +146,11 @@ if (PHP_SAPI === 'cli') {
 }
 
 /*
- * SECURITY: Validate and set the full base URL.
- * This URL is used as the base of all absolute links.
+ * Set the full base URL for the application.
  *
- * IMPORTANT: In production, App.fullBaseUrl MUST be explicitly configured to prevent
- * Host Header Injection attacks. Relying on the HTTP_HOST header can allow attackers
- * to hijack password reset tokens and other security-critical operations.
+ * SECURITY: In production, App.fullBaseUrl MUST be explicitly configured to prevent
+ * Host Header Injection attacks. The HostHeaderMiddleware enforces this requirement
+ * and validates incoming Host headers against the configured value.
  *
  * Set APP_FULL_BASE_URL in your environment variables or configure App.fullBaseUrl
  * in config/app.php or config/app_local.php
@@ -163,20 +162,9 @@ if (!$fullBaseUrl) {
     $httpHost = env('HTTP_HOST');
 
     /*
-     * Only enforce fullBaseUrl requirement when we're in a web request context.
-     * This allows CLI tools (like PHPStan) to load the bootstrap without throwing.
-     */
-    if (!Configure::read('debug') && $httpHost) {
-        throw new CakeException(
-            'SECURITY: App.fullBaseUrl is not configured. ' .
-            'This is required in production to prevent Host Header Injection attacks. ' .
-            'Set APP_FULL_BASE_URL environment variable or configure App.fullBaseUrl in config/app.php',
-        );
-    }
-
-    /*
      * Development mode fallback: Use HTTP_HOST for convenience.
-     * WARNING: This is ONLY safe in development. Never use this pattern in production!
+     * WARNING: This is ONLY safe in development. In production, the
+     * HostHeaderMiddleware will reject requests when fullBaseUrl is not configured.
      */
     if ($httpHost) {
         $s = null;
@@ -246,5 +234,5 @@ ServerRequest::addDetector('tablet', function ($request) {
 // set a custom date and time format
 // see https://book.cakephp.org/5/en/core-libraries/time.html#setting-the-default-locale-and-format-string
 // and https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax
-\Cake\I18n\Date::setToStringFormat('dd-MM-yyyy');
+Date::setToStringFormat('dd-MM-yyyy');
 // \Cake\I18n\Time::setToStringFormat('dd.MM.yyyy HH:mm');
