@@ -33,5 +33,5 @@ return [
     'Migrations' => ['onlyCli' => true],
     'IdeHelper' => ['onlyCli' => true, 'optional' => true],
     'Authorization' => ['onlyCli' => true, 'optional' => true],
-    'BootstrapUI' => []
+    'BootstrapUI' => [],
 ];

@@ -9,7 +9,6 @@ use Cake\Event\EventInterface;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use Override;
-use Search\Manager;
 
 /**
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\HasMany $MenuLinks
@@ -51,23 +50,25 @@ class MenusTable extends Table
         ]);
 
         $this->addBehavior('Search.Search');
+
+        $this->setFilters();
     }
 
     /**
-     * @return \Search\Manager
+     * Configures search filters for the Menus table.
+     *
+     * @return void
      */
-    public function searchManager(): Manager
+    public function setFilters(): void
     {
         /** @var \Search\Model\Behavior\SearchBehavior $search */
         $search = $this->getBehavior('Search');
         $searchManager = $search->searchManager();
 
         $searchManager
-                ->useCollection('backend')
-                ->value('prefix', ['filterEmpty' => true])
-                ->value('enabled', ['filterEmpty' => true]);
-
-        return $searchManager;
+            ->useCollection('backend')
+            ->value('prefix', ['filterEmpty' => true])
+            ->value('enabled', ['filterEmpty' => true]);
     }
 
     /**
@@ -80,26 +81,26 @@ class MenusTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-                ->nonNegativeInteger('id')
-                ->allowEmptyString('id', null, 'create');
+            ->nonNegativeInteger('id')
+            ->allowEmptyString('id', null, 'create');
 
         $validator
-                ->scalar('name')
-                ->maxLength('name', 255)
-                ->requirePresence('name', 'create')
-                ->notEmptyString('name');
+            ->scalar('name')
+            ->maxLength('name', 255)
+            ->requirePresence('name', 'create')
+            ->notEmptyString('name');
 
         $validator
-                ->scalar('description')
-                ->allowEmptyString('description');
+            ->scalar('description')
+            ->allowEmptyString('description');
 
         $validator
-                ->boolean('prefix')
-                ->allowEmptyString('prefix');
+            ->boolean('prefix')
+            ->allowEmptyString('prefix');
 
         $validator
-                ->boolean('enabled')
-                ->allowEmptyString('enabled');
+            ->boolean('enabled')
+            ->allowEmptyString('enabled');
 
         return $validator;
     }
