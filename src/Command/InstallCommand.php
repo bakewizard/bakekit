@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Lib\PluginManager;
-use Cake\Cache\Cache;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -58,8 +57,7 @@ class InstallCommand extends Command
             $this->loadDefaultSettings($io);
             $io->hr();
 
-            Cache::clearAll();
-            $io->out('Congratulations, BakeKit CMS has been installed successfully!');
+            $io->out('Congratulations, BakeKit has been installed successfully!');
 
             return static::CODE_SUCCESS;
         } catch (Exception $e) {
