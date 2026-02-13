@@ -1,0 +1,19 @@
+table th a.asc:before {
+    font-family: 'Font Awesome 7 Free';
+    content: "\f161";
+    padding-right: 5px;
+}
+
+table th a.desc:before {
+    font-family: 'Font Awesome 7 Free';
+    content: "\f160";
+    padding-right: 5px;
+}
+
+.drag-handle:hover {
+    cursor: move;
+}
+
+.skip-links {
+    display: none;
+}

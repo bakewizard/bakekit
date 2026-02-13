@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { series, parallel, src, dest, watch, lastRun } from 'gulp';
+import { series, parallel, src, dest, watch } from 'gulp';
 import * as dartSass from 'sass';
 import gulpSass from 'gulp-sass';
 import { deleteAsync } from 'del';
@@ -17,28 +17,28 @@ const isDevBuild = ((process.env.NODE_ENV || 'development').trim().toLowerCase()
 const config = {
     src: {
         scripts: [
-            'src/scripts/app.js',
-            'src/scripts/pages/blocks/blocks.js',
-            'src/scripts/pages/blocks/menu.js',
-            'src/scripts/pages/menus/menus.js',
-            'src/scripts/pages/meta/meta.js',
-            'src/scripts/pages/users/users.js',
+            'resources/backend/scripts/app.js',
+            'resources/backend/scripts/pages/blocks/blocks.js',
+            'resources/backend/scripts/pages/blocks/menu.js',
+            'resources/backend/scripts/pages/menus/menus.js',
+            'resources/backend/scripts/pages/meta/meta.js',
+            'resources/backend/scripts/pages/users/users.js',
         ],
-        styles: 'src/styles/**/*.scss',
+        styles: 'resources/backend/styles/**/*.scss',
         fonts: [
             'node_modules/@fortawesome/fontawesome-free/webfonts/*.woff2',
             'node_modules/bootstrap-icons/font/fonts/*.woff2'
         ]
     },
     build: {
-        js: 'js/',
-        css: 'css/',
-        fonts: 'fonts/'
+        js: 'webroot/backend/js/',
+        css: 'webroot/backend/css/',
+        fonts: 'webroot/backend/fonts/'
     },
     watch: {
-        html: '../../templates/**/*.php',
-        styles: 'src/styles/**/*.scss',
-        scripts: 'src/scripts/**/*.js',
+        html: 'templates/Admin/**/*.php',
+        styles: 'resources/backend/styles/**/*.scss',
+        scripts: 'resources/backend/scripts/**/*.js',
     },
     browser: {
         proxy: 'bakekit.test',
@@ -47,15 +47,16 @@ const config = {
         watchEvents: ['add', 'change', 'unlink', 'addDir', 'unlinkDir']
     },
     clean: [
-        'js/',
-        'css/',
-        'fonts/'
+        'webroot/backend/js/',
+        'webroot/backend/css/',
+        'webroot/backend/fonts/'
     ]
 };
 
 export function styles() {
     return src(config.src.styles)
         .pipe(sass({
+            loadPaths: ['node_modules'],
             style: isDevBuild ? 'expanded' : 'compressed',
             silenceDeprecations: ['legacy-js-api', 'color-functions', 'global-builtin', 'import', 'slash-div', 'if-function'],
         }).on('error', sass.logError))

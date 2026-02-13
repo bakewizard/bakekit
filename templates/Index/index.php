@@ -3,13 +3,13 @@
  * @var \App\View\AppView $this
  */
 ?>
-<?php $this->assign('title', 'Welcome to BakeKit CMS'); ?>
+<?php $this->assign('title', 'Welcome to BakeKit!'); ?>
 
 <div class="mb-4 p-3 bg-light">
     <h1 class="display-4 text-center">BakeKit</h1>
-    <p class="lead text-center">The first truly programmer-friendly CMS.</p>
+    <p class="lead text-center">The first truly programmer-friendly web application starter kit.</p>
     <p class="text-center">
-        <?= $this->Html->link('Enter admin panel', ['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'login'], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
+        <?= $this->Html->link('Bake it!', ['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'login'], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
     </p>
 </div>
 

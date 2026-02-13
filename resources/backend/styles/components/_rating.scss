@@ -1,0 +1,60 @@
+.star-rating {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+
+    span.star {
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+
+        &:before {
+            font-family: 'Font Awesome 7 Free';
+            font-weight: 400;
+            content: "\f005";
+            color: #999999;
+        }
+    }
+
+    span.star.filled:before {
+        font-family: 'Font Awesome 7 Free';
+        font-weight: 900;
+        content: "\f005";
+        color: #e3cf7a;
+    }
+}
+
+.star-rating-small {
+    @extend .star-rating;
+    font-size: 15px;
+
+    span.star {
+        &:before {
+            padding-right: 1px;
+        }
+    }
+}
+
+.star-rating-big {
+    @extend .star-rating;
+    font-size: 25px;
+
+    span.star {
+        &:before {
+            padding-right: 10px;
+        }
+
+        &:hover {
+            cursor: pointer;
+
+            &:before,
+            ~span.star:before {
+                font-family: 'Font Awesome 7 Free';
+                font-weight: 900;
+                content: "\f005";
+                color: #e3cf7a;
+            }
+        }
+    }
+}

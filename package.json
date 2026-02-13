@@ -16,7 +16,7 @@
         "sass": "^1.97.3"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^7.1.0",
+        "@fortawesome/fontawesome-free": "^7.2.0",
         "admin-lte": "^4.0.0-rc6",
         "bootstrap": "^5.3.8",
         "bootstrap-icons": "^1.13.1",
