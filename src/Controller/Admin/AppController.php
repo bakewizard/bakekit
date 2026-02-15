@@ -191,7 +191,10 @@ class AppController extends Controller
 
         $entity = $this->{$modelClass}->get($id);
 
-        $this->{$modelClass}->remove($entity->files);
+        /** @var \App\Model\Behavior\UploadBehavior $upload */
+        $upload = $this->{$modelClass}->getBehavior('Upload');
+
+        $upload->remove($entity->files);
 
         return $this->redirect($this->referer());
     }
