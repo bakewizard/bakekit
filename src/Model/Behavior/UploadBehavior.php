@@ -94,9 +94,9 @@ class UploadBehavior extends Behavior
     public function beforeFind(EventInterface $event, SelectQuery $query, ArrayObject $options, bool $primary): void
     {
         $query
-                ->select('id')
-                ->enableAutoFields(true)
-                ->contain($this->tableAlias);
+            ->select('id')
+            ->enableAutoFields(true)
+            ->contain($this->tableAlias);
     }
 
     /**
@@ -198,10 +198,12 @@ class UploadBehavior extends Behavior
      */
     public function remove(array $files): void
     {
-        $fileIds = array_map(fn($file) => $file->id, $files);
-        $this->_table->{$this->tableAlias}->deleteAll(['id IN' => $fileIds]);
+        if ($files) {
+            $fileIds = array_map(fn($file) => $file->id, $files);
+            $this->_table->{$this->tableAlias}->deleteAll(['id IN' => $fileIds]);
 
-        $this->uploadHandler->remove($files);
+            $this->uploadHandler->remove($files);
+        }
     }
 
     /**
