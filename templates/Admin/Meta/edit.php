@@ -10,7 +10,7 @@
 <div class="card card-success card-outline">
     <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-edit me-2"></i><?= __('Edit Metum') ?></div>
-        <?php if (count($config['App']['I18n']['languages']) > 1): ?>
+        <?php if (count($config['App']['I18n']['languages']) > 1) : ?>
             <div class="card-tools">
                 <?= $this->element('form/locales', ['locale' => $metum->_locale]) ?>
             </div>
@@ -27,7 +27,11 @@
     </div>
     <div class="card-footer">
         <?= $this->element('form/save_buttons') ?>
-        <?= $this->Html->link('<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'), ['action' => 'index', '?' => $this->request->getQueryParams()], ['class' => 'btn btn-outline-danger', 'escape' => false]) ?>
+        <?= $this->Html->link(
+            '<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'),
+            ['action' => 'index', '?' => $this->request->getQueryParams()],
+            ['class' => 'btn btn-outline-danger', 'escape' => false],
+        ) ?>
     </div>
     <?= $this->Form->end() ?>
 </div>

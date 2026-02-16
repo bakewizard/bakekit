@@ -42,8 +42,8 @@
                         'data-ip' => $this->request->clientIp(),
                         'id' => 'add-ip', 'title' => __('Add my IP'),
                         'escapeTitle' => false,
-                        'onclick' => 'document.getElementById(\'maintenance-allowedips\').value = this.dataset.ip'
-                    ])
+                        'onclick' => 'document.getElementById(\'maintenance-allowedips\').value = this.dataset.ip',
+                    ]),
                 ]);
                 ?>
                 <?= $this->Form->control('maintenance.message'); ?>

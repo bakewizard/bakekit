@@ -126,16 +126,16 @@
         },
         {
             "name": "cakephp/authorization",
-            "version": "3.4.2",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/authorization.git",
-                "reference": "6395003b7ff3928d58ad91e55d23031499a329f0"
+                "reference": "880c07b67e6c252bd24adbfec9930bd9e5b9a06b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/authorization/zipball/6395003b7ff3928d58ad91e55d23031499a329f0",
-                "reference": "6395003b7ff3928d58ad91e55d23031499a329f0",
+                "url": "https://api.github.com/repos/cakephp/authorization/zipball/880c07b67e6c252bd24adbfec9930bd9e5b9a06b",
+                "reference": "880c07b67e6c252bd24adbfec9930bd9e5b9a06b",
                 "shasum": ""
             },
             "require": {
@@ -147,11 +147,11 @@
                 "psr/http-server-middleware": "^1.0"
             },
             "require-dev": {
-                "cakephp/authentication": "^3.0",
+                "cakephp/authentication": "^3.0 || ^4.0",
                 "cakephp/bake": "^3.2",
                 "cakephp/cakephp": "^5.1",
                 "cakephp/cakephp-codesniffer": "^5.1",
-                "phpunit/phpunit": "^10.5.5 || ^11.1.3"
+                "phpunit/phpunit": "^10.5.58 || ^11.5.3 || ^12.4 || ^13.0"
             },
             "suggest": {
                 "cakephp/http": "To use \"RequestPolicyInterface\" (Not needed separately if using full CakePHP framework).",
@@ -187,7 +187,7 @@
                 "issues": "https://github.com/cakephp/authorization/issues",
                 "source": "https://github.com/cakephp/authorization"
             },
-            "time": "2025-07-29T14:41:00+00:00"
+            "time": "2026-02-14T19:54:38+00:00"
         },
         {
             "name": "cakephp/cakephp",
@@ -730,16 +730,16 @@
         },
         {
             "name": "k-samuel/faceted-search",
-            "version": "3.2.2",
+            "version": "3.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-samuel/faceted-search.git",
-                "reference": "ae452dac7a468d7e9e169a2a9be8759f479c5774"
+                "reference": "c2f36ebb454cdd4715b6146db787f7dff82afda3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-samuel/faceted-search/zipball/ae452dac7a468d7e9e169a2a9be8759f479c5774",
-                "reference": "ae452dac7a468d7e9e169a2a9be8759f479c5774",
+                "url": "https://api.github.com/repos/k-samuel/faceted-search/zipball/c2f36ebb454cdd4715b6146db787f7dff82afda3",
+                "reference": "c2f36ebb454cdd4715b6146db787f7dff82afda3",
                 "shasum": ""
             },
             "require": {
@@ -777,7 +777,7 @@
                 "issues": "https://github.com/k-samuel/faceted-search/issues",
                 "source": "https://github.com/k-samuel/faceted-search"
             },
-            "time": "2024-06-13T18:21:04+00:00"
+            "time": "2026-02-14T02:31:39+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",
@@ -1854,16 +1854,16 @@
         },
         {
             "name": "cakephp/bake",
-            "version": "3.6.0",
+            "version": "3.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/bake.git",
-                "reference": "c8dc9c6cce30b067adda5baa6d19f82481b12453"
+                "reference": "40a6208109a6d3922fb10c0446a00b50c1b098f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/bake/zipball/c8dc9c6cce30b067adda5baa6d19f82481b12453",
-                "reference": "c8dc9c6cce30b067adda5baa6d19f82481b12453",
+                "url": "https://api.github.com/repos/cakephp/bake/zipball/40a6208109a6d3922fb10c0446a00b50c1b098f6",
+                "reference": "40a6208109a6d3922fb10c0446a00b50c1b098f6",
                 "shasum": ""
             },
             "require": {
@@ -1907,7 +1907,7 @@
                 "issues": "https://github.com/cakephp/bake/issues",
                 "source": "https://github.com/cakephp/bake"
             },
-            "time": "2026-01-12T00:13:14+00:00"
+            "time": "2026-02-13T12:33:29+00:00"
         },
         {
             "name": "cakephp/cakephp-codesniffer",
@@ -2997,16 +2997,16 @@
         },
         {
             "name": "justinrainbow/json-schema",
-            "version": "6.6.4",
+            "version": "v6.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jsonrainbow/json-schema.git",
-                "reference": "2eeb75d21cf73211335888e7f5e6fd7440723ec7"
+                "reference": "6fea66c7204683af437864e7c4e7abf383d14bc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jsonrainbow/json-schema/zipball/2eeb75d21cf73211335888e7f5e6fd7440723ec7",
-                "reference": "2eeb75d21cf73211335888e7f5e6fd7440723ec7",
+                "url": "https://api.github.com/repos/jsonrainbow/json-schema/zipball/6fea66c7204683af437864e7c4e7abf383d14bc0",
+                "reference": "6fea66c7204683af437864e7c4e7abf383d14bc0",
                 "shasum": ""
             },
             "require": {
@@ -3066,9 +3066,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jsonrainbow/json-schema/issues",
-                "source": "https://github.com/jsonrainbow/json-schema/tree/6.6.4"
+                "source": "https://github.com/jsonrainbow/json-schema/tree/v6.7.2"
             },
-            "time": "2025-12-19T15:01:32+00:00"
+            "time": "2026-02-15T15:06:22+00:00"
         },
         {
             "name": "m1/env",
@@ -3889,16 +3889,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.5.11",
+            "version": "12.5.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "9b518cb40f9474572c9f0178e96ff3dc1cf02bf1"
+                "reference": "418e06b3b46b0d54bad749ff4907fc7dfb530199"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/9b518cb40f9474572c9f0178e96ff3dc1cf02bf1",
-                "reference": "9b518cb40f9474572c9f0178e96ff3dc1cf02bf1",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/418e06b3b46b0d54bad749ff4907fc7dfb530199",
+                "reference": "418e06b3b46b0d54bad749ff4907fc7dfb530199",
                 "shasum": ""
             },
             "require": {
@@ -3967,7 +3967,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.11"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.12"
             },
             "funding": [
                 {
@@ -3991,7 +3991,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-10T12:32:02+00:00"
+            "time": "2026-02-16T08:34:36+00:00"
         },
         {
             "name": "react/promise",

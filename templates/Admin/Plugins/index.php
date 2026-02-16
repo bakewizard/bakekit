@@ -14,7 +14,7 @@
             'class' => 'custom-file border',
             'label' => __('Install a new plugin'),
             'spacing' => 'mb-0',
-            'append' => $this->Form->button('<i class="fa-solid fa-save me-2"></i>' . __('Install'), ['class' => 'btn-success', 'escapeTitle' => false])
+            'append' => $this->Form->button('<i class="fa-solid fa-save me-2"></i>' . __('Install'), ['class' => 'btn-success', 'escapeTitle' => false]),
         ]);
         ?>
         <?= $this->Form->end() ?>
@@ -32,24 +32,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($plugins as $plugin): ?>
+                    <?php foreach ($plugins as $plugin) : ?>
                         <tr>
                             <td>
                                 <h5><?= h($plugin['name']) ?></h5>
                                 <div class="pt-1">
-                                    <?php if (isset($installedPlugins[$plugin['name']]->id) && $installedPlugins[$plugin['name']]->enabled): ?>
-                                        <?= $this->Form->postLink('Deactivate', ['action' => 'deactivate', $installedPlugins[$plugin['name']]->id], ['block' => true, 'class' => 'btn btn-sm btn-warning']) ?>
-                                    <?php else: ?>
-                                        <?= $this->Form->postLink('Activate', ['action' => 'activate', $plugin['name']], ['block' => true, 'class' => 'btn btn-sm btn-success']) ?>
+                                    <?php if (isset($installedPlugins[$plugin['name']]->id) && $installedPlugins[$plugin['name']]->enabled) : ?>
+                                        <?= $this->Form->postLink(
+                                            'Deactivate',
+                                            ['action' => 'deactivate', $installedPlugins[$plugin['name']]->id],
+                                            ['block' => true, 'class' => 'btn btn-sm btn-warning'],
+                                        ) ?>
+                                    <?php else : ?>
+                                        <?= $this->Form->postLink(
+                                            'Activate',
+                                            ['action' => 'activate', $plugin['name']],
+                                            ['block' => true, 'class' => 'btn btn-sm btn-success'],
+                                        ) ?>
                                         <?=
-                                        $this->Form->deleteLink('Uninstall', ['action' => 'uninstall', $plugin['name']],
-                                                [
-                                                    'block' => true,
-                                                    'confirm' => __('Are you sure you want to uninstall "{0}"?', $plugin['name']),
-                                                    'class' => 'btn btn-sm btn-danger',
-                                                    'data-bs-toggle' => 'modal',
-                                                    'data-bs-target' => '#confirm-modal'
-                                                ]
+                                        $this->Form->deleteLink(
+                                            'Uninstall',
+                                            ['action' => 'uninstall', $plugin['name']],
+                                            [
+                                                'block' => true,
+                                                'confirm' => __('Are you sure you want to uninstall "{0}"?', $plugin['name']),
+                                                'class' => 'btn btn-sm btn-danger',
+                                                'data-bs-toggle' => 'modal',
+                                                'data-bs-target' => '#confirm-modal',
+                                            ],
                                         )
                                         ?>
                                     <?php endif; ?>
@@ -63,8 +73,12 @@
                                 <strong><?= $installedPlugins[$plugin['name']]->parent_plugin ?? '-------' ?></strong>
                             </td>
                             <td class="text-center">
-                                <?php if (isset($installedPlugins[$plugin['name']]->id)): ?>
-                                    <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['action' => 'edit', $installedPlugins[$plugin['name']]->id], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
+                                <?php if (isset($installedPlugins[$plugin['name']]->id)) : ?>
+                                    <?= $this->Html->link(
+                                        '<i class="fa-solid fa-edit"></i>',
+                                        ['action' => 'edit', $installedPlugins[$plugin['name']]->id],
+                                        ['escape' => false, 'class' => 'btn btn-outline-success'],
+                                    ) ?>
                                 <?php endif; ?>
                             </td>
                         </tr>

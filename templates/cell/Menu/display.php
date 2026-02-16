@@ -6,4 +6,4 @@
  * @var mixed $options
  */
 ?>
-<?= $this->{$helper}->render($menuItems, $options); ?>
+<?= $this->{$helper}->render($menuItems, $options);

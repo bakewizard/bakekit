@@ -6,7 +6,7 @@
 ?>
 <div class="card">
     <div class="card-header">
-        <div class="card-title"><i class="fa-solid fa-list me-2"></i><?= ('Users list') ?></div>
+        <div class="card-title"><i class="fa-solid fa-list me-2"></i><?= 'Users list' ?></div>
         <div class="card-tools">
             <?= $this->Html->link('<i class="fa-solid fa-plus-circle"></i>', ['action' => 'add'], ['class' => 'btn btn-sm btn-outline-success', 'escape' => false]) ?>
         </div>
@@ -26,7 +26,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($users as $user): ?>
+                    <?php foreach ($users as $user) : ?>
                         <tr>
                             <td><?= $this->Number->format($user->id) ?></td>
                             <td><?= h($user->full_name) ?></td>
@@ -35,17 +35,23 @@
                             <td><?= h($user->role->name) ?></td>
                             <td><?= h($user->created) ?></td>
                             <td class="text-center actions">
-                                <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['action' => 'edit', $user->id, '?' => $this->request->getQueryParams()], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
+                                <?= $this->Html->link(
+                                    '<i class="fa-solid fa-edit"></i>',
+                                    ['action' => 'edit', $user->id, '?' => $this->request->getQueryParams()],
+                                    ['escape' => false, 'class' => 'btn btn-outline-success'],
+                                ) ?>
                                 <?=
-                                $this->Form->deleteLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', $user->id, '?' => $this->request->getQueryParams()],
-                                        [
+                                $this->Form->deleteLink(
+                                    '<i class="fa-solid fa-trash"></i>',
+                                    ['action' => 'delete', $user->id, '?' => $this->request->getQueryParams()],
+                                    [
                                             'block' => true,
                                             'escape' => false,
                                             'confirm' => __('Are you sure you want to delete {0}?', $user->full_name),
                                             'class' => 'btn btn-outline-danger',
                                             'data-bs-toggle' => 'modal',
-                                            'data-bs-target' => '#confirm-modal'
-                                        ]
+                                            'data-bs-target' => '#confirm-modal',
+                                        ],
                                 )
                                 ?>
                             </td>

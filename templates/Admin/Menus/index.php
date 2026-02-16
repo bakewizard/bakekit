@@ -2,7 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var mixed $_isSearch
- * @var array<\App\Model\Entity\Menu>|\Cake\Collection\CollectionInterface<\App\Model\Entity\Menu> $menus
+ * @var \Cake\Collection\CollectionInterface<\App\Model\Entity\Menu>|array<\App\Model\Entity\Menu> $menus
  */
 ?>
 <div class="card">
@@ -24,10 +24,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">         
+            <div class="col-sm-12">
                 <button type="submit" id="button-filter" class="btn btn-outline-success"><i class="fa-solid fa-search"></i> <?= __('Filter') ?></button>
-                <?php if (!empty($_isSearch)): ?>
-                    <?= $this->Html->link('<i class="fa-solid fa-times-circle"></i> ' . __('Clear'), ['controller' => 'Menus', 'action' => 'index'], ['class' => 'btn btn-outline-danger', 'escape' => false]) ?>
+                <?php if (!empty($_isSearch)) : ?>
+                    <?= $this->Html->link(
+                        '<i class="fa-solid fa-times-circle"></i> ' . __('Clear'),
+                        ['controller' => 'Menus', 'action' => 'index'],
+                        ['class' => 'btn btn-outline-danger', 'escape' => false],
+                    ) ?>
                 <?php endif; ?>
             </div>
         </div>
@@ -45,11 +49,11 @@
                         <th scope="col"><?= $this->Paginator->sort('description') ?></th>
                         <th scope="col"><?= $this->Paginator->sort('prefix', __('Client')) ?></th>
                         <th scope="col""><?= $this->Paginator->sort('enabled') ?></th>
-                        <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
+                        <th scope=" col" class="actions text-center"><?= __('Actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($menus as $menu): ?>
+                    <?php foreach ($menus as $menu) : ?>
                         <tr>
                             <td><?= h($menu->name) ?></td>
                             <td><?= h($menu->description) ?></td>
@@ -59,19 +63,29 @@
                             <td class="text-center">
                                 <?= $menu->enabled ? '<i class="fa-solid fa-check text-success fa-lg"></i>' : '<i class="fa-solid fa-xmark text-danger fa-lg"></i>' ?>
                             </td>
-                            <td class="text-center actions">                                   
-                                <?= $this->Html->link('<i class="fa-solid fa-list"></i>', ['action' => 'view', $menu->id], ['escape' => false, 'class' => 'btn btn-outline-primary']) ?>
-                                <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['action' => 'edit', $menu->id, '?' => $this->request->getQueryParams()], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
+                            <td class="text-center actions">
+                                <?= $this->Html->link(
+                                    '<i class="fa-solid fa-list"></i>',
+                                    ['action' => 'view', $menu->id],
+                                    ['escape' => false, 'class' => 'btn btn-outline-primary'],
+                                ) ?>
+                                <?= $this->Html->link(
+                                    '<i class="fa-solid fa-edit"></i>',
+                                    ['action' => 'edit', $menu->id, '?' => $this->request->getQueryParams()],
+                                    ['escape' => false, 'class' => 'btn btn-outline-success'],
+                                ) ?>
                                 <?=
-                                $this->Form->deleteLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', $menu->id, '?' => $this->request->getQueryParams()],
-                                        [
-                                            'block' => true,
-                                            'confirm' => __('Are you sure you want to delete {0}?', $menu->name),
-                                            'escape' => false,
-                                            'class' => 'btn btn-outline-danger',
-                                            'data-bs-toggle' => 'modal',
-                                            'data-bs-target' => '#confirm-modal'
-                                        ]
+                                $this->Form->deleteLink(
+                                    '<i class="fa-solid fa-trash"></i>',
+                                    ['action' => 'delete', $menu->id, '?' => $this->request->getQueryParams()],
+                                    [
+                                        'block' => true,
+                                        'confirm' => __('Are you sure you want to delete {0}?', $menu->name),
+                                        'escape' => false,
+                                        'class' => 'btn btn-outline-danger',
+                                        'data-bs-toggle' => 'modal',
+                                        'data-bs-target' => '#confirm-modal',
+                                    ],
                                 )
                                 ?>
                             </td>

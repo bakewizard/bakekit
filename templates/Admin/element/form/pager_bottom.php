@@ -3,7 +3,7 @@
  * @var \App\View\AppView $this
  */
 ?>
-<?php if ($this->Paginator->params()['pageCount'] > 1): ?>
+<?php if ($this->Paginator->params()['pageCount'] > 1) : ?>
     <div class="card-footer">
         <div class="row">
             <div class="col-12 col-xl-4 text-center mb-2 mb-xl-0 text-xl-start">

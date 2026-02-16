@@ -20,7 +20,7 @@
             'class' => 'custom-file border',
             'label' => __('Upload new theme'),
             'spacing' => 'mb-0',
-            'append' => $this->Form->button('<i class="fa-solid fa-save"></i> ' . __('Install'), ['class' => 'btn-success', 'escapeTitle' => false])
+            'append' => $this->Form->button('<i class="fa-solid fa-save"></i> ' . __('Install'), ['class' => 'btn-success', 'escapeTitle' => false]),
         ]);
         ?>
         <?= $this->Form->end() ?>
@@ -38,7 +38,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($themes as $theme): ?>
+                    <?php foreach ($themes as $theme) : ?>
                         <tr class="<?= $theme['name'] === $activeTheme ? 'table-active' : '' ?>">
                             <td>
                                 <h5>
@@ -48,20 +48,22 @@
                             <td><?= h($theme['description'] ?? '--- No description ---') ?></td>
                             <td><?= h($theme['license']) ?? '--- No license ---' ?></td>
                             <td class="text-center">
-                                <?php if ($theme['name'] !== $activeTheme): ?>
+                                <?php if ($theme['name'] !== $activeTheme) : ?>
                                     <?= $this->Form->postLink('Activate', ['action' => 'activate', $theme['name']], ['class' => 'btn btn-sm btn-success']) ?>
                                     <?=
-                                    $this->Form->deleteLink('Delete', ['action' => 'uninstall', $theme['name']],
-                                            [
+                                    $this->Form->deleteLink(
+                                        'Delete',
+                                        ['action' => 'uninstall', $theme['name']],
+                                        [
                                                 'block' => true,
                                                 'confirm' => __('Are you sure you want to uninstall {0} theme?', $theme['name']),
                                                 'class' => 'btn btn-sm btn-danger',
                                                 'data-bs-toggle' => 'modal',
-                                                'data-bs-target' => '#confirm-modal'
-                                            ]
+                                                'data-bs-target' => '#confirm-modal',
+                                            ],
                                     )
                                     ?>
-                                <?php else: ?>
+                                <?php else : ?>
                                     <?= $this->Form->postLink('Deactivate', ['action' => 'activate'], ['class' => 'btn btn-sm btn-warning']) ?>
                                 <?php endif; ?>
                             </td>

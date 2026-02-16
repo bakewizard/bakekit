@@ -28,23 +28,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($meta as $metum): ?>
+                    <?php foreach ($meta as $metum) : ?>
                         <tr>
                             <td class="text-center align-middle"><?= $this->Form->checkbox('ids[]', ['hiddenField' => false, 'value' => $metum->id]) ?></td>
                             <td><strong><?= h($metum->plugin->name) ?></strong></td>
                             <td><?= $this->Text->truncate($metum->title, 50) ?></td>
                             <td class="text-center actions">
-                                <?= $this->Html->link('<i class="fa-solid fa-edit"></i>', ['action' => 'edit', $metum->id, '?' => $this->request->getQueryParams()], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
+                                <?= $this->Html->link(
+                                    '<i class="fa-solid fa-edit"></i>',
+                                    ['action' => 'edit', $metum->id, '?' => $this->request->getQueryParams()],
+                                    ['escape' => false, 'class' => 'btn btn-outline-success'],
+                                ) ?>
                                 <?=
-                                $this->Form->deleteLink('<i class="fa-solid fa-trash"></i>', ['action' => 'delete', $metum->id, '?' => $this->request->getQueryParams()],
-                                        [
-                                            'block' => true,
-                                            'escape' => false,
-                                            'confirm' => __('Are you sure you want to delete # {0}?', $metum->id),
-                                            'class' => 'btn btn-outline-danger',
-                                            'data-bs-toggle' => 'modal',
-                                            'data-bs-target' => '#confirm-modal'
-                                        ]
+                                $this->Form->deleteLink(
+                                    '<i class="fa-solid fa-trash"></i>',
+                                    ['action' => 'delete', $metum->id, '?' => $this->request->getQueryParams()],
+                                    [
+                                        'block' => true,
+                                        'escape' => false,
+                                        'confirm' => __('Are you sure you want to delete # {0}?', $metum->id),
+                                        'class' => 'btn btn-outline-danger',
+                                        'data-bs-toggle' => 'modal',
+                                        'data-bs-target' => '#confirm-modal',
+                                    ],
                                 )
                                 ?>
                             </td>

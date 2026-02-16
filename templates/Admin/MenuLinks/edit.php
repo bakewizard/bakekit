@@ -14,7 +14,7 @@
 <div class="card card-success card-outline">
     <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-edit me-2"></i><?= __('Edit Menu Link') ?></div>
-        <?php if (count($config['App']['I18n']['languages']) > 1): ?>
+        <?php if (count($config['App']['I18n']['languages']) > 1) : ?>
             <div class="card-tools">
                 <?= $this->element('form/locales', ['locale' => $menuLink->_locale]) ?>
             </div>
@@ -33,14 +33,18 @@
                 'class' => 'btn btn-primary',
                 'id' => 'link-select-button',
                 'title' => __('Select Link'),
-                'data-url' => $this->Url->build(['controller' => 'MenuLinks', 'action' => 'getLinks', $menuLink->menu_id])
-        ])]);
+                'data-url' => $this->Url->build(['controller' => 'MenuLinks', 'action' => 'getLinks', $menuLink->menu_id]),
+            ])]);
         ?>
         <?= $this->Form->control('target', ['options' => $targets]); ?>
     </div>
     <div class="card-footer">
         <?= $this->element('form/save_buttons') ?>
-        <?= $this->Html->link('<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'), ['controller' => 'Menus', 'action' => 'view', $menuLink->menu_id, '?' => $this->request->getQueryParams()], ['class' => 'btn btn-outline-danger', 'escape' => false]) ?>
+        <?= $this->Html->link(
+            '<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'),
+            ['controller' => 'Menus', 'action' => 'view', $menuLink->menu_id, '?' => $this->request->getQueryParams()],
+            ['class' => 'btn btn-outline-danger', 'escape' => false],
+        ) ?>
     </div>
     <?= $this->Form->end() ?>
 </div>

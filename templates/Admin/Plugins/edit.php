@@ -14,7 +14,11 @@
     </div>
     <div class="card-footer">
         <?= $this->element('form/save_buttons') ?>
-        <?= $this->Html->link('<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'), ['action' => 'index', '?' => $this->request->getQueryParams()], ['class' => 'btn btn-outline-danger', 'escape' => false]) ?>
+        <?= $this->Html->link(
+            '<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'),
+            ['action' => 'index', '?' => $this->request->getQueryParams()],
+            ['class' => 'btn btn-outline-danger', 'escape' => false],
+        ) ?>
     </div>
     <?= $this->Form->end() ?>
 </div>

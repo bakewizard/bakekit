@@ -8,7 +8,7 @@ $currentLimit = $paging['perPage'] ?? $showOptions[0];
 $currentPage = $paging['page'] ?? 1;
 ?>
 
-<?php if ($paging['pageCount'] > 1): ?>
+<?php if ($paging['pageCount'] > 1) : ?>
     <div class="card-header">
         <div class="row">
             <div class="col-12 col-xl-4 text-center mb-2 mb-xl-0 text-xl-start">
@@ -18,15 +18,17 @@ $currentPage = $paging['page'] ?? 1;
                         <?= $currentLimit ?>
                     </button>
                     <div class="dropdown-menu">
-                        <?php foreach ($showOptions as $i => $limit): ?>
+                        <?php foreach ($showOptions as $i => $limit) : ?>
                             <?php
                             $class = $limit === $currentLimit ? 'dropdown-item active' : 'dropdown-item';
                             $urlParams = ['limit' => ($i > 0 ? $limit : null), 'page' => ($currentPage > 1 ? $currentPage : null)];
                             ?>
                             <?=
-                            $this->Html->link($limit,
-                                    ['?' => array_filter(array_merge($this->request->getQueryParams(), $urlParams))],
-                                    ['class' => $class, 'rel' => 'nofollow'])
+                            $this->Html->link(
+                                $limit,
+                                ['?' => array_filter(array_merge($this->request->getQueryParams(), $urlParams))],
+                                ['class' => $class, 'rel' => 'nofollow'],
+                            )
                             ?>
                         <?php endforeach; ?>
                     </div>

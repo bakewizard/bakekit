@@ -133,11 +133,11 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <h3 class="mb-0">
-                                    <span class="me-2"><?= $this->fetch('page') ?: preg_replace('/([A-Z])/', " " . '$1', $controller) ?></span>
-                                    <?php if ($action === 'view'): ?>
+                                    <span class="me-2"><?= $this->fetch('page') ?: preg_replace('/([A-Z])/', ' ' . '$1', $controller) ?></span>
+                                    <?php if ($action === 'view') : ?>
                                         <?=
                                         $this->Html->link('<i class="fa-solid fa-arrow-left"></i> ' . __('Back'), [
-                                            'plugin' => $plugin, 'controller' => $controller, 'action' => 'index', '?' => $this->request->getQueryParams()
+                                            'plugin' => $plugin, 'controller' => $controller, 'action' => 'index', '?' => $this->request->getQueryParams(),
                                                 ], ['class' => 'btn btn-outline-danger', 'escape' => false])
                                         ?>
                                     <?php endif; ?>
@@ -145,14 +145,14 @@
                             </div><!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-end">
-                                    <?php if (isset($plugin) || $controller !== 'Dashboard'): ?>
+                                    <?php if (isset($plugin) || $controller !== 'Dashboard') : ?>
                                         <li class="breadcrumb-item">
                                             <a href="<?= $this->Url->build(['plugin' => false, 'controller' => 'Dashboard']); ?>">
                                                 <i class="fa-solid fa-tachometer-alt"></i>
                                             </a>
                                         </li>
                                     <?php endif; ?>
-                                    <?php foreach ($breadcrumbs as $i => $crumb): ?>
+                                    <?php foreach ($breadcrumbs as $i => $crumb) : ?>
                                         <li class="breadcrumb-item">
                                             <a href="<?= $crumb['url'] ?>"><?= $crumb['title'] ?></a>
                                         </li>
@@ -184,7 +184,7 @@
                     </a>
                 </div>
                 <strong>
-                    &copy; 2015-<?= date("Y") ?>
+                    &copy; 2015-<?= date('Y') ?>
                 </strong>
             </footer>
             <!--end::Footer-->

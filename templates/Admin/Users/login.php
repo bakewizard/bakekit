@@ -4,7 +4,7 @@
  * @var array $config
  */
 ?>
-<?php $this->layout = 'login'; ?>
+<?php $this->setLayout('login'); ?>
 <div class="login-box" style="width: 25rem;">
     <div class="login-logo">
         <b><?= $config['Cms']['siteName'] ?? 'BakeKit CMS' ?></b>
