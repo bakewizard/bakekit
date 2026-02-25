@@ -7,7 +7,7 @@
  * @var \App\Model\Entity\MenuLink $menuLink
  */
 ?>
-<?= $this->Html->script(['/backend/js/menus'], ['block' => true]) ?>
+<?= $this->Html->script(['/backend/js/menus'], ['block' => true, 'type' => 'module']) ?>
 
 <?= $this->element('form/link_select_modal') ?>
 

@@ -6,7 +6,7 @@
  * @var \App\Model\Entity\Metum $metum
  */
 ?>
-<?= $this->Html->script(['/backend/plugins/tinymce/tinymce.min', '/backend/js/meta'], ['block' => true]) ?>
+<?= $this->Html->script(['/backend/plugins/tinymce/tinymce.min', '/backend/js/meta'], ['block' => true, 'type' => 'module']) ?>
 <div class="card card-success card-outline">
     <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-edit me-2"></i><?= __('Edit Metum') ?></div>

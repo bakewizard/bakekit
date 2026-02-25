@@ -1,54 +1,51 @@
-let menuCellAttributes = document.getElementById('menu-cell-attributes');
-let attributeItemTemplate = document.getElementById('attribute-item-template');
+import { fadeOut } from '@/utils/animation.js';
 
-function onClick(e) {
-    e.preventDefault();
+const menuCellAttributes = document.getElementById('menu-cell-attributes');
+const attributeItemTemplate = document.getElementById('attribute-item-template');
 
-    let element = e.target.closest('button.add-attribute-btn, button.remove-attribute-btn');
+if (menuCellAttributes) {
+    function addAttribute(element) {
+        const attributeInput = element.previousElementSibling;
+        const attributeName = attributeInput.value;
+        if (!attributeName) return;
 
-    if (!element) {
-        return;
+        attributeInput.value = '';
+
+        const ul = element.closest('.card').lastElementChild;
+        const li = attributeItemTemplate.content.cloneNode(true);
+        const label = li.querySelector('label');
+        const input = li.querySelector('input');
+        const param = ul.dataset.param;
+        const name = `${param}[${attributeName}]`;
+        const id = `${param.toLowerCase()}-${attributeName}`;
+
+        label.setAttribute('for', id);
+        label.textContent = attributeName;
+        input.setAttribute('id', id);
+        input.setAttribute('name', name);
+        input.setAttribute('value', '');
+
+        ul.appendChild(li);
     }
 
-    if (element.classList.contains('add-attribute-btn')) {
-        addAttribute(element);
-    } else if (element.classList.contains('remove-attribute-btn')) {
-        removeAttribute(element);
-    }
-}
-
-function addAttribute(element) {
-    let attributeInput = element.previousElementSibling;
-    let attributeName = attributeInput.value;
-
-    if (attributeName === '') {
-        return false;
+    function removeAttribute(element) {
+        const li = element.closest('.list-group-item');
+        fadeOut(li, 200, function () {
+            this.remove();
+        });
     }
 
-    attributeInput.value = '';
+    function onClick(e) {
+        e.preventDefault();
+        const element = e.target.closest('button.add-attribute-btn, button.remove-attribute-btn');
+        if (!element) return;
 
-    let ul = element.closest('.card').lastElementChild;
-    let li = attributeItemTemplate.content.cloneNode(true);
-    let label = li.querySelector('label');
-    let input = li.querySelector('input');
+        if (element.classList.contains('add-attribute-btn')) {
+            addAttribute(element);
+        } else {
+            removeAttribute(element);
+        }
+    }
 
-    let param = ul.dataset.param;
-    let name = param + '[' + attributeName + ']';
-    let id = param.toLowerCase() + '-' + attributeName;
-
-    label.setAttribute('for', id);
-    label.innerText = attributeName;
-    input.setAttribute('id', id);
-    input.setAttribute('name', name);
-    input.setAttribute('value', '');
-    ul.appendChild(li);
+    menuCellAttributes.addEventListener('click', onClick);
 }
-
-function removeAttribute(element) {
-    let li = element.closest('.list-group-item');
-    app.fadeOut(li, 200, function () {
-        this.remove();
-    });
-}
-
-menuCellAttributes.addEventListener('click', onClick);

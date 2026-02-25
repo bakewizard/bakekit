@@ -4,7 +4,7 @@
  * @var \App\Model\Entity\Block $block
  */
 ?>
-<?= $this->Html->script(['/backend/js/blocks'], ['block' => true]) ?>
+<?= $this->Html->script(['/backend/js/blocks'], ['block' => true, 'type' => 'module']) ?>
 
 <?= $this->element('form/cell_select_modal') ?>
 

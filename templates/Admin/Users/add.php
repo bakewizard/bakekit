@@ -5,7 +5,7 @@
  * @var \App\Model\Entity\User $user
  */
 ?>
-<?= $this->Html->script(['/backend/js/users'], ['block' => true]); ?>
+<?= $this->Html->script(['/backend/js/users'], ['block' => true, 'type' => 'module']); ?>
 <div class="card card-success card-outline">
     <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-edit me-2"></i><?= __('Add User') ?></div>

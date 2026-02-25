@@ -1,11 +1,14 @@
+import { ajax } from '@/utils/ajax.js';
+import { Modal } from 'bootstrap';
+
 let linkSelectDialog = document.getElementById('link-select-dialog');
 let linkSelectButton = document.getElementById('link-select-button');
 let linkInput = document.getElementById('link-select-input');
-let modal = new bootstrap.Modal(linkSelectDialog);
+let modal = new Modal(linkSelectDialog);
 
 async function onClick(e) {
     try {
-        const response = await app.ajax({
+        const response = await ajax({
             url: e.currentTarget.dataset.url,
             dataType: 'html'
         });
@@ -24,7 +27,7 @@ async function loadPage(url, formData) {
     }
 
     try {
-        const response = await app.ajax({
+        const response = await ajax({
             url: url,
             dataType: 'html',
             data: formData

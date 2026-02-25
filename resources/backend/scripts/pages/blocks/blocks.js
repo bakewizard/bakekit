@@ -1,33 +1,34 @@
-let cellSelectDialog = document.getElementById('cell-select-dialog');
-let cellSelectButton = document.getElementById('cell-select-button');
-let cellInput = document.getElementById('cell');
-let modal = new bootstrap.Modal(cellSelectDialog);
+import { ajax } from '@/utils/ajax.js';
+import { Modal } from 'bootstrap';
 
-async function onClick(e) {
-    try {
-        const response = await app.ajax({
-            url: e.currentTarget.dataset.url,
-            dataType: 'html'
-        });
-        cellSelectDialog.querySelector('.modal-body').innerHTML = response;
-        modal.show();
-    } catch (e) {
-        console.error(e.message);
-    }
-}
+const cellSelectDialog = document.getElementById('cell-select-dialog');
+const cellSelectButton = document.getElementById('cell-select-button');
+const cellInput = document.getElementById('cell');
 
-function onDialogClick(e) {
-    e.preventDefault();
+if (cellSelectDialog && cellSelectButton) {
+    const modal = new Modal(cellSelectDialog);
 
-    let element = e.target.closest('a.list-group-item');
-
-    if (!element) {
-        return;
+    async function onClick(e) {
+        try {
+            const response = await ajax({
+                url: e.currentTarget.dataset.url,
+                dataType: 'html'
+            });
+            cellSelectDialog.querySelector('.modal-body').innerHTML = response;
+            modal.show();
+        } catch (e) {
+            console.error(e.message);
+        }
     }
 
-    cellInput.value = element.dataset.path;
-    modal.hide();
-}
+    function onDialogClick(e) {
+        e.preventDefault();
+        const element = e.target.closest('a.list-group-item');
+        if (!element) return;
+        cellInput.value = element.dataset.path;
+        modal.hide();
+    }
 
-cellSelectButton.addEventListener('click', onClick);
-cellSelectDialog.addEventListener('click', onDialogClick);
+    cellSelectButton.addEventListener('click', onClick);
+    cellSelectDialog.addEventListener('click', onDialogClick);
+}
