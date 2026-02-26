@@ -17,21 +17,18 @@ export function initThemeSwitcher() {
         const resolved = resolveTheme(theme);
         document.documentElement.setAttribute('data-bs-theme', resolved);
 
-        let icon = null;
+        const iconMap = {
+            light: 'fa-sun',
+            dark: 'fa-moon',
+            auto: 'fa-circle-half-stroke'
+        };
+
+        const currentIcon = switcher.querySelector('.nav-link i');
+        currentIcon.className = `fa-solid ${iconMap[theme ?? 'auto']}`;
 
         switcher.querySelectorAll('.dropdown-item').forEach(item => {
-            if (item.dataset.bsTheme === theme) {
-                item.classList.add('active');
-                icon = item.firstElementChild.cloneNode(true);
-                icon.classList.remove('me-2');
-            } else {
-                item.classList.remove('active');
-            }
+            item.classList.toggle('active', item.dataset.bsTheme === theme);
         });
-
-        if (icon) {
-            switcher.firstElementChild.firstElementChild.replaceWith(icon);
-        }
     }
 
     // click handler

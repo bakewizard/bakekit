@@ -13,29 +13,18 @@
     <?= $this->Html->meta('viewport', 'width=device-width, initial-scale=1') ?>
     <?= $this->Html->meta('icon') ?>
     <?= $this->fetch('meta') ?>
+    <?= $this->Html->css('/backend/css/app') ?>
+    <?= $this->fetch('css') ?>
     <script>
         (function() {
-            try {
-                const theme = localStorage.getItem('theme');
-
-                if (theme === 'dark') {
-                    document.documentElement.setAttribute('data-bs-theme', 'dark');
-                } else if (theme === 'light') {
-                    document.documentElement.setAttribute('data-bs-theme', 'light');
-                } else {
-                    // auto
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    document.documentElement.setAttribute(
-                        'data-bs-theme',
-                        prefersDark ? 'dark' : 'light'
-                    );
-                }
-            } catch (e) {}
+            const theme = localStorage.getItem('theme');
+            const resolved = (!theme || theme === 'auto') ?
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') :
+                theme;
+            document.documentElement.setAttribute('data-bs-theme', resolved);
         })();
     </script>
     <?= $this->Html->script('/backend/js/app', ['type' => 'module']) ?>
-    <?= $this->Html->css('/backend/css/app') ?>
-    <?= $this->fetch('css') ?>
 </head>
 
 <body class="layout-fixed sidebar-mini sidebar-expand-lg bg-body-tertiary">
@@ -258,6 +247,13 @@
 
     </div>
     <!--end::App Wrapper-->
+    <script>
+        function initModal(form) {
+            const confirmModal = document.getElementById('confirm-modal');
+            if (!confirmModal) return;
+            confirmModal.dataset.formName = form.name;
+        }
+    </script>
     <?= $this->fetch('script') ?>
 </body>
 

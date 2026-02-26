@@ -69,7 +69,7 @@ class AppView extends View
             $cachedRegions = Cache::read('regions', 'cms');
             $this->_regions = $cachedRegions ?: [];
             $this->Form->setTemplates([
-                'confirmJs' => 'app.initModal({{formName}}); return false;',
+                'confirmJs' => 'initModal({{formName}}); return false;',
             ]);
         }
     }
