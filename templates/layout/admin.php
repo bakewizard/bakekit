@@ -244,7 +244,7 @@
         <!--end::Control Sidebar-->
 
         <?= $this->element('/form/confirm_modal') ?>
-
+        <?= $this->element('/form/iframe_modal') ?>
     </div>
     <!--end::App Wrapper-->
     <script>
