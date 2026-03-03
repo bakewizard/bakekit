@@ -25,8 +25,7 @@
         "friendsofcake/search": "^7.7",
         "imagine/imagine": "^1.5",
         "k-samuel/faceted-search": "^3.2",
-        "league/flysystem": "^3.31",
-        "mobiledetect/mobiledetectlib": "^4.8.03"
+        "league/flysystem": "^3.31"
     },
     "require-dev": {
         "cakedc/cakephp-phpstan": "^4.1",

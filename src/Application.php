@@ -113,7 +113,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $this->tableLocator = new TableLocator();
 
         if (PHP_SAPI !== 'cli') {
-            FactoryLocator::add('Table', $this->tableLocator->allowFallbackClass(true));
+            FactoryLocator::add('Table', $this->tableLocator->allowFallbackClass(true)); // @phpstan-ignore argument.type
         }
 
         // Provide default cache configs, unless overridden in app_local.php

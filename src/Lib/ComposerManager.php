@@ -33,6 +33,9 @@ class ComposerManager
             throw new Exception('composer.phar is not found.');
         }
 
+        $origHome = getenv('COMPOSER_HOME');
+        $origCache = getenv('COMPOSER_CACHE_DIR');
+
         putenv("COMPOSER_HOME={$this->composerHome}");
         putenv('COMPOSER_CACHE_DIR=' . CACHE . 'composer');
 
@@ -50,15 +53,25 @@ class ComposerManager
         $input = new ArrayInput($options);
         $output = new BufferedOutput();
 
-        require "phar://{$this->composerPath}/src/bootstrap.php";
+        if (!class_exists(Application::class)) {
+            require "phar://{$this->composerPath}/src/bootstrap.php";
+        }
 
-        $application = new Application();
-        $application->setAutoExit(false);
-        $application->run($input, $output);
+        try {
+            $application = new Application();
+            $application->setAutoExit(false);
+            $exitCode = $application->run($input, $output);
 
-        chdir($cwd);
+            if ($exitCode !== 0) {
+                throw new Exception('Composer failed: ' . $output->fetch());
+            }
 
-        return $output->fetch();
+            return $output->fetch();
+        } finally {
+            putenv($origHome !== false ? "COMPOSER_HOME={$origHome}" : 'COMPOSER_HOME');
+            putenv($origCache !== false ? "COMPOSER_CACHE_DIR={$origCache}" : 'COMPOSER_CACHE_DIR');
+            chdir($cwd);
+        }
     }
 
     /**

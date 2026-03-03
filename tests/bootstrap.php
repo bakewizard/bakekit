@@ -15,12 +15,12 @@ declare(strict_types=1);
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
 
+use App\Test\TestEnvironmentManager;
 use Cake\Chronos\Chronos;
 use Cake\Core\Configure;
 use Cake\Database\TypeFactory;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConnectionHelper;
-use Migrations\TestSuite\Migrator;
 
 /**
  * Test runner bootstrap.
@@ -75,21 +75,4 @@ TypeFactory::map('textandjson', 'App\Database\Type\TextAndJsonType');
 // use Cake\TestSuite\Fixture\SchemaLoader;
 // (new SchemaLoader())->loadSqlFiles('./tests/schema.sql', 'test');
 
-$migrator = new Migrator();
-
-$pluginDir = ROOT . DS . 'plugins' . DS;
-$steps = [
-    [],// App migrations
-];
-$pluginsToTest = Configure::read('BakeKit.pluginsToTest', []);
-
-foreach ($pluginsToTest as $pluginName) {
-    $pluginPath = $pluginDir . $pluginName;
-    $migrationsPath = $pluginPath . DS . 'config' . DS . 'Migrations';
-
-    if (is_dir($migrationsPath)) {
-        $steps[] = ['plugin' => $pluginName];
-    }
-}
-
-$migrator->runMany($steps);
+TestEnvironmentManager::boot();

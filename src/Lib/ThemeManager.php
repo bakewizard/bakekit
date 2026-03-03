@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Lib;
 
+use Exception;
 use Psr\Http\Message\UploadedFileInterface;
 
 class ThemeManager
@@ -22,9 +23,9 @@ class ThemeManager
     private ExtensionHandler $extensionHandler;
 
     /**
-     * PluginManager constructor
+     * ThemeManager constructor
      *
-     * Sets plugins dir
+     * Sets themes dir
      */
     public function __construct(ExtensionHandler $extensionHandler)
     {
@@ -74,8 +75,9 @@ class ThemeManager
      */
     public function uninstall(string $theme, bool $isActive = false): void
     {
-        if (!$isActive) {
-            $this->extensionHandler->unload($theme, $this->themesDir);
+        if ($isActive) {
+            throw new Exception(__('Cannot uninstall active theme. Deactivate it first.'));
         }
+        $this->extensionHandler->unload($theme, $this->themesDir);
     }
 }

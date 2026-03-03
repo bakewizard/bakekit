@@ -5,6 +5,7 @@ namespace App\Lib;
 
 use DirectoryIterator;
 use Exception;
+use finfo;
 use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use ZipArchive;
@@ -128,10 +129,6 @@ class ExtensionHandler
      */
     public function readComposerConfig(string $path): array
     {
-        // if (!$path) {
-        //     $path = ROOT;
-        // }
-
         $configFile = $path . DS . 'composer.json';
 
         if (!file_exists($configFile) || !is_readable($configFile)) {
@@ -169,14 +166,10 @@ class ExtensionHandler
      */
     private function validateZipMime(UploadedFileInterface $file): void
     {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        if ($finfo === false) {
-            throw new Exception(__('Unable to open MIME detector.'));
-        }
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
 
         $uri = $file->getStream()->getMetadata('uri');
-        $mimeType = finfo_file($finfo, $uri);
-        finfo_close($finfo);
+        $mimeType = $finfo->file($uri);
 
         if ($mimeType !== 'application/zip') {
             throw new Exception(__('Uploaded file is not a ZIP archive (detected: {0})', $mimeType));
@@ -225,11 +218,60 @@ class ExtensionHandler
             throw new Exception(__('Failed to open ZIP archive.'));
         }
 
+        $realTargetDir = realpath($targetDir);
+        if ($realTargetDir === false) {
+            throw new Exception(__('Failed to resolve target directory path.'));
+        }
+
+        // Перевіряємо кожен запис перед розпакуванням
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $entry = $zip->getNameIndex($i);
+
+            if ($entry === false) {
+                $zip->close();
+                throw new Exception(__('Failed to read ZIP entry.'));
+            }
+
+            // Забороняємо абсолютні шляхи і null bytes
+            if (str_starts_with($entry, '/') || str_contains($entry, "\0")) {
+                $zip->close();
+                throw new Exception(__('Invalid path in ZIP archive: {0}', $entry));
+            }
+
+            // Перевіряємо що шлях не виходить за межі targetDir
+            $entryPath = $realTargetDir . DIRECTORY_SEPARATOR . $entry;
+            $normalizedPath = $this->normalizePath($entryPath);
+
+            if (!str_starts_with($normalizedPath, $realTargetDir)) {
+                $zip->close();
+                throw new Exception(__('ZIP Slip detected: {0}', $entry));
+            }
+        }
+
         if (!$zip->extractTo($targetDir)) {
             $zip->close();
             throw new Exception(__('Failed to extract ZIP archive.'));
         }
 
         $zip->close();
+    }
+
+    /**
+     * Normalizes a file path without requiring the file to exist.
+     */
+    private function normalizePath(string $path): string
+    {
+        $parts = explode(DIRECTORY_SEPARATOR, $path);
+        $normalized = [];
+
+        foreach ($parts as $part) {
+            if ($part === '..') {
+                array_pop($normalized);
+            } elseif ($part !== '.') {
+                $normalized[] = $part;
+            }
+        }
+
+        return implode(DIRECTORY_SEPARATOR, $normalized);
     }
 }

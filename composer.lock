@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6d53546b8b995242fc0a88691530e232",
+    "content-hash": "a94b9fac5eb9238765d13dc34b00c7bf",
     "packages": [
         {
             "name": "admad/cakephp-sequence",
@@ -126,16 +126,16 @@
         },
         {
             "name": "cakephp/authorization",
-            "version": "3.5.0",
+            "version": "3.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/authorization.git",
-                "reference": "880c07b67e6c252bd24adbfec9930bd9e5b9a06b"
+                "reference": "cfcaf01bd9c4728327be5a2bccf7b94fd4b8404f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/authorization/zipball/880c07b67e6c252bd24adbfec9930bd9e5b9a06b",
-                "reference": "880c07b67e6c252bd24adbfec9930bd9e5b9a06b",
+                "url": "https://api.github.com/repos/cakephp/authorization/zipball/cfcaf01bd9c4728327be5a2bccf7b94fd4b8404f",
+                "reference": "cfcaf01bd9c4728327be5a2bccf7b94fd4b8404f",
                 "shasum": ""
             },
             "require": {
@@ -187,20 +187,20 @@
                 "issues": "https://github.com/cakephp/authorization/issues",
                 "source": "https://github.com/cakephp/authorization"
             },
-            "time": "2026-02-14T19:54:38+00:00"
+            "time": "2026-02-27T02:55:16+00:00"
         },
         {
             "name": "cakephp/cakephp",
-            "version": "5.3.1",
+            "version": "5.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp.git",
-                "reference": "ae91c0950fd1a4ee9b97b31a8db744721cdb9bd0"
+                "reference": "5c7abec3348523d6d1ef693e448eba50d9bc7eae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/ae91c0950fd1a4ee9b97b31a8db744721cdb9bd0",
-                "reference": "ae91c0950fd1a4ee9b97b31a8db744721cdb9bd0",
+                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/5c7abec3348523d6d1ef693e448eba50d9bc7eae",
+                "reference": "5c7abec3348523d6d1ef693e448eba50d9bc7eae",
                 "shasum": ""
             },
             "require": {
@@ -253,7 +253,7 @@
                 "mikey179/vfsstream": "^1.6.12",
                 "mockery/mockery": "^1.6",
                 "paragonie/csp-builder": "^2.3 || ^3.0",
-                "phpunit/phpunit": "^11.5.3 || ^12.1.3"
+                "phpunit/phpunit": "^11.5.3 || ^12.1.3 || ^13.0"
             },
             "suggest": {
                 "ext-curl": "To enable more efficient network calls in Http\\Client.",
@@ -308,7 +308,7 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/cakephp"
             },
-            "time": "2026-01-14T05:03:03+00:00"
+            "time": "2026-02-25T04:07:32+00:00"
         },
         {
             "name": "cakephp/chronos",
@@ -371,16 +371,16 @@
         },
         {
             "name": "cakephp/migrations",
-            "version": "5.0.0",
+            "version": "5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/migrations.git",
-                "reference": "5958b1480191de401701b81b24949e4e1ffc4b2e"
+                "reference": "47a75015568b1d9523250b5966d5130922567442"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/migrations/zipball/5958b1480191de401701b81b24949e4e1ffc4b2e",
-                "reference": "5958b1480191de401701b81b24949e4e1ffc4b2e",
+                "url": "https://api.github.com/repos/cakephp/migrations/zipball/47a75015568b1d9523250b5966d5130922567442",
+                "reference": "47a75015568b1d9523250b5966d5130922567442",
                 "shasum": ""
             },
             "require": {
@@ -428,7 +428,7 @@
                 "issues": "https://github.com/cakephp/migrations/issues",
                 "source": "https://github.com/cakephp/migrations"
             },
-            "time": "2026-01-21T04:03:20+00:00"
+            "time": "2026-02-12T01:31:13+00:00"
         },
         {
             "name": "cakephp/plugin-installer",
@@ -553,16 +553,16 @@
         },
         {
             "name": "friendsofcake/bootstrap-ui",
-            "version": "5.1.2",
+            "version": "5.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfCake/bootstrap-ui.git",
-                "reference": "800b849776a9c1766667e0d20610e096f61f029c"
+                "reference": "1c197b9d49c5271057a0c74a264909c76c435015"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfCake/bootstrap-ui/zipball/800b849776a9c1766667e0d20610e096f61f029c",
-                "reference": "800b849776a9c1766667e0d20610e096f61f029c",
+                "url": "https://api.github.com/repos/FriendsOfCake/bootstrap-ui/zipball/1c197b9d49c5271057a0c74a264909c76c435015",
+                "reference": "1c197b9d49c5271057a0c74a264909c76c435015",
                 "shasum": ""
             },
             "require": {
@@ -571,12 +571,12 @@
             "require-dev": {
                 "cakephp/bake": "^3.0",
                 "cakephp/cakephp-codesniffer": "^5.1",
-                "phpunit/phpunit": "^10.5.5 || ^11.1.3"
+                "phpunit/phpunit": "^10.5.58 || ^11.5.3 || ^12.4"
             },
             "type": "cakephp-plugin",
             "autoload": {
                 "psr-4": {
-                    "BootstrapUI\\": "src"
+                    "BootstrapUI\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -605,7 +605,7 @@
                 "issues": "http://github.com/friendsofcake/bootstrap-ui/issues",
                 "source": "http://github.com/friendsofcake/bootstrap-ui"
             },
-            "time": "2025-07-29T17:10:14+00:00"
+            "time": "2026-02-19T18:02:12+00:00"
         },
         {
             "name": "friendsofcake/search",
@@ -1019,16 +1019,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "3.31.0",
+            "version": "3.32.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "1717e0b3642b0df65ecb0cc89cdd99fa840672ff"
+                "reference": "254b1595b16b22dbddaaef9ed6ca9fdac4956725"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/1717e0b3642b0df65ecb0cc89cdd99fa840672ff",
-                "reference": "1717e0b3642b0df65ecb0cc89cdd99fa840672ff",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/254b1595b16b22dbddaaef9ed6ca9fdac4956725",
+                "reference": "254b1595b16b22dbddaaef9ed6ca9fdac4956725",
                 "shasum": ""
             },
             "require": {
@@ -1096,9 +1096,9 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/3.31.0"
+                "source": "https://github.com/thephpleague/flysystem/tree/3.32.0"
             },
-            "time": "2026-01-23T15:38:47+00:00"
+            "time": "2026-02-25T17:01:41+00:00"
         },
         {
             "name": "league/flysystem-local",
@@ -1204,70 +1204,6 @@
                 }
             ],
             "time": "2024-09-21T08:32:55+00:00"
-        },
-        {
-            "name": "mobiledetect/mobiledetectlib",
-            "version": "4.8.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/serbanghita/Mobile-Detect.git",
-                "reference": "96b1e1fa9a968de7660a031106ab529f659d0192"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/96b1e1fa9a968de7660a031106ab529f659d0192",
-                "reference": "96b1e1fa9a968de7660a031106ab529f659d0192",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.0",
-                "psr/simple-cache": "^3"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^v3.75.0",
-                "phpbench/phpbench": "^1.2",
-                "phpstan/phpstan": "^2.1.11",
-                "phpunit/phpunit": "^9.6.22",
-                "squizlabs/php_codesniffer": "^3.12.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Detection\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Serban Ghita",
-                    "email": "serbanghita@gmail.com",
-                    "homepage": "http://mobiledetect.net",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Mobile_Detect is a lightweight PHP class for detecting mobile devices. It uses the User-Agent string combined with specific HTTP headers to detect the mobile environment.",
-            "homepage": "https://github.com/serbanghita/Mobile-Detect",
-            "keywords": [
-                "detect mobile devices",
-                "mobile",
-                "mobile detect",
-                "mobile detector",
-                "php mobile detect"
-            ],
-            "support": {
-                "issues": "https://github.com/serbanghita/Mobile-Detect/issues",
-                "source": "https://github.com/serbanghita/Mobile-Detect/tree/4.8.10"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/serbanghita",
-                    "type": "github"
-                }
-            ],
-            "time": "2026-01-09T16:21:59+00:00"
         },
         {
             "name": "psr/clock",
@@ -3490,11 +3426,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.39",
+            "version": "2.1.40",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/c6f73a2af4cbcd99c931d0fb8f08548cc0fa8224",
-                "reference": "c6f73a2af4cbcd99c931d0fb8f08548cc0fa8224",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/9b2c7aeb83a75d8680ea5e7c9b7fca88052b766b",
+                "reference": "9b2c7aeb83a75d8680ea5e7c9b7fca88052b766b",
                 "shasum": ""
             },
             "require": {
@@ -3539,7 +3475,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-11T14:48:56+00:00"
+            "time": "2026-02-23T15:04:35+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -3889,16 +3825,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.5.12",
+            "version": "12.5.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "418e06b3b46b0d54bad749ff4907fc7dfb530199"
+                "reference": "47283cfd98d553edcb1353591f4e255dc1bb61f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/418e06b3b46b0d54bad749ff4907fc7dfb530199",
-                "reference": "418e06b3b46b0d54bad749ff4907fc7dfb530199",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/47283cfd98d553edcb1353591f4e255dc1bb61f0",
+                "reference": "47283cfd98d553edcb1353591f4e255dc1bb61f0",
                 "shasum": ""
             },
             "require": {
@@ -3967,7 +3903,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.12"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.14"
             },
             "funding": [
                 {
@@ -3991,7 +3927,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-16T08:34:36+00:00"
+            "time": "2026-02-18T12:38:40+00:00"
         },
         {
             "name": "react/promise",
@@ -5138,32 +5074,32 @@
         },
         {
             "name": "slevomat/coding-standard",
-            "version": "8.27.1",
+            "version": "8.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slevomat/coding-standard.git",
-                "reference": "29bdaee8b65e7ed2b8e702b01852edba8bae1769"
+                "reference": "0cd4b30cc1037eca54091c188d260d570e61770c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/29bdaee8b65e7ed2b8e702b01852edba8bae1769",
-                "reference": "29bdaee8b65e7ed2b8e702b01852edba8bae1769",
+                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/0cd4b30cc1037eca54091c188d260d570e61770c",
+                "reference": "0cd4b30cc1037eca54091c188d260d570e61770c",
                 "shasum": ""
             },
             "require": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.7 || ^1.2.0",
                 "php": "^7.4 || ^8.0",
-                "phpstan/phpdoc-parser": "^2.3.1",
+                "phpstan/phpdoc-parser": "^2.3.2",
                 "squizlabs/php_codesniffer": "^4.0.1"
             },
             "require-dev": {
-                "phing/phing": "3.0.1|3.1.1",
+                "phing/phing": "3.0.1|3.1.2",
                 "php-parallel-lint/php-parallel-lint": "1.4.0",
-                "phpstan/phpstan": "2.1.37",
-                "phpstan/phpstan-deprecation-rules": "2.0.3",
-                "phpstan/phpstan-phpunit": "2.0.12",
-                "phpstan/phpstan-strict-rules": "2.0.7",
-                "phpunit/phpunit": "9.6.31|10.5.60|11.4.4|11.5.49|12.5.7"
+                "phpstan/phpstan": "2.1.40",
+                "phpstan/phpstan-deprecation-rules": "2.0.4",
+                "phpstan/phpstan-phpunit": "2.0.16",
+                "phpstan/phpstan-strict-rules": "2.0.10",
+                "phpunit/phpunit": "9.6.34|10.5.63|11.4.4|11.5.50|12.5.14"
             },
             "type": "phpcodesniffer-standard",
             "extra": {
@@ -5187,7 +5123,7 @@
             ],
             "support": {
                 "issues": "https://github.com/slevomat/coding-standard/issues",
-                "source": "https://github.com/slevomat/coding-standard/tree/8.27.1"
+                "source": "https://github.com/slevomat/coding-standard/tree/8.28.0"
             },
             "funding": [
                 {
@@ -5199,7 +5135,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-25T15:57:07+00:00"
+            "time": "2026-02-23T21:35:24+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -5334,16 +5270,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v7.4.4",
+            "version": "v7.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "41e38717ac1dd7a46b6bda7d6a82af2d98a78894"
+                "reference": "6d643a93b47398599124022eb24d97c153c12f27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/41e38717ac1dd7a46b6bda7d6a82af2d98a78894",
-                "reference": "41e38717ac1dd7a46b6bda7d6a82af2d98a78894",
+                "url": "https://api.github.com/repos/symfony/console/zipball/6d643a93b47398599124022eb24d97c153c12f27",
+                "reference": "6d643a93b47398599124022eb24d97c153c12f27",
                 "shasum": ""
             },
             "require": {
@@ -5408,7 +5344,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v7.4.4"
+                "source": "https://github.com/symfony/console/tree/v7.4.6"
             },
             "funding": [
                 {
@@ -5428,7 +5364,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-13T11:36:38+00:00"
+            "time": "2026-02-25T17:02:47+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -5499,16 +5435,16 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v7.4.0",
+            "version": "v7.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "d551b38811096d0be9c4691d406991b47c0c630a"
+                "reference": "3ebc794fa5315e59fd122561623c2e2e4280538e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/d551b38811096d0be9c4691d406991b47c0c630a",
-                "reference": "d551b38811096d0be9c4691d406991b47c0c630a",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/3ebc794fa5315e59fd122561623c2e2e4280538e",
+                "reference": "3ebc794fa5315e59fd122561623c2e2e4280538e",
                 "shasum": ""
             },
             "require": {
@@ -5545,7 +5481,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v7.4.0"
+                "source": "https://github.com/symfony/filesystem/tree/v7.4.6"
             },
             "funding": [
                 {
@@ -5565,20 +5501,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-27T13:27:24+00:00"
+            "time": "2026-02-25T16:50:00+00:00"
         },
         {
             "name": "symfony/finder",
-            "version": "v7.4.5",
+            "version": "v7.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "ad4daa7c38668dcb031e63bc99ea9bd42196a2cb"
+                "reference": "8655bf1076b7a3a346cb11413ffdabff50c7ffcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/ad4daa7c38668dcb031e63bc99ea9bd42196a2cb",
-                "reference": "ad4daa7c38668dcb031e63bc99ea9bd42196a2cb",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/8655bf1076b7a3a346cb11413ffdabff50c7ffcf",
+                "reference": "8655bf1076b7a3a346cb11413ffdabff50c7ffcf",
                 "shasum": ""
             },
             "require": {
@@ -5613,7 +5549,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v7.4.5"
+                "source": "https://github.com/symfony/finder/tree/v7.4.6"
             },
             "funding": [
                 {
@@ -5633,7 +5569,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-26T15:07:59+00:00"
+            "time": "2026-01-29T09:40:50+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -6448,16 +6384,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v7.4.4",
+            "version": "v7.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "1c4b10461bf2ec27537b5f36105337262f5f5d6f"
+                "reference": "9f209231affa85aa930a5e46e6eb03381424b30b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/1c4b10461bf2ec27537b5f36105337262f5f5d6f",
-                "reference": "1c4b10461bf2ec27537b5f36105337262f5f5d6f",
+                "url": "https://api.github.com/repos/symfony/string/zipball/9f209231affa85aa930a5e46e6eb03381424b30b",
+                "reference": "9f209231affa85aa930a5e46e6eb03381424b30b",
                 "shasum": ""
             },
             "require": {
@@ -6515,7 +6451,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v7.4.4"
+                "source": "https://github.com/symfony/string/tree/v7.4.6"
             },
             "funding": [
                 {
@@ -6535,7 +6471,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-12T10:54:30+00:00"
+            "time": "2026-02-09T09:33:46+00:00"
         },
         {
             "name": "theseer/tokenizer",

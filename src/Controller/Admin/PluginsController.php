@@ -60,13 +60,13 @@ class PluginsController extends AppController
     /**
      * Installs a plugin from an uploaded ZIP file.
      *
-     * This method handles the file upload, extraction, and subsequent Composer autoload
-     * dump to ensure the new plugin is recognized by the application.
+     * Extracts the plugin and updates the Composer autoloader.
+     * If anything fails after extraction, the plugin folder is removed to avoid leftover files.
      *
      * @param \App\Lib\PluginManager $pluginManager Plugin manager instance.
      * @param \App\Lib\ComposerManager $composer ComposerManager instance for autoloading.
      * @return \Cake\Http\Response|null Redirects to the index page.
-     * @throws \Exception When error is encountered.
+     * @throws \Exception If the plugin cannot be installed.
      */
     public function install(PluginManager $pluginManager, ComposerManager $composer): ?Response
     {
@@ -88,11 +88,18 @@ class PluginsController extends AppController
             return $this->redirect(['action' => 'index']);
         }
 
+        $name = null;
         try {
             $name = $pluginManager->install($file);
             $composer->dumpAutoload(['--optimize' => true]);
             $this->Flash->success(__('The plugin "{0}" has been installed.', $name));
         } catch (Exception $e) {
+            if ($name !== null) {
+                try {
+                    $pluginManager->uninstall($name);
+                } catch (Exception) {
+                }
+            }
             $this->Flash->error($e->getMessage());
         }
 
@@ -102,14 +109,14 @@ class PluginsController extends AppController
     /**
      * Uninstalls a plugin.
      *
-     * This method removes the plugin's database entry, clears relevant caches,
+     * Removes the plugin's database entry, clears relevant caches,
      * deletes plugin files, and updates the Composer autoloader.
      *
      * @param \App\Lib\PluginManager $pluginManager Plugin manager instance.
      * @param \App\Lib\ComposerManager $composer ComposerManager instance for autoloading.
      * @param string $name The name of the plugin to uninstall.
      * @return \Cake\Http\Response|null Redirects to the index page.
-     * @throws \Exception When error is encountered.
+     * @throws \Exception If the plugin cannot be uninstalled or its database entry cannot be deleted.
      */
     public function uninstall(PluginManager $pluginManager, ComposerManager $composer, string $name): ?Response
     {
@@ -118,9 +125,7 @@ class PluginsController extends AppController
         try {
             $plugin = $this->Plugins->find()->where(['name' => $name])->first();
 
-            if ($plugin && $plugin->name === $this->getConfig('Cms.defaultDashboard')) {
-                throw new Exception(__('The plugin "{0}" could not be uninstalled. Its dashboard is set as the default one.', $plugin->name));
-            }
+            $this->assertNotDefaultDashboard($plugin?->name);
 
             $pluginManager->uninstall($name, $plugin !== null);
 
@@ -136,7 +141,6 @@ class PluginsController extends AppController
 
             $this->Flash->success(__('The plugin has been uninstalled.'));
         } catch (Exception $e) {
-            $this->Flash->error(__('There were errors while uninstalling the plugin.'));
             $this->Flash->error($e->getMessage());
         }
 
@@ -146,13 +150,10 @@ class PluginsController extends AppController
     /**
      * Activates a plugin, either by enabling an existing entry or creating a new one.
      *
-     * This method handles updating the database, clearing caches, and
-     * setting the plugin as active.
-     *
      * @param \App\Lib\PluginManager $pluginManager Plugin manager instance.
      * @param string $name The name of the plugin to activate.
      * @return \Cake\Http\Response|null Redirects to the index page.
-     * @throws \Exception
+     * @throws \Exception If the plugin cannot be activated or saved to the database.
      */
     public function activate(PluginManager $pluginManager, string $name): ?Response
     {
@@ -182,6 +183,7 @@ class PluginsController extends AppController
                     throw new Exception(__('The plugin data could not be saved to database.'));
                 }
             }
+
             Cache::delete('plugins', 'cms');
             Cache::clear('permissions');
             $this->Flash->success(__('The plugin has been activated.'));
@@ -196,33 +198,50 @@ class PluginsController extends AppController
     /**
      * Deactivates a plugin.
      *
-     * This method updates the plugin's status in the database and clears relevant cache.
-     * It prevents deactivation if the plugin's dashboard is set as the default.
+     * Prevents deactivation if the plugin's dashboard is set as the default.
      *
      * @param string|int $id The ID of the plugin to deactivate.
      * @return \Cake\Http\Response|null Redirects to the index page.
+     * @throws \Exception If the plugin cannot be deactivated due to being the default dashboard.
      */
     public function deactivate(string|int $id): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
 
-        $plugin = $this->Plugins->get($id);
+        try {
+            $plugin = $this->Plugins->get($id);
 
-        if ($plugin->name == $this->getConfig('Cms.defaultDashboard')) {
-            $this->Flash->error(__('The plugin could not be deactivated. Its dashboard is set as the default one.'));
+            $this->assertNotDefaultDashboard($plugin->name);
 
-            return $this->redirect(['action' => 'index']);
-        }
+            $plugin->enabled = false;
 
-        $plugin->enabled = false;
-
-        if ($this->Plugins->save($plugin)) {
-            Cache::delete('plugins', 'cms');
-            $this->Flash->success(__('The plugin has been deactivated.'));
-        } else {
-            $this->Flash->error(__('The plugin could not be deactivated. Please, try again.'));
+            if ($this->Plugins->save($plugin)) {
+                Cache::delete('plugins', 'cms');
+                $this->Flash->success(__('The plugin has been deactivated.'));
+            } else {
+                $this->Flash->error(__('The plugin could not be deactivated. Please, try again.'));
+            }
+        } catch (Exception $e) {
+            $this->Flash->error($e->getMessage());
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Throws an exception if the given plugin name is set as the default dashboard.
+     *
+     * @param string|null $pluginName Plugin name to check.
+     * @return void
+     * @throws \Exception
+     */
+    private function assertNotDefaultDashboard(?string $pluginName): void
+    {
+        if ($pluginName !== null && $pluginName === $this->getConfig('Cms.defaultDashboard')) {
+            throw new Exception(__(
+                'The plugin "{0}" cannot be modified. Its dashboard is set as the default one.',
+                $pluginName,
+            ));
+        }
     }
 }

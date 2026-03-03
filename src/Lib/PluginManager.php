@@ -7,6 +7,7 @@ use App\Model\Table\ResourcesTable;
 use App\Model\Table\SettingsTable;
 use Cake\Form\Form;
 use Cake\Utility\Hash;
+use Exception;
 use LogicException;
 use Migrations\Migrations;
 use Psr\Http\Message\UploadedFileInterface;
@@ -127,11 +128,35 @@ class PluginManager
      */
     public function activate(string $plugin): array
     {
-        $this->addMigrations($plugin);
-        $this->addSettings($plugin);
-        $this->addResources($plugin);
+        $migrationsAdded = false;
+        $settingsAdded = false;
+        $resourcesAdded = false;
 
-        return $this->extensionHandler->readComposerConfig($this->pluginsDir . $plugin);
+        try {
+            $this->addMigrations($plugin);
+            $migrationsAdded = true;
+
+            $this->addSettings($plugin);
+            $settingsAdded = true;
+
+            $this->addResources($plugin);
+            $resourcesAdded = true;
+
+            return $this->extensionHandler->readComposerConfig($this->pluginsDir . $plugin);
+        } catch (Exception $e) {
+            // Компенсуючі дії у зворотньому порядку
+            if ($resourcesAdded) {
+                $this->deleteResources($plugin);
+            }
+            if ($settingsAdded) {
+                $this->deleteSettings($plugin);
+            }
+            if ($migrationsAdded) {
+                $this->deleteMigrations($plugin);
+            }
+
+            throw $e;
+        }
     }
 
     /**
@@ -153,8 +178,17 @@ class PluginManager
             return false;
         }
 
-        return $this->migrations->migrate(['plugin' => $plugin]) &&
-            $this->migrations->seed(['plugin' => $plugin]);
+        $migrated = $this->migrations->migrate(['plugin' => $plugin]);
+        if (!$migrated) {
+            throw new Exception(__('Failed to run migrations for plugin: {0}', $plugin));
+        }
+
+        $seeded = $this->migrations->seed(['plugin' => $plugin]);
+        if (!$seeded) {
+            throw new Exception(__('Failed to seed migrations for plugin: {0}', $plugin));
+        }
+
+        return true;
     }
 
     /**
