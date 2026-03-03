@@ -192,14 +192,19 @@ class PluginManager
     }
 
     /**
-     * Deletes migrations for the plugin
+     * Deletes migrations for the plugin or system if no plugin is specified.
      *
-     * @param string $plugin Plugin name.
+     * @param string|null $plugin Plugin name or null for system migrations.
      * @return void
      */
-    public function deleteMigrations(string $plugin): void
+    public function deleteMigrations(?string $plugin = null): void
     {
-        if (is_dir($this->pluginsDir . $plugin . DS . 'config' . DS . 'Migrations')) {
+        $migrationsPath = 'config' . DS . 'Migrations';
+        $path = $plugin === null
+        ? ROOT . DS . $migrationsPath
+        : $this->pluginsDir . $plugin . DS . $migrationsPath;
+
+        if (is_dir($path)) {
             $this->migrations->rollback(['plugin' => $plugin]);
         }
     }

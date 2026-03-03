@@ -50,6 +50,7 @@ use Cake\Core\Exception\MissingPluginException;
 use Cake\Database\TypeFactory;
 use Cake\Datasource\FactoryLocator;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
+use Cake\Event\EventManagerInterface;
 use Cake\Http\BaseApplication;
 use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\Middleware\CsrfProtectionMiddleware;
@@ -63,10 +64,10 @@ use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
-use Exception;
 use Migrations\Migrations;
 use Override;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 
 /**
  * Application setup class.
@@ -86,19 +87,12 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     private TableLocator $tableLocator;
 
     /**
-     * Config helper
-     *
-     * @param string|null $var Variable to obtain. Use '.' to access array elements.
-     * @param mixed $default The return value when the configure does not exist
-     * @return mixed Value stored in configure, or null.
+     * @inheritDoc
      */
-    public function getConfig(?string $var = null, mixed $default = null): mixed
+    public function __construct(string $configDir, ?EventManagerInterface $eventManager = null)
     {
-        if ($var === null) {
-            return Configure::read();
-        }
-
-        return Configure::read($var, $default);
+        parent::__construct($configDir, $eventManager);
+        $this->tableLocator = new TableLocator();
     }
 
     /**
@@ -109,8 +103,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     {
         // Call parent to load bootstrap from files.
         parent::bootstrap();
-
-        $this->tableLocator = new TableLocator();
 
         if (PHP_SAPI !== 'cli') {
             FactoryLocator::add('Table', $this->tableLocator->allowFallbackClass(true)); // @phpstan-ignore argument.type
@@ -146,6 +138,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 'serialize' => true,
             ]);
         }
+
         try {
             Configure::config('db', new DbConfig($this->tableLocator->get('Settings'), 'cms'));
             Configure::load('Cms', 'db');
@@ -156,7 +149,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             TypeFactory::map('textandjson', 'App\Database\Type\TextAndJsonType');
         } catch (MissingPluginException $e) {
             Log::warning($e->getMessage());
-        } catch (Exception $e) {
+        } catch (RuntimeException $e) {
             Log::error($e->getMessage());
         }
     }
@@ -258,7 +251,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $routes->middlewareGroup('auth', ['authentication', 'authorization', 'request_authorization']);
 
         $routes->scope('/', ['controller' => 'Index'], function (RouteBuilder $builder): void {
-            $languages = $this->getConfig('App.languages');
+            $languages = Configure::read('App.languages');
             if ($languages) {
                 foreach ($languages as $i => $lang) {
                     if ($i !== 0) {
@@ -274,8 +267,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
         $routes->prefix('Admin', function (RouteBuilder $builder): void {
             $builder->applyMiddleware('auth');
-            $defaultDashboard = $this->getConfig('Cms.defaultDashboard');
-            $plugin = $defaultDashboard == 'System' ? null : $defaultDashboard;
+            $defaultDashboard = Configure::read('Cms.defaultDashboard');
+            $plugin = $defaultDashboard === 'System' ? null : $defaultDashboard;
             $builder->connect('/', ['plugin' => $plugin, 'controller' => 'Dashboard']);
             $builder->fallbacks(DashedRoute::class);
         });
@@ -301,11 +294,11 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $middlewareQueue
 
             // Maintenance middleware
-            ->add(new MaintenanceMiddleware((array)$this->getConfig('Cms.maintenance', [])))
+            ->add(new MaintenanceMiddleware((array)Configure::read('Cms.maintenance', [])))
 
             // Catch any exceptions in the lower layers,
             // and make an error page/response
-            ->add(new ErrorHandlerMiddleware($this->getConfig('Error'), $this))
+            ->add(new ErrorHandlerMiddleware(Configure::read('Error'), $this))
 
             // Validate Host header to prevent Host Header Injection attacks.
             // In production, ensures App.fullBaseUrl is configured and validates
@@ -313,21 +306,16 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             ->add(new HostHeaderMiddleware())
 
             // Handle plugin/theme assets like CakePHP normally does.
-            ->add(new AssetMiddleware(['cacheTime' => $this->getConfig('Asset.cacheTime')]))
+            ->add(new AssetMiddleware(['cacheTime' => Configure::read('Asset.cacheTime')]))
 
             // Add routing middleware.
-            // If you have a large number of routes connected, turning on routes
-            // caching in production could improve performance.
-            // See https://github.com/CakeDC/cakephp-cached-routing
             ->add(new RoutingMiddleware($this))
 
             // Parse various types of encoded request bodies so that they are
             // available as array through $request->getData()
-            // https://book.cakephp.org/5/en/controllers/middleware.html#body-parser-middleware
             ->add(new BodyParserMiddleware())
 
             // Cross Site Request Forgery (CSRF) Protection Middleware
-            // https://book.cakephp.org/5/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
             ->add(new CsrfProtectionMiddleware(['httponly' => true]));
 
         return $middlewareQueue;
@@ -365,13 +353,13 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     }
 
     /**
-     * Loads a theme
+     * Loads a theme.
      *
      * @return void
      */
     private function loadTheme(): void
     {
-        $theme = $this->getConfig('Cms.theme');
+        $theme = Configure::read('Cms.theme');
         if ($theme) {
             $this->addPlugin($theme, [
                 'path' => ROOT . DS . 'themes' . DS . $theme . DS,
@@ -380,7 +368,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     }
 
     /**
-     * Loads plugins
+     * Loads active plugins from database.
      *
      * @return void
      */

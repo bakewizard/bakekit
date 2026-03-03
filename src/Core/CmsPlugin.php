@@ -5,6 +5,7 @@ namespace App\Core;
 
 use App\Application;
 use Cake\Core\BasePlugin;
+use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Routing\RouteBuilder;
 use Closure;
@@ -73,7 +74,7 @@ class CmsPlugin extends BasePlugin
 
         $callback = Closure::fromCallable($loaded);
 
-        $languages = $this->app->getConfig('App.languages') ?? [];
+        $languages = Configure::read('App.languages') ?? [];
         $pluginPath = '/' . $this->alias;
 
         // Multilingual paths

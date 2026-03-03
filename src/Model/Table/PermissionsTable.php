@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Table;
 
 use Cake\Cache\Cache;
+use Cake\Collection\Collection;
 use Cake\Collection\CollectionInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -168,7 +169,9 @@ class PermissionsTable extends Table
                     ->formatResults(function (CollectionInterface $results) {
                         return $results->map(function ($row) {
                             if (!empty($row['resources'])) {
-                                $row['resources'] = collection($row['resources'])->indexBy('id')->toArray();
+                                $row['resources'] = (new Collection($row['resources']))
+                                    ->indexBy('id')
+                                    ->toArray();
                             }
 
                             return $row;

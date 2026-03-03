@@ -114,7 +114,9 @@ class MenuLinksController extends AppController
         $this->request->allowMethod(['post', 'put']);
         $menuLink = $this->MenuLinks->get($id);
         $this->MenuLinks->setTreeScope($menuLink->menu_id);
-        if ($this->MenuLinks->moveUp($menuLink)) {
+        /** @var \Cake\ORM\Behavior\TreeBehavior $tree */
+        $tree = $this->MenuLinks->getBehavior('Tree');
+        if ($tree->moveUp($menuLink)) {
             $this->Flash->success(__('The Menu link has been moved Up.'));
         } else {
             $this->Flash->error(__('The Menu link could not be moved up. Please, try again.'));
@@ -134,7 +136,9 @@ class MenuLinksController extends AppController
         $this->request->allowMethod(['post', 'put']);
         $menuLink = $this->MenuLinks->get($id);
         $this->MenuLinks->setTreeScope($menuLink->menu_id);
-        if ($this->MenuLinks->moveDown($menuLink)) {
+        /** @var \Cake\ORM\Behavior\TreeBehavior $tree */
+        $tree = $this->MenuLinks->getBehavior('Tree');
+        if ($tree->moveDown($menuLink)) {
             $this->Flash->success(__('The Menu link has been moved down.'));
         } else {
             $this->Flash->error(__('The Menu link could not be moved down. Please, try again.'));

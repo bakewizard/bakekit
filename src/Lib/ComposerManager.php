@@ -27,10 +27,24 @@ class ComposerManager
      * @return string
      * @throws \Exception
      */
+
+    /**
+     * Runs composer commands.
+     *
+     * Saves and restores COMPOSER_HOME, COMPOSER_CACHE_DIR and cwd
+     * so that running Composer does not affect the rest of the PHP process.
+     *
+     * @param array<string, mixed> $options
+     * @return string
+     * @throws \Exception
+     */
     public function run(array $options): string
     {
-        if (!is_file($this->composerPath)) {
-            throw new Exception('composer.phar is not found.');
+        if (!class_exists(Application::class)) {
+            if (!is_file($this->composerPath)) {
+                throw new Exception('composer.phar is not found.');
+            }
+            require "phar://{$this->composerPath}/src/bootstrap.php";
         }
 
         $origHome = getenv('COMPOSER_HOME');
@@ -52,10 +66,6 @@ class ComposerManager
 
         $input = new ArrayInput($options);
         $output = new BufferedOutput();
-
-        if (!class_exists(Application::class)) {
-            require "phar://{$this->composerPath}/src/bootstrap.php";
-        }
 
         try {
             $application = new Application();

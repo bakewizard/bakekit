@@ -34,6 +34,9 @@ class InstallCommand extends Command
     /**
      * Installs the application.
      *
+     * Runs all installation steps in order. If any step fails,
+     * completed steps are rolled back in reverse order.
+     *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return int|null The exit code or null for success
@@ -41,14 +44,21 @@ class InstallCommand extends Command
     #[Override]
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
+        $migrated = false;
+        $userCreated = false;
+        $resourcesGenerated = false;
+
         try {
             $this->migrate($io);
+            $migrated = true;
             $io->hr();
 
             $this->createRootUser($io);
+            $userCreated = true;
             $io->hr();
 
             $this->generateSystemResources($io);
+            $resourcesGenerated = true;
             $io->hr();
 
             $this->setRootPermissions($io);
@@ -61,7 +71,32 @@ class InstallCommand extends Command
 
             return static::CODE_SUCCESS;
         } catch (Exception $e) {
-            $io->abort($e->getMessage());
+            $io->err('Installation failed: ' . $e->getMessage());
+            $io->hr();
+            $io->out('Rolling back...');
+
+            // Компенсуючі дії у зворотньому порядку
+            if ($resourcesGenerated) {
+                $io->out('Removing system resources... - ', 0);
+                $this->pluginManager->deleteResources('System');
+                $io->out('done!');
+            }
+
+            if ($userCreated) {
+                $io->out('Removing root user... - ', 0);
+                $users = $this->fetchTable('Users');
+                $users->deleteAll(['alias' => 'root']);
+                $io->out('done!');
+            }
+
+            if ($migrated) {
+                $io->out('Rolling back migrations... - ', 0);
+                $this->pluginManager->deleteMigrations();
+                $io->out('done!');
+            }
+
+            $io->out('Rollback complete. Please fix the error and try again.');
+            $io->abort('');
         }
     }
 
@@ -110,13 +145,16 @@ class InstallCommand extends Command
             $email = $io->ask('Email:');
             if (empty($email)) {
                 $io->err('Email must not be empty');
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $io->err('Email is not valid');
+                $email = null;
             }
         } while (empty($email));
 
         do {
             $password = $io->ask('Password:');
             $verify = $io->ask('Verify Password:');
-            $passwordsMatched = $password == $verify;
+            $passwordsMatched = $password === $verify;
 
             if (!$passwordsMatched) {
                 $io->err('Passwords do not match');

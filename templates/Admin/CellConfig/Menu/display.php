@@ -5,7 +5,7 @@
  * @var \App\Model\Entity\Block $block
  */
 ?>
-<?= $this->Html->script(['/backend/js/menu'], ['block' => true]) ?>
+<?= $this->Html->script(['/backend/js/menu'], ['block' => true, 'type' => 'module']) ?>
 
 <template id="attribute-item-template">
     <li class="list-group-item">
