@@ -128,6 +128,19 @@ class AppView extends View
     }
 
     /**
+     * Returns a home url
+     *
+     * @return string Url
+     */
+    public function homeUrl(bool $fullBase = true): string
+    {
+        $lang = $this->getRequest()->getParam('lang');
+        $homePath = $lang ? '/' . $lang : '/';
+
+        return $this->Url->build($homePath, ['fullBase' => $fullBase]);
+    }
+
+    /**
      * Returns an image url
      *
      * @param \Cake\ORM\Entity|null $entity Entity

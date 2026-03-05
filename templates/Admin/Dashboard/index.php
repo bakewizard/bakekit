@@ -30,7 +30,7 @@
             ) ?></li>
             <li><?= $this->Html->link(
                 '<i class="fa-regular fa-fw fa-eye"></i> ' . __('View your site'),
-                ['prefix' => false, 'controller' => 'Index'],
+                $this->homeUrl(),
                 ['escape' => false, 'class' => 'text-decoration-none', 'target' => '_blank'],
             ) ?></li>
         </ol>

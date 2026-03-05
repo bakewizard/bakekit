@@ -250,19 +250,20 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $routes->registerMiddleware('request_authorization', new RequestAuthorizationMiddleware());
         $routes->middlewareGroup('auth', ['authentication', 'authorization', 'request_authorization']);
 
-        $routes->scope('/', ['controller' => 'Index'], function (RouteBuilder $builder): void {
+        $routes->scope('/', function (RouteBuilder $builder): void {
             $languages = Configure::read('App.languages');
+            $homepage = Configure::read('App.defaultHomepage') ?? ['controller' => 'Index', 'action' => 'index'];
             if ($languages) {
                 foreach ($languages as $i => $lang) {
                     if ($i !== 0) {
-                        $builder->scope('/' . $lang, ['lang' => $lang], function (RouteBuilder $builder): void {
-                            $builder->connect('/', ['action' => 'index']);
+                        $builder->scope('/' . $lang, ['lang' => $lang], function (RouteBuilder $builder) use ($homepage): void {
+                            $builder->connect('/', $homepage);
                         });
                     }
                 }
             }
 
-            $builder->connect('/', ['action' => 'index']);
+            $builder->connect('/', $homepage);
         });
 
         $routes->prefix('Admin', function (RouteBuilder $builder): void {

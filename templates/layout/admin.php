@@ -49,11 +49,7 @@
                 <!--begin::Right Navbar links-->
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= $this->Url->build([
-                                                        'prefix' => false,
-                                                        'plugin' => false,
-                                                        'controller' => 'Index',
-                                                    ], ['fullBase' => true]) ?>" target="_blank" title="Back to site">
+                        <a class="nav-link" href="<?= $this->homeUrl() ?>" target="_blank" title="Back to site">
                             <i class="fa-solid fa-reply"></i>
                         </a>
                     </li>
