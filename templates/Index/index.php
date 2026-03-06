@@ -9,7 +9,7 @@
     <h1 class="display-4 text-center">BakeKit</h1>
     <p class="lead text-center">The first truly programmer-friendly web application starter kit.</p>
     <p class="text-center">
-        <?= $this->Html->link('Bake it!', ['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'login'], ['escape' => false, 'class' => 'btn btn-outline-success']) ?>
+        <?= $this->Html->link('Bake it!', ['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'login'], ['escape' => false, 'class' => 'btn btn-lg btn-success']) ?>
     </p>
 </div>
 
@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <p class="text-center"><i class="fa-solid fa-car-battery fa-5x"></i></p>
                     <h2 class="text-center">Powerful</h2>
-                    <p>Fully written in CakePHP framework that gives you the ability to write more clean code using all the power of the CakePHP framework.</p>
+                    <p>Written in CakePHP framework that gives you the ability to write more clean code using all the power of the CakePHP framework.</p>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
                 <div class="card-body">
                     <p class="text-center"><i class="fa-solid fa-laptop-code fa-5x"></i></p>
                     <h2 class="text-center">Programmer-friendly</h2>
-                    <p>The first CMS built for programmers. Easily extend it with your own plugins and themes, just by following the CakePHP cookbook.</p>
+                    <p>Programmers oriented. Easily extend it with your own plugins and themes, just by following the CakePHP cookbook.</p>
                 </div>
             </div>
         </div>

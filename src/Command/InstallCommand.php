@@ -75,7 +75,6 @@ class InstallCommand extends Command
             $io->hr();
             $io->out('Rolling back...');
 
-            // Компенсуючі дії у зворотньому порядку
             if ($resourcesGenerated) {
                 $io->out('Removing system resources... - ', 0);
                 $this->pluginManager->deleteResources('System');

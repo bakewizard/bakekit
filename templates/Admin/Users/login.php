@@ -7,7 +7,7 @@
 <?php $this->setLayout('login'); ?>
 <div class="login-box" style="width: 25rem;">
     <div class="login-logo">
-        <b><?= $config['Cms']['siteName'] ?? 'BakeKit CMS' ?></b>
+        <b><?= $config['Cms']['siteName'] ?? 'BakeKit' ?></b>
     </div>
     <div class="card">
         <div class="card-body login-card-body">

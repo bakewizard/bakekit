@@ -5,7 +5,7 @@
 ?>
 <div class="card">
     <div class="card-body">
-        <h3>Welcome to BakeKit CMS!</h3>
+        <h3>Welcome to BakeKit!</h3>
         <p class="text-muted">Here are the first steps to start working:</p>
         <ol>
             <li><?= $this->Html->link(
