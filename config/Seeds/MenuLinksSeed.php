@@ -46,4 +46,19 @@ class MenuLinksSeed extends BaseSeed
         $table = $this->table('menu_links');
         $table->insert($data)->save();
     }
+
+    /**
+     * Get Dependencies Method.
+     *
+     * More information on this method is available here:
+     * https://book.cakephp.org/phinx/0/en/seeding.html#foreign-key-dependencies
+     *
+     * @return void
+     */
+    public function getDependencies(): array
+    {
+        return [
+            'MenusSeed',
+        ];
+    }
 }
