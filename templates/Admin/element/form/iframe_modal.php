@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var \App\View\AppView $this
+ */
+?>
 <!-- Iframe modal -->
 <div class="modal fade" id="iframe-modal" tabindex="-1">
     <div class="modal-dialog modal-xl">

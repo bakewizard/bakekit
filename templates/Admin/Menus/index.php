@@ -2,7 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var mixed $_isSearch
- * @var \Cake\Collection\CollectionInterface<\App\Model\Entity\Menu>|array<\App\Model\Entity\Menu> $menus
+ * @var array<\App\Model\Entity\Menu>|\Cake\Collection\CollectionInterface<\App\Model\Entity\Menu> $menus
  */
 ?>
 <div class="card">
@@ -16,11 +16,8 @@
     <div class="card-header">
         <?= $this->Form->create(null, ['valueSources' => 'query', 'class' => 'filter-form', 'id' => 'filter-form']); ?>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col">
                 <?= $this->Form->control('prefix', ['options' => [0 => 'Frontend', 1 => 'Backend'], 'empty' => '---']); ?>
-            </div>
-            <div class="col-sm-6">
-                <?= $this->Form->control('enabled', ['options' => [1 => 'Enabled', 0 => 'Disabled'], 'empty' => '---']); ?>
             </div>
         </div>
         <div class="row">
@@ -47,9 +44,8 @@
                     <tr>
                         <th scope="col"><?= $this->Paginator->sort('name') ?></th>
                         <th scope="col"><?= $this->Paginator->sort('description') ?></th>
-                        <th scope="col"><?= $this->Paginator->sort('prefix', __('Client')) ?></th>
-                        <th scope="col""><?= $this->Paginator->sort('enabled') ?></th>
-                        <th scope=" col" class="actions text-center"><?= __('Actions') ?></th>
+                        <th scope="col"><?= $this->Paginator->sort('prefix') ?></th>
+                        <th scope="col" class="actions text-center"><?= __('Actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,9 +55,6 @@
                             <td><?= h($menu->description) ?></td>
                             <td class="text-center">
                                 <?= $menu->prefix ? $this->Html->badge(__('Backend'), ['class' => 'info']) : $this->Html->badge(__('Frontend'), ['classs' => 'success']) ?>
-                            </td>
-                            <td class="text-center">
-                                <?= $menu->enabled ? '<i class="fa-solid fa-check text-success fa-lg"></i>' : '<i class="fa-solid fa-xmark text-danger fa-lg"></i>' ?>
                             </td>
                             <td class="text-center actions">
                                 <?= $this->Html->link(

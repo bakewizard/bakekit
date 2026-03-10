@@ -43,7 +43,7 @@
                 <!--end::Left Navbar Links-->
 
                 <!--begin::Custom Menu-->
-                <?= $this->region('custom-menu'); ?>
+                <?= $this->cell('Admin/Menu', [2])->render(); ?>
                 <!--end::Custom menu-->
 
                 <!--begin::Right Navbar links-->
@@ -143,7 +143,7 @@
             <div class="sidebar-wrapper">
                 <nav class="mt-2">
                     <!--begin::Sidebar Menu-->
-                    <?= $this->region('plugins-menu', ['AdminMenu']); ?>
+                    <?= $this->cell('Admin/Menu', [1, 'AdminMenu'])->render(); ?>
                     <!--end::Sidebar Menu-->
                 </nav>
             </div>

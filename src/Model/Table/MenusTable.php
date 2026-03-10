@@ -67,8 +67,7 @@ class MenusTable extends Table
 
         $searchManager
             ->useCollection('backend')
-            ->value('prefix', ['filterEmpty' => true])
-            ->value('enabled', ['filterEmpty' => true]);
+            ->value('prefix', ['filterEmpty' => true]);
     }
 
     /**
@@ -97,10 +96,6 @@ class MenusTable extends Table
         $validator
             ->boolean('prefix')
             ->allowEmptyString('prefix');
-
-        $validator
-            ->boolean('enabled')
-            ->allowEmptyString('enabled');
 
         return $validator;
     }

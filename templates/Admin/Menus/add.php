@@ -21,7 +21,6 @@
                 ['text' => 'Backend', 'value' => 1],
             ],
         ]); ?>
-        <?= $this->Form->control('enabled', ['switch' => true]); ?>
     </div>
     <div class="card-footer">
         <?= $this->element('form/save_buttons') ?>

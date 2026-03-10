@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Migrations\BaseMigration;
 
@@ -22,28 +23,28 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('parent_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
                 'null' => true,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('lft', 'integer', [
                 'default' => null,
                 'limit' => 10,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('rght', 'integer', [
                 'default' => null,
                 'limit' => 10,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('alias', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false
+                'null' => false,
             ])
             ->addPrimaryKey('id')
             ->addForeignKey('parent_id', 'resources', 'id', ['update' => 'CASCADE', 'delete' => 'CASCADE'])
@@ -56,43 +57,43 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('parent_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
                 'null' => true,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('lft', 'integer', [
                 'default' => null,
                 'limit' => 10,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('rght', 'integer', [
                 'default' => null,
                 'limit' => 10,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('name', 'string', [
                 'default' => null,
                 'limit' => 100,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('alias', 'string', [
                 'default' => null,
                 'limit' => 150,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('created', 'datetime', [
                 'default' => null,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('modified', 'datetime', [
                 'default' => null,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addPrimaryKey('id')
             ->addForeignKey('parent_id', 'roles', 'id', ['update' => 'CASCADE', 'delete' => 'CASCADE'])
@@ -105,18 +106,18 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('resource_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('allowed', 'boolean', [
                 'default' => false,
                 'limit' => null,
-                'null' => false
+                'null' => false,
             ])
             ->addPrimaryKey(['role_id', 'resource_id'])
             ->addForeignKey('role_id', 'roles', 'id', ['update' => 'CASCADE', 'delete' => 'CASCADE'])
@@ -129,12 +130,12 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('name', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('alias', 'string', [
                 'default' => null,
@@ -144,17 +145,17 @@ class AppMigration extends BaseMigration
             ->addColumn('description', 'string', [
                 'default' => null,
                 'limit' => 500,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('parent_plugin', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('enabled', 'boolean', [
                 'default' => false,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addPrimaryKey('id')
             ->addIndex('alias', ['unique' => true])
@@ -166,32 +167,32 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('namespace', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('path', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('value', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('created', 'datetime', [
                 'default' => null,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('modified', 'datetime', [
                 'default' => null,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addPrimaryKey('id')
             ->addIndex(['namespace', 'path'], ['unique' => true])
@@ -203,17 +204,17 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('alias', 'string', [
                 'default' => null,
                 'limit' => 100,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('description', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => true
+                'null' => true,
             ])
             ->addPrimaryKey('id')
             ->addIndex('alias', ['unique' => true])
@@ -225,27 +226,22 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('name', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('description', 'text', [
                 'default' => null,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('prefix', 'boolean', [
                 'default' => false,
                 'limit' => null,
-                'null' => true
-            ])
-            ->addColumn('enabled', 'boolean', [
-                'default' => false,
-                'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addPrimaryKey('id')
             ->create();
@@ -256,49 +252,49 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('menu_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('parent_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
                 'null' => true,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('title', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('icon', 'string', [
                 'default' => null,
                 'limit' => 100,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('link', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('target', 'char', [
                 'default' => '_self',
                 'limit' => 10,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('lft', 'integer', [
                 'default' => null,
                 'limit' => 10,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('rght', 'integer', [
                 'default' => null,
                 'limit' => 10,
-                'null' => false
+                'null' => false,
             ])
             ->addPrimaryKey('id')
             ->addForeignKey('menu_id', 'menus', 'id', ['update' => 'CASCADE', 'delete' => 'CASCADE'])
@@ -313,54 +309,54 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('alias', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('title', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('description', 'string', [
                 'default' => null,
                 'limit' => 500,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('region_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('cell', 'string', [
                 'default' => null,
                 'limit' => 50,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('template', 'string', [
                 'default' => null,
                 'limit' => 50,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('params', 'text', [
                 'default' => null,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('position', 'integer', [
                 'default' => null,
                 'limit' => 5,
                 'null' => true,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('enabled', 'boolean', [
                 'default' => false,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addPrimaryKey('id')
             ->addForeignKey('region_id', 'regions', 'id', ['update' => 'CASCADE', 'delete' => 'CASCADE'])
@@ -374,28 +370,28 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('plugin_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('title', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('description', 'text', [
                 'default' => null,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('seo_title', 'string', [
                 'default' => null,
                 'limit' => 160,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('seo_description', 'string', [
                 'default' => null,
@@ -405,7 +401,7 @@ class AppMigration extends BaseMigration
             ->addColumn('seo_keywords', 'string', [
                 'default' => null,
                 'limit' => 100,
-                'null' => true
+                'null' => true,
             ])
             ->addPrimaryKey('id')
             ->addForeignKey('plugin_id', 'plugins', 'id', ['update' => 'CASCADE', 'delete' => 'CASCADE'])
@@ -418,48 +414,48 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('first_name', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('last_name', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('alias', 'string', [
                 'default' => null,
                 'limit' => 150,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('email', 'string', [
                 'default' => null,
                 'limit' => 50,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('password', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('role_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('created', 'datetime', [
                 'default' => null,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('modified', 'datetime', [
                 'default' => null,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addPrimaryKey('id')
             ->addForeignKey('role_id', 'roles', 'id', ['update' => 'CASCADE', 'delete' => 'RESTRICT'])
@@ -474,23 +470,23 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('user_id', 'integer', [
                 'default' => null,
                 'limit' => 10,
                 'null' => false,
-                'signed' => false
+                'signed' => false,
             ])
             ->addColumn('name', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('path', 'string', [
                 'default' => null,
                 'limit' => 100,
-                'null' => false
+                'null' => false,
             ])
             ->addPrimaryKey('id')
             ->addForeignKey('user_id', 'users', 'id', ['update' => 'CASCADE', 'delete' => 'CASCADE'])
@@ -502,22 +498,22 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'signed' => false,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('locale', 'string', [
                 'default' => null,
                 'limit' => 5,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('title', 'string', [
                 'default' => null,
                 'limit' => 100,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('params', 'text', [
                 'default' => null,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addPrimaryKey(['id', 'locale'])
             ->create();
@@ -527,37 +523,37 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'signed' => false,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('locale', 'string', [
                 'default' => null,
                 'limit' => 5,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('title', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('description', 'text', [
                 'default' => null,
                 'limit' => null,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('seo_title', 'string', [
                 'default' => null,
                 'limit' => 160,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('seo_description', 'string', [
                 'default' => null,
                 'limit' => 280,
-                'null' => true
+                'null' => true,
             ])
             ->addColumn('seo_keywords', 'string', [
                 'default' => null,
                 'limit' => 100,
-                'null' => true
+                'null' => true,
             ])
             ->addPrimaryKey(['id', 'locale'])
             ->create();
@@ -567,17 +563,17 @@ class AppMigration extends BaseMigration
                 'default' => null,
                 'limit' => 10,
                 'signed' => false,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('locale', 'string', [
                 'default' => null,
                 'limit' => 5,
-                'null' => false
+                'null' => false,
             ])
             ->addColumn('title', 'string', [
                 'default' => null,
                 'limit' => 255,
-                'null' => true
+                'null' => true,
             ])
             ->addPrimaryKey(['id', 'locale'])
             ->create();

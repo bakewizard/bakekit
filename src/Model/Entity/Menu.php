@@ -12,7 +12,6 @@ use Cake\ORM\Entity;
  * @property string $name
  * @property string|null $description
  * @property bool|null $prefix
- * @property bool|null $enabled
  *
  * @property array<\App\Model\Entity\MenuLink> $menu_links
  */
@@ -25,7 +24,6 @@ class Menu extends Entity
         'name' => true,
         'description' => true,
         'prefix' => true,
-        'enabled' => true,
         'menu_links' => true,
     ];
 }

@@ -20,7 +20,7 @@ class MenuCell extends Cell
      */
     public function display(string $helper = 'Menu'): void
     {
-        $menuId = $this->block->params['menu'] ?? [];
+        $menuId = $this->block->params['menu'] ?? '';
         $options = $this->block->params;
         $menuItems = [];
 
@@ -28,14 +28,12 @@ class MenuCell extends Cell
         $prefix = $this->request->getParam('prefix');
 
         if (!empty($menuId)) {
+            $cacheKey = $menuId . ($prefix ? '_' . strtolower($prefix) : '') . ($lang ? "_$lang" : '');
             $menuItems = $this->fetchTable('MenuLinks')
                 ->find('threaded')
-                ->matching('Menus', fn($q) => $q->where(['enabled' => true]))
-                ->where(['menu_id is' => $menuId])
+                ->where(['menu_id' => $menuId])
                 ->orderByAsc('lft')
-                ->cache(function () use ($menuId, $prefix, $lang) {
-                    return $menuId . ($prefix ? '_' . strtolower($prefix) : '') . ($lang ? "_$lang" : '');
-                }, 'menus')
+                ->cache($cacheKey, 'menus')
                 ->toArray();
         }
 
