@@ -48,26 +48,6 @@ class MenusTable extends Table
                 'lft' => 'ASC',
             ],
         ]);
-
-        $this->addBehavior('Search.Search');
-
-        $this->setFilters();
-    }
-
-    /**
-     * Configures search filters for the Menus table.
-     *
-     * @return void
-     */
-    public function setFilters(): void
-    {
-        /** @var \Search\Model\Behavior\SearchBehavior $search */
-        $search = $this->getBehavior('Search');
-        $searchManager = $search->searchManager();
-
-        $searchManager
-            ->useCollection('backend')
-            ->value('prefix', ['filterEmpty' => true]);
     }
 
     /**
@@ -93,10 +73,6 @@ class MenusTable extends Table
             ->scalar('description')
             ->allowEmptyString('description');
 
-        $validator
-            ->boolean('prefix')
-            ->allowEmptyString('prefix');
-
         return $validator;
     }
 
@@ -114,6 +90,10 @@ class MenusTable extends Table
      */
     public function beforeDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
+        if ($entity->isSystem()) {
+            $event->stopPropagation();
+        }
+
         // Set tree scope for Links association
         $settings = [
             'scope' => [$this->MenuLinks->getAlias() . '.menu_id' => $entity->id],

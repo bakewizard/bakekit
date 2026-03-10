@@ -162,7 +162,7 @@ class MenuLinksController extends AppController
         $table = $this->fetchTable('Plugins');
         $activePlugins = $table->getActivePlugins();
 
-        $data = $menu->prefix ? $re->getAdminLinks($activePlugins) : $re->getLinks($activePlugins);
+        $data = $menu->isSystem() ? $re->getAdminLinks($activePlugins) : $re->getLinks($activePlugins);
 
         $this->set(compact('data'));
     }

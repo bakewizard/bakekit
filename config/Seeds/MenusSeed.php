@@ -23,13 +23,11 @@ class MenusSeed extends BaseSeed
                 'id' => 1,
                 'name' => 'Plugins menu',
                 'description' => 'Admin plugins menu',
-                'prefix' => 1,
             ],
             [
                 'id' => 2,
                 'name' => 'Custom menu',
                 'description' => 'Admin custom menu',
-                'prefix' => 1,
             ],
         ];
 

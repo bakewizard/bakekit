@@ -53,26 +53,6 @@ class Block extends Entity
     ];
 
     /**
-     * Returns the parent node for ACL behavior.
-     *
-     * @return string
-     */
-    public function parentNode(): string
-    {
-        return 'blocks';
-    }
-
-    /**
-     * Returns the alias to be used as the node alias for ACL behavior.
-     *
-     * @return string
-     */
-    public function nodeAlias(): string
-    {
-        return $this->alias;
-    }
-
-    /**
      * Checks if a configuration form class exists for this block's cell.
      *
      * @return bool true if it exists, false otherwise.

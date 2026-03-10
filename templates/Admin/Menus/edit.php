@@ -12,15 +12,6 @@
     <div class="card-body">
         <?= $this->Form->control('name'); ?>
         <?= $this->Form->control('description'); ?>
-        <?= $this->Form->control('prefix', [
-            'type' => 'radio',
-            'label' => __('Client'),
-            'inline' => true,
-            'options' => [
-                ['text' => 'Frontend', 'value' => 0],
-                ['text' => 'Backend', 'value' => 1],
-            ],
-        ]); ?>
     </div>
     <div class="card-footer">
         <?= $this->element('form/save_buttons') ?>

@@ -38,9 +38,7 @@ class MenusController extends AppController
      */
     public function index()
     {
-        $query = $this->Menus->find('search', search: $this->request->getQueryParams(), collection: 'backend');
-
-        $menus = $this->paginate($query);
+        $menus = $this->paginate($this->Menus);
 
         $this->set(compact('menus'));
     }
@@ -57,7 +55,7 @@ class MenusController extends AppController
         $menu = $this->Menus->get($id);
 
         $menuLinks = $this->Menus->MenuLinks->find('treeList', spacer: '---')
-                ->where(['MenuLinks.menu_id' => $id]);
+            ->where(['MenuLinks.menu_id' => $id]);
 
         $this->set(compact('menu', 'menuLinks'));
     }
@@ -115,10 +113,11 @@ class MenusController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $menu = $this->Menus->get($id);
+
         if ($this->Menus->delete($menu)) {
             $this->Flash->success(__('The menu has been deleted.'));
         } else {
-            $this->Flash->error(__('The menu could not be deleted. Please, try again.'));
+            $this->Flash->error(__('The menu could not be deleted.'));
         }
 
         return $this->redirect(['action' => 'index']);

@@ -238,11 +238,6 @@ class AppMigration extends BaseMigration
                 'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('prefix', 'boolean', [
-                'default' => false,
-                'limit' => null,
-                'null' => true,
-            ])
             ->addPrimaryKey('id')
             ->create();
 
