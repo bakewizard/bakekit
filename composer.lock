@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "327f0382e19e706ee524485fc4cc3d2e",
+    "content-hash": "c8637744580077b5423aa395bff2e88f",
     "packages": [
         {
             "name": "admad/cakephp-sequence",
@@ -55,53 +55,6 @@
                 }
             ],
             "time": "2025-11-09T16:52:18+00:00"
-        },
-        {
-            "name": "bakewizard/filemanager",
-            "version": "dev-develop",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bakewizard/FileManager.git",
-                "reference": "301e359dc4ccfa65441fdf22b251db72fc44f4b6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bakewizard/FileManager/zipball/301e359dc4ccfa65441fdf22b251db72fc44f4b6",
-                "reference": "301e359dc4ccfa65441fdf22b251db72fc44f4b6",
-                "shasum": ""
-            },
-            "require": {
-                "bakewizard/bakekit": "dev-develop",
-                "cakephp/cakephp": "5.3.*",
-                "php": ">=8.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^11.5.3 || ^12.1.3 || ^13.0"
-            },
-            "default-branch": true,
-            "type": "cakephp-plugin",
-            "autoload": {
-                "psr-4": {
-                    "FileManager\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "FileManager plugin for BakeKit",
-            "keywords": [
-                "bakekit",
-                "cakephp",
-                "file-browser",
-                "file-manager",
-                "plugin"
-            ],
-            "support": {
-                "issues": "https://github.com/bakewizard/FileManager/issues",
-                "source": "https://github.com/bakewizard/FileManager/tree/develop"
-            },
-            "time": "2026-03-10T13:42:48+00:00"
         },
         {
             "name": "cakephp/authentication",
@@ -6724,9 +6677,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "bakewizard/filemanager": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

@@ -16,7 +16,6 @@
     "require": {
         "php": ">=8.3",
         "admad/cakephp-sequence": "^4.0",
-        "bakewizard/filemanager": "dev-develop",
         "cakephp/authentication": "^3.3",
         "cakephp/authorization": "^3.4",
         "cakephp/cakephp": "5.3.*",
