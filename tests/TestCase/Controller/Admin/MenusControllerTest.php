@@ -111,8 +111,6 @@ class MenusControllerTest extends TestCase
         $postData = [
             'name' => 'New Test Menu',
             'description' => 'A test menu',
-            'prefix' => 0,
-            'enabled' => 1,
         ];
         $this->post('/admin/menus/add', $postData);
         $this->assertResponseCode(302);
@@ -142,8 +140,6 @@ class MenusControllerTest extends TestCase
         $postData = [
             'name' => 'Updated Menu',
             'description' => 'Updated description',
-            'prefix' => 1,
-            'enabled' => 1,
         ];
         $this->post('/admin/menus/edit/1', $postData);
         $this->assertResponseCode(302);
