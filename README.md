@@ -1,54 +1,61 @@
-# BakeKit CMS
+# BakeKit
 
+[![GitHub stars](https://img.shields.io/github/stars/bakewizard/bakekit?style=social)](https://github.com/bakewizard/bakekit)
+[![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue)](https://php.net)
 ![Coverage](https://img.shields.io/badge/coverage-57.75%25-yellow)
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen)](https://phpstan.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/bakewizard/bakekit/blob/develop/LICENSE)
-[![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue)](https://php.net)
 [![GitHub release](https://img.shields.io/github/v/release/bakewizard/bakekit?label=stable&sort=semver)](https://github.com/bakewizard/bakekit/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/bakewizard/bakekit/blob/develop/LICENSE)
 
-BakeKit is a fully-featured CMS foundation built with [CakePHP 5](https://cakephp.org/). Designed for developers who want to rapidly build web applications without reinventing the wheel, BakeKit offers everything a modern CMS should — including authentication, authorization, user roles, menus, widgets, settings, plugins, themes, and more — right out of the oven.
+---
+
+**BakeKit** is a developer starter kit for building modern web applications with CakePHP 5.
+
+Think of it as a **CakePHP skeleton application on steroids**.
+
+BakeKit includes:
+
+- Admin panel, authentication, and role management
+- Plugin & theme system
+- Menu, widget, and settings management
+- A ready-to-use CakePHP skeleton application
 
 ## Why BakeKit?
 
-As developers, we often start a project by building a core application — a blog, a store, a dashboard. Then comes the realization: an admin panel needs to be created. Then user management, roles, permissions, settings, menus... The list never ends. So we look into CMS platforms, only to find ourselves wrestling with monoliths, rigid structures, or systems that don't respect the MVC pattern or don't feel like true frameworks.
+Most CakePHP projects start the same way — building the same admin panel, authentication system, and permission logic from scratch, over and over again.
 
-That’s where BakeKit comes in.
+BakeKit is for developers and agencies who want to skip that part and focus on what actually makes their project unique. It is **not meant to dictate how your application should work**. Instead, it gives you the tools needed to build your own system on top of CakePHP.
 
-## BakeKit is:
+You remain free to:
 
-- 🍰 **CakePHP-powered**: Built on the fast, clean, and extensible CakePHP 5 framework.
-- 🧩 **Modular**: Plugins and themes are first-class citizens.
-- 🎛️ **Customizable**: Tweak everything from menus and permissions to layouts and widgets.
-- 🔐 **Secure**: Leverages CakePHP's battle-tested security features, including CSRF, form tampering protection, hashed passwords, and more.
-- 🛠️ **Developer-Friendly**: BakeKit uses CakePHP conventions and structure. If you know CakePHP, you already know BakeKit.
+- write your own plugins
+- customize the admin panel
+- design your own themes
+- structure your domain logic however you like
 
-## Core Features
+## What You Get Out of the Box
 
-- ✅ Admin panel (based on AdminLTE)
-- ✅ Authentication and authorization
-- ✅ Role and permission system
-- ✅ Menu and action management
-- ✅ Plugin and theme system
-- ✅ Widgets and settings system
-- ✅ Built-in CMS plugins: Shop, Blogger, Pages, Slideshow, FileManager, and more
+BakeKit provides the core infrastructure most applications need:
 
-## Why CakePHP?
+- **Admin Panel** - a clean backend interface for managing the system.
+- **Authentication** - user login and authentication powered by CakePHP.
+- **Roles & Permissions** - a flexible role hierarchy with granular access control.
+- **Plugin System** - features are packaged as standard CakePHP plugins.
+- **Theme System** - frontend layouts and components organized as themes.
+- **Menus & Navigation** - dynamic menu management for frontend and backend.
+- **Widgets (Cells)** - reusable components that can be placed in regions.
+- **Settings** - centralized configuration management.
 
-CakePHP is an elegant and expressive PHP framework that emphasizes convention over configuration. Unlike Symfony, which is complex and configuration-heavy, CakePHP allows for rapid development with a clean structure and robust defaults. It's also:
+## Official BakeKit Plugins
 
-- Lightweight and fast
-- Backed by a powerful ORM
-- Includes powerful baking tools (`bin/cake bake`)
-- Easy to learn but powerful enough for enterprise-level projects
+Extend your app with ready-made BakeKit plugins:
 
-BakeKit takes these strengths and adds a CMS layer, without sacrificing flexibility.
-
-## Who is it for?
-
-- Developers who want to **build custom web apps** quickly
-- Agencies looking for a **reliable CMS foundation**
-- CakePHP enthusiasts who want **a full-featured backend without starting from scratch**
-- Anyone tired of forcing WordPress, Symfony, or Laravel-based systems into things they were never meant to handle
+| Plugin | Description |
+|---|---|
+| [FileManager](https://github.com/bakewizard/FileManager) | Upload and manage files and images |
+| [Pages](https://github.com/bakewizard/Pages) | Static page management |
+| [Blogger](https://github.com/bakewizard/Blogger) | Blog engine with posts, categories, tags, and comments |
+| [Slideshow](https://github.com/bakewizard/Slideshow) | Image slideshow management |
 
 ## Get Started
 
@@ -60,7 +67,12 @@ bin/cake install
 bin/cake server
 ```
 
-## 🤝 Contributing
+BakeKit uses a **local Composer instance** (`bin/composer.phar`) to manage plugins and themes.
+
+This keeps application dependencies separate from the plugin ecosystem and allows
+BakeKit to install, update, or remove plugins without affecting the main project.
+
+## Contributing
 
 BakeKit is actively looking for contributors!
 
@@ -69,21 +81,14 @@ Even small contributions like fixing typos, writing tests, or improving docs are
 
 [👉 How to contribute](CONTRIBUTING.md)
 
-## Licenses
-
-BakeKit includes third-party libraries, each under their respective open-source licenses:
-
-- [AdminLTE](licenses/AdminLTE-LICENSE.txt) — MIT License
-- [TinyMCE](licenses/TinyMCE-LICENSE.txt) — LGPL 2.1 License
-
-Full license texts are available in the [licenses](licenses/) folder.
-
 ## License
 
 [MIT License](LICENSE)
 
-## 🔥 Ready to Bake?
+## Ready to Bake?
 
 With BakeKit, you're not starting from zero — you're starting with a warm, extensible CakePHP base, full of tools ready to power your next idea.
 
-> **If you can make it, bake it with BakeKit!**
+> **If you can make it, bake it with BakeKit.**
+
+⭐ If BakeKit saves you time, consider starring the repository and checking out the [documentation](https://bakewizard.github.io/bakekit/).
