@@ -1,6 +1,6 @@
 # 📑 Menus
 
-Menus in **BakeKit CMS** allow you to create navigational structures for both the backend (admin interface) and frontend. They are fully customizable and can contain static or dynamic links. Menus can be rendered anywhere in your theme using a region + block combination, just like any other widget.
+Menus in **BakeKit** allow you to create navigational structures for both the backend (admin interface) and frontend. They are fully customizable and can contain static or dynamic links. Menus can be rendered anywhere in your theme using a region + block combination, just like any other widget.
 
 ---
 

@@ -1,8 +1,8 @@
 # 🔐 Access Control
 
-BakeKit CMS provides a powerful, flexible access control system for managing users, roles, and permissions.
+BakeKit provides a powerful, flexible access control system for managing users, roles, and permissions.
 It uses hierarchical roles and dynamic action detection from plugins to automatically identify available actions.
-This approach gives you fine-grained, dynamic control over what users can see and do within the CMS, making it easy to adapt permissions as your project grows.
+This approach gives you fine-grained, dynamic control over what users can see and do within the system, making it easy to adapt permissions as your project grows.
 
 ---
 
@@ -52,7 +52,7 @@ Each child can **inherit**, **allow**, or **deny** specific actions.
 
 ## 4. 🗂️ Resources
 
-`Resources` are the actions of BakeKit CMS that you can control with permissions.
+`Resources` are the actions of BakeKit that you can control with permissions.
 
 They are organized hierarchically, like roles:
 

@@ -21,7 +21,7 @@ class ConfigForm extends Form
     protected function _buildSchema(Schema $schema): Schema
     {
         return $schema
-                        ->addField('siteName', ['type' => 'string', 'default' => 'BakeKit CMS'])
+                        ->addField('siteName', ['type' => 'string', 'default' => 'BakeKit'])
                         ->addField('theme', 'string')
                         ->addField('defaultDashboard', ['type' => 'string', 'default' => 'System'])
                         ->addField('maintenance.mode', ['type' => 'boolean', 'default' => 0])

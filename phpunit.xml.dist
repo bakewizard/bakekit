@@ -15,6 +15,15 @@
         <testsuite name="App">
             <directory>tests/TestCase/</directory>
         </testsuite>
+        <testsuite name="Pages">
+            <directory>plugins/Pages/tests/TestCase/</directory>
+        </testsuite>
+        <testsuite name="Blogger">
+            <directory>plugins/Blogger/tests/TestCase/</directory>
+        </testsuite>
+        <testsuite name="Slideshow">
+            <directory>plugins/Slideshow/tests/TestCase/</directory>
+        </testsuite>
         <!-- Add plugin test suites here. -->
     </testsuites>
 

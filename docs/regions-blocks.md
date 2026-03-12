@@ -1,6 +1,6 @@
 # 🧩 Regions & Blocks
 
-Regions & Blocks are the foundation for dynamic content in **BakeKit CMS** themes.
+Regions & Blocks are the foundation for dynamic content in **BakeKit** themes.
 Themes use region placeholders to mark where dynamic content should appear. These placeholders are defined using:
 
 ```php
@@ -28,7 +28,7 @@ Blocks are the actual content rendered in regions. A block can either:
 - Contain **plain text** (manually entered content).
 - Render a **[CakePHP 5 cell](https://book.cakephp.org/5/en/views/cells.html)**, optionally with settings and a custom template.
 
-Blocks act as wrappers for CakePHP cells. This makes it easy to drop in CMS widgets like menus, article listings, or custom features.
+Blocks act as wrappers for CakePHP cells. This makes it easy to drop in widgets like menus, article listings, or custom features.
 
 ---
 

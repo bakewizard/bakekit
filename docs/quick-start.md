@@ -1,21 +1,21 @@
-# 🚀 Quick Start – BakeKit CMS
+# 🚀 Quick Start – BakeKit
 
-Welcome to **BakeKit CMS**! This quick start guide will help you get up and running in minutes.
+Welcome to **BakeKit**! This quick start guide will help you get up and running in minutes.
 
-> This guide assumes you've already downloaded or cloned BakeKit CMS from GitHub and have it running in a local development environment.
+> This guide assumes you've already downloaded or cloned BakeKit from GitHub and have it running in a local development environment.
 
 ---
 
 ## 🧰 Site Management Panel
 
-Once launched, you’ll see a clean dashboard. All features in BakeKit CMS are **plugin-based**, so nothing is enabled by default.
+Once launched, you’ll see a clean dashboard. All features in BakeKit are **plugin-based**, so nothing is enabled by default.
 
-At the top of the dashboard, there are two predefined region placeholders:
+There are two predefined menus:
 
-- **[plugins-menu]** – For menus populated with plugin links (Pages, Blog, etc.)
-- **[custom-menu]** – For menus with custom links
+- **Plugins menu** – For menu populated with plugin links (Pages, Blog, etc.)
+- **Custom menu** – For menu with custom links
 
-![Site management](images/dashboard.png "Site management")
+![Dashboard](images/dashboard.png "Dashboard")
 
 To begin configuring your site, click the ⚙️ **cogs icon** in the top-right corner of the dashboard to access the **Site Management Panel**, where you can:
 
@@ -45,85 +45,23 @@ rm -rf FileManager
 
 ---
 
-## 🧭 2. Add a Menu
+## 🧭 2. Edit a Menu Item
 
 1. Navigate to the **Menus** page.
-2. Click the **➕ icon** to create a new menu.
-3. Fill in the fields:
-    - **Name**: `Admin left accordion menu`
-    - **Description**: `Admin plugins menu`
-    - **Client**: Select `Backend`.
-    - **Enabled**: ✅ Checked.
-4. Click **Save & Close**.
-
-![Add menu](images/add-admin-menu.png "Add menu")
-
-The menu will appear in the **Menus** page:
+2. In the **Actions** column of **Plugins menu**, click the first button to manage menu links.
+3. Click the **📝 icon** to edit the first link.
+4. Click the **Link** button and choose **Plugin page** from the accordion **FileManager** tab.
+5. Click **Save & Close**.
 
 ![Menus](images/menus.png "Menus")
 
-To add links to the menu:
+![Plugins menu links](images/plugins-menu-links.png "Plugins menu links")
 
-1. In the **Actions** column, click the first button to manage menu links.
-2. Click the **➕ icon** to add a new link.
-3. Fill in the fields:
-    - **Title**: `FileManager`
-    - **Icon**: Enter a Bootstrap or FontAwesome class (e.g., bi-folder, fa fa-file)
-    - Click the **Link** button and choose **Plugin page** from the accordion.
-4. Click **Save & Close**.
-
-![Add menu link](images/add-menu-link.png "Add menu link")
-
-The new link will be added to the menu:
-
-![Menu link](images/add-admin-menu-link.png "Menu link")
+![Edit menu link](images/edit-menu-link.png "Edit menu link")
 
 ---
 
-## 🧱 3. Add a Region with a Block
-
-To render the admin menu in your layout:
-
-1. Go to **Regions & Blocks**.
-2. Click the **➕ icon** to create a new region.
-3. Enter the details:
-    - **Alias**: `plugins-menu` (must match the placeholder name).
-    - **Description**: `Plugins menu region`.
-4. Click **Save & Close**.
-
-![Add region](images/add-region.png "Add region")
-
-The region will now appear in the list:
-
-![Regions](images/regions.png "Regions")
-
-To add a block to the region:
-
-1. In the **Actions** column, click the first button to manage blocks.
-2. Click the **➕ icon** to create a block.
-3. Fill in the details:
-    - **Alias**: `plugins-menu-block` (must be a unique identifier: a-z, 0-9, -).
-    - **Title**: `Plugins menu block`.
-    - **Description**: `Plugins menu block containing plugins menu`.
-    - Click the **Cell** button and choose **'Menu cell'** from the accordion.
-    - **Enabled**: ✅ Checked.
-4. Click **Save & Close**.
-
-![Blocks](images/blocks.png "Blocks")
-
-Finally, configure the new block:
-
-1. In the **Actions** column, click the ⚙️ **icon**.
-2. Select **Admin left accordion menu** from the dropdown.
-3. Click **Save**.
-
-![Blocks saved](images/block-settings.png "Blocks saved")
-
-You should now see the **FileManager** link in the admin sidebar.
-
----
-
-## 📦 4. Load a Theme
+## 📦 3. Load a Theme
 
 To install and activate a new theme:
 
@@ -137,7 +75,7 @@ To install and activate a new theme:
 
 ## 🛠️ Next Steps
 
-BakeKit CMS is now set up!
+BakeKit is now set up!
 
 You can now:
 

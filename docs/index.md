@@ -1,6 +1,6 @@
-# 🎉 Welcome to BakeKit CMS
+# 🎉 Welcome to BakeKit
 
-**BakeKit** is a modern CMS boilerplate built with **CakePHP 5**, featuring a clean Admin Panel and everything you need to get started fast.
+**BakeKit** is a modern web application boilerplate built with **CakePHP 5**, featuring a clean Admin Panel and everything you need to get started fast.
 
 Core features include:
 

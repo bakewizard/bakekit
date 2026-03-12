@@ -29,14 +29,30 @@ Each plugin **must** contain a valid `composer.json`, for example:
 
 ```json
 {
-  "name": "bakewizard/filemanager",
-  "description": "FileManager plugin for BakeKit CMS",
-  "type": "cakephp-plugin",
-  "autoload": {
-    "psr-4": {
-      "FileManager\\": "src/"
+    "name": "bakewizard/filemanager",
+    "description": "FileManager plugin for BakeKit",
+    "license": "MIT",
+    "type": "cakephp-plugin",
+    "keywords": ["cakephp", "plugin", "file-manager", "file-browser", "bakekit"],
+    "require": {
+        "php": ">=8.3",
+        "cakephp/cakephp": "5.3.*",
+        "bakewizard/bakekit": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5.3 || ^12.1.3 || ^13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FileManager\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FileManager\\Test\\": "tests/",
+            "FileManager\\Test\\Fixture\\": "tests/Fixture/"
+        }
     }
-  }
 }
 ```
 
