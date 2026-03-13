@@ -153,9 +153,10 @@ class AppMigration extends BaseMigration
                 'null' => true,
             ])
             ->addColumn('enabled', 'boolean', [
-                'default' => false,
+                'default' => '0',
                 'limit' => null,
-                'null' => true,
+                'null' => false,
+                'signed' => false,
             ])
             ->addPrimaryKey('id')
             ->addIndex('alias', ['unique' => true])
@@ -279,7 +280,7 @@ class AppMigration extends BaseMigration
             ->addColumn('target', 'char', [
                 'default' => '_self',
                 'limit' => 10,
-                'null' => true,
+                'null' => false,
             ])
             ->addColumn('lft', 'integer', [
                 'default' => null,
@@ -349,9 +350,10 @@ class AppMigration extends BaseMigration
                 'signed' => false,
             ])
             ->addColumn('enabled', 'boolean', [
-                'default' => false,
+                'default' => '0',
                 'limit' => null,
-                'null' => true,
+                'null' => false,
+                'signed' => false,
             ])
             ->addPrimaryKey('id')
             ->addForeignKey('region_id', 'regions', 'id', ['update' => 'CASCADE', 'delete' => 'CASCADE'])

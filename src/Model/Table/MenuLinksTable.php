@@ -101,7 +101,8 @@ class MenuLinksTable extends Table
         $validator
             ->scalar('target')
             ->maxLength('target', 10)
-            ->allowEmptyString('target');
+            ->requirePresence('target', 'create')
+            ->notEmptyString('target');
 
         return $validator;
     }

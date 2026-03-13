@@ -141,7 +141,7 @@ class BlocksTable extends Table
 
         $validator
                 ->boolean('enabled')
-                ->allowEmptyString('enabled');
+                ->notEmptyString('enabled');
 
         return $validator;
     }
