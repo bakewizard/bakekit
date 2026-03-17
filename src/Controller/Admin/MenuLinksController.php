@@ -53,7 +53,7 @@ class MenuLinksController extends AppController
 
             $this->Flash->error(__('There were errors while adding menu link. Please, try again.'));
         }
-        $parentMenuLinks = $this->MenuLinks->ParentMenuLinks->find('treeList', spacer: '-', limit: 200)->where(['menu_id' => $id]);
+        $parentMenuLinks = $this->MenuLinks->ParentMenuLinks->find('treeList', spacer: '---', limit: 200)->where(['menu_id' => $id]);
         $targets = ['_self' => __('This tab'), '_blank' => __('New tab')];
         $this->set(compact('menuLink', 'targets', 'parentMenuLinks'));
     }
@@ -78,7 +78,7 @@ class MenuLinksController extends AppController
 
             $this->Flash->error(__('The menu link could not be saved. Please, try again.'));
         }
-        $parentMenuLinks = $this->MenuLinks->ParentMenuLinks->find('treeList', spacer: '-', limit: 200)->where(['menu_id' => $menuLink->menu_id]);
+        $parentMenuLinks = $this->MenuLinks->ParentMenuLinks->find('treeList', spacer: '---', limit: 200)->where(['menu_id' => $menuLink->menu_id]);
         $targets = ['_self' => __('This tab'), '_blank' => __('New tab')];
         $this->set(compact('menuLink', 'targets', 'parentMenuLinks'));
     }
@@ -164,6 +164,6 @@ class MenuLinksController extends AppController
 
         $data = $menu->isSystem() ? $re->getAdminLinks($activePlugins) : $re->getLinks($activePlugins);
 
-        $this->set(compact('data'));
+        $this->set(compact('data', 'menu'));
     }
 }

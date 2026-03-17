@@ -202,29 +202,46 @@ class ResourcesExplorer
                     continue;
                 }
 
+                $isDashboard = $controller === 'Dashboard';
+                $allowedMethods = $isDashboard ? ['index', 'settings'] : ['index', 'add'];
+                $actions = [];
+
                 foreach ($this->getDeclaredPublicMethods($fqcn, self::COMMON_CONTROLLER_METHODS) as $method) {
-                    if ($method->name !== 'index' && $method->getNumberOfParameters() !== 0) {
+                    if (
+                        !in_array($method->name, $allowedMethods, true) ||
+                        $method->getNumberOfRequiredParameters() !== 0
+                    ) {
                         continue;
                     }
 
-                    $docComment = $method->getDocComment();
-                    if (!$docComment) {
-                        continue;
-                    }
-
-                    $docBlock = $this->parseDocBlock($docComment);
-
-                    $data[$plugin][] = [
-                        'summary' => $docBlock->getSummary(),
-                        'description' => $docBlock->getDescription(),
-                        'url' => [
-                            'plugin' => $plugin,
-                            'controller' => $controller,
-                            'action' => $method->name,
-                        ],
-                        'target' => '_self',
-                    ];
+                    $actions[] = $method->name;
                 }
+
+                if (!$actions) {
+                    continue;
+                }
+
+                $data[$plugin][] = [
+                    'controller' => $controller,
+                    'actions' => $actions,
+                    'url' => [
+                        'plugin' => $plugin,
+                        'controller' => $controller,
+                    ],
+                    'target' => '_self',
+                ];
+            }
+            if (isset($data[$plugin])) {
+                usort($data[$plugin], function ($a, $b) {
+                    if ($a['controller'] === 'Dashboard') {
+                        return -1;
+                    }
+                    if ($b['controller'] === 'Dashboard') {
+                        return 1;
+                    }
+
+                    return strcmp((string)$a['controller'], (string)$b['controller']);
+                });
             }
         }
 
