@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\View\Cell;
 
+use App\Attribute\Link;
 use App\View\Cell\BlockCell as Cell;
 
 /**
@@ -11,13 +12,17 @@ use App\View\Cell\BlockCell as Cell;
 class MenuCell extends Cell
 {
     /**
-     * Menu
+     * Menu block rendering method.
      *
-     * Displays menu
+     * Retrieves menu items for a given menu ID from block parameters
+     * and builds a threaded (hierarchical) structure ordered by `lft`.
+     * Results are cached using a key that includes menu ID, prefix,
+     * and language (if present).
      *
      * @param string $helper Menu helper
      * @return void
      */
+    #[Link(summary: 'Menu', description: 'Displays menu')]
     public function display(string $helper = 'Menu'): void
     {
         $menuId = $this->block->params['menu'] ?? '';

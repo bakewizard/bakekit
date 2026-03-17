@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Lib;
 
+use App\Attribute\Link;
 use DirectoryIterator;
 use ReflectionClass;
 use ReflectionMethod;
@@ -92,14 +93,14 @@ class ResourcesExplorer
                 }
 
                 foreach ($this->getDeclaredPublicMethods($fqcn, ['initialize']) as $method) {
-                    $docComment = $method->getDocComment();
-                    if (!$docComment) {
+                    $attr = $this->getAttribute($method, Link::class);
+                    if (!$attr) {
                         continue;
                     }
-                    $docBlock = $this->parseDocBlock($docComment);
+
                     $data[$plugin][] = [
-                        'summary' => $docBlock->getSummary(),
-                        'description' => $docBlock->getDescription(),
+                        'summary' => $attr->summary,
+                        'description' => $attr->description,
                         'path' => $method->name === 'display'
                             ? ($plugin != 'System' ? "{$plugin}.{$cell}" : $cell)
                             : ($plugin != 'System' ? "{$plugin}.{$cell}::{$method->name}" : "{$cell}::{$method->name}"),
@@ -138,29 +139,17 @@ class ResourcesExplorer
                 }
 
                 foreach ($this->getDeclaredPublicMethods($fqcn, self::COMMON_CONTROLLER_METHODS) as $method) {
-                    $docComment = $method->getDocComment();
-                    if (!$docComment) {
-                        continue;
-                    }
-                    $docBlock = $this->parseDocBlock($docComment);
-
-                    $menuTag = $docBlock->getTag('menu');
-
-                    if ($menuTag === null) {
+                    $attr = $this->getAttribute($method, Link::class);
+                    if (!$attr) {
                         continue;
                     }
 
-                    $paramCount = $method->getNumberOfParameters();
-                    $adminController = is_array($menuTag)
-                        ? trim((string)reset($menuTag))
-                        : trim((string)$menuTag);
-
-                    $isModal = $paramCount === 1;
-                    $controllerName = $isModal ? ($adminController ?: $controller) : $controller;
+                    $isModal = !empty($attr->picker);
+                    $controllerName = $isModal ? $attr->picker : $controller;
 
                     $data[$plugin][] = [
-                        'summary' => $docBlock->getSummary(),
-                        'description' => $docBlock->getDescription(),
+                        'summary' => $attr->summary,
+                        'description' => $attr->description,
                         'url' => [
                             'plugin' => $plugin,
                             'prefix' => $isModal ? 'Admin' : false,
@@ -352,13 +341,17 @@ class ResourcesExplorer
     }
 
     /**
-     * Helper method to parse DocBlock comments.
+     * Gets a specific attribute instance from a method.
      *
-     * @param string $docblock DocBlock comment.
-     * @return \App\Lib\DocBlockParser
+     * @template T of object
+     * @param \ReflectionMethod $method
+     * @param class-string<T> $attributeClass
+     * @return T|null
      */
-    private function parseDocBlock(string $docblock): DocBlockParser
+    private function getAttribute(ReflectionMethod $method, string $attributeClass): ?object
     {
-        return new DocBlockParser($docblock);
+        $attrs = $method->getAttributes($attributeClass);
+
+        return $attrs ? $attrs[0]->newInstance() : null;
     }
 }
