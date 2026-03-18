@@ -86,6 +86,7 @@ class MenuLinksControllerTest extends TestCase
         $postData = [
             'title' => 'Test link',
             'link' => '#',
+            'target' => '_self',
         ];
         $this->post('/admin/menu-links/add/2', $postData);
         $this->assertResponseCode(302);

@@ -63,9 +63,9 @@ class PermissionsTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-                ->boolean('allowed')
-                ->requirePresence('allowed', 'create')
-                ->notEmptyString('allowed');
+            ->boolean('allowed')
+            ->requirePresence('allowed', 'create')
+            ->notEmptyString('allowed');
 
         return $validator;
     }
@@ -87,29 +87,38 @@ class PermissionsTable extends Table
     }
 
     /**
-     * Allows a role to access a resource
+     * Allows a role to access a resource.
+     * Updates an existing record if one already exists (upsert).
      *
-     * @param string|int $role
-     * @param string|int $resource
-     * @param string|int $value
+     * @param string|int $role Role id
+     * @param string|int $resource Resource id
+     * @param string|int $value 1 = allow, 0 = deny
      * @return bool
      */
     public function allow(int|string $role, int|string $resource, int|string $value = 1): bool
     {
-        $entity = $this->newEntity([
-            'role_id' => $role,
-            'resource_id' => $resource,
-            'allowed' => $value,
-        ]);
+        $entity = $this->find()
+            ->where(['role_id' => $role, 'resource_id' => $resource])
+            ->first();
+
+        if ($entity === null) {
+            $entity = $this->newEntity([
+                'role_id' => $role,
+                'resource_id' => $resource,
+                'allowed' => $value,
+            ]);
+        } else {
+            $entity = $this->patchEntity($entity, ['allowed' => $value]);
+        }
 
         return $this->save($entity) !== false;
     }
 
     /**
-     * Denies a role to access a resource
+     * Denies a role access to a resource.
      *
-     * @param string|int $role
-     * @param string|int $resource
+     * @param string|int $role Role id
+     * @param string|int $resource Resource id
      * @return bool
      */
     public function deny(int|string $role, int|string $resource): bool
@@ -118,72 +127,91 @@ class PermissionsTable extends Table
     }
 
     /**
-     * Inherits role permission
+     * Removes an explicit permission record, causing the role to
+     * fall back to inheriting from its parent role.
+     * Returns true if the record was deleted or did not exist.
      *
-     * @param string|int $role
-     * @param string|int $resource
+     * @param string|int $role Role id
+     * @param string|int $resource Resource id
      * @return bool
      */
     public function inherit(int|string $role, int|string $resource): bool
     {
-        $entity = $this->find()->where(['role_id' => $role, 'resource_id' => $resource])->first();
+        $entity = $this->find()
+            ->where(['role_id' => $role, 'resource_id' => $resource])
+            ->first();
 
-        return $this->delete($entity) !== false;
+        if ($entity === null) {
+            return true;
+        }
+
+        return $this->delete($entity);
     }
 
     /**
-     * Checks if a role can access a resource
+     * Checks if a role can access a resource path.
      *
-     * @param string|int $role
-     * @param string|int $resource
+     * @param string|int $role Role id
+     * @param string $resource Resource path (e.g. 'Site/System/Dashboard/index')
      * @return bool
      */
     public function check(int|string $role, int|string $resource): bool
     {
         $perms = $this->getPermissions($role);
 
-        return isset($perms[$resource]) ? $perms[$resource]['permissions'][0] : true;
+        return isset($perms[$resource]) ? $perms[$resource]['permissions']['allowed'] : true;
     }
 
     /**
-     * Receives role permissions
+     * Builds the full permission map for a role, taking into account
+     * the role hierarchy (parents) and resource hierarchy (parent nodes).
      *
-     * @param string|int $role
-     * @return mixed
+     * Each entry contains:
+     *   'id'          => resource id
+     *   'alias'       => resource alias
+     *   'permissions' => [
+     *       'allowed'   => bool,
+     *       'inherited' => bool  // true if the value came from a parent role or resource
+     *   ]
+     *
+     * Result is cached per role_id.
+     *
+     * @param string|int $role Role id
+     * @return array<string, array{id: int, alias: string, permissions: array{allowed: bool, inherited: bool}}>
      */
-    public function getPermissions(int|string $role): mixed
+    public function getPermissions(int|string $role): array
     {
-        $permissions = function () use ($role) {
-
+        $permissions = function () use ($role): array {
             $paths = [];
             $perms = [];
 
             $resources = $this->Resources->find()
-                    ->orderByAsc('lft')
-                    ->enableHydration(false)
-                    ->all()
-                    ->toList();
+                ->orderByAsc('lft')
+                ->enableHydration(false)
+                ->all()
+                ->toList();
 
             $path = $this->Roles->find('path', for: $role)
-                    ->contain('Resources')
-                    ->formatResults(function (CollectionInterface $results) {
-                        return $results->map(function ($row) {
-                            if (!empty($row['resources'])) {
-                                $row['resources'] = (new Collection($row['resources']))
-                                    ->indexBy('id')
-                                    ->toArray();
-                            }
+                ->contain('Resources')
+                ->formatResults(function (CollectionInterface $results) {
+                    return $results->map(function ($row) {
+                        if (!empty($row['resources'])) {
+                            $row['resources'] = (new Collection($row['resources']))
+                                ->indexBy('id')
+                                ->toArray();
+                        }
 
-                            return $row;
-                        });
-                    })
-                    ->enableHydration(false)
-                    ->toArray();
+                        return $row;
+                    });
+                })
+                ->enableHydration(false)
+                ->toArray();
 
+            // array_reverse so index 0 = current role, 1 = parent, 2 = grandparent, ...
             $roles = array_reverse($path);
 
             foreach ($resources as $resource) {
-                // Generate path
+                // Build the full path string for this resource node
                 if ($resource['parent_id'] && isset($paths[$resource['parent_id']])) {
                     $paths[$resource['id']] = $paths[$resource['parent_id']] . '/' . $resource['alias'];
                 } else {
@@ -192,37 +220,38 @@ class PermissionsTable extends Table
 
                 $allowed = null;
                 $inherited = false;
-                $blocked = false;
 
+                // Walk the role chain (current role first, then parents)
                 foreach ($roles as $i => $r) {
                     if (isset($r['resources'][$resource['id']])) {
-                        $inherited = $i === 0 ? false : true;
+                        $inherited = $i !== 0;
                         $allowed = $r['resources'][$resource['id']]['_joinData']['allowed'];
-                        $blocked = $i === 0 ? false : !$allowed;
                         break;
                     }
                 }
 
-                if (is_null($allowed)) {
+                // No explicit record anywhere in the role chain — inherit from parent resource
+                if ($allowed === null) {
                     $inherited = true;
-                    $allowed = isset($resource['parent_id']) ? $perms[$paths[$resource['parent_id']]]['permissions'][0] : false;
-                    $blocked = false;
-                    if (isset($resource['parent_id'])) {
-                        $parentPermissions = $perms[$paths[$resource['parent_id']]]['permissions'];
-                        $blocked = $parentPermissions[1] && !$parentPermissions[0];
-                    }
+                    $allowed = isset($resource['parent_id'])
+                        ? $perms[$paths[$resource['parent_id']]]['permissions']['allowed']
+                        : false;
                 }
 
                 $perms[$paths[$resource['id']]] = [
                     'id' => $resource['id'],
                     'alias' => $resource['alias'],
-                    'permissions' => [$allowed, $inherited, $blocked],
+                    'permissions' => [
+                        'allowed' => $allowed,
+                        'inherited' => $inherited,
+                    ],
                 ];
             }
 
             return $perms;
         };
 
+        /** @var array<string, array{id: int, alias: string, permissions: array{allowed: bool, inherited: bool}}> */
         return Cache::remember((string)$role, $permissions, 'permissions');
     }
 }

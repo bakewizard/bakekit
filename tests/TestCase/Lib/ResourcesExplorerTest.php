@@ -31,17 +31,16 @@ class ResourcesExplorerTest extends TestCase
         parent::setUp();
 
         $zipPath = TESTS . 'Fixture/data/' . self::PLUGIN_NAME . '.zip';
-
         $zip = new ZipArchive();
         $res = $zip->open($zipPath);
         $this->assertTrue($res === true, 'ZIP file could not be opened');
         $zip->extractTo(self::PLUGINS_DIR);
         $zip->close();
 
-        /** @var ClassLoader $loader */
+        /** @var \Composer\Autoload\ClassLoader $loader */
         $loader = require ROOT . '/vendor/autoload.php';
-
         $loader->addPsr4('BareBone\\', self::PLUGINS_DIR . 'BareBone' . DS . 'src');
+
         $this->explorer = new ResourcesExplorer();
     }
 
@@ -49,7 +48,6 @@ class ResourcesExplorerTest extends TestCase
     {
         parent::tearDown();
 
-        // Clean up temporary plugin directory if it was created and not using vfsStream
         $pluginDir = self::PLUGINS_DIR . self::PLUGIN_NAME . DS;
         $fs = new Filesystem();
         if ($fs->exists($pluginDir)) {
@@ -66,7 +64,9 @@ class ResourcesExplorerTest extends TestCase
 
         $actions = $result[self::PLUGIN_NAME]['Articles'];
         $this->assertContains('index', $actions);
+        $this->assertContains('add', $actions);
         $this->assertContains('edit', $actions);
+        $this->assertContains('delete', $actions);
     }
 
     public function testGetCells(): void
@@ -75,13 +75,18 @@ class ResourcesExplorerTest extends TestCase
 
         $this->assertArrayHasKey(self::PLUGIN_NAME, $result);
         $this->assertNotEmpty($result[self::PLUGIN_NAME]);
-        $cell = $result[self::PLUGIN_NAME][0];
 
         foreach ($result[self::PLUGIN_NAME] as $cell) {
             $this->assertArrayHasKey('summary', $cell);
             $this->assertArrayHasKey('description', $cell);
             $this->assertArrayHasKey('path', $cell);
+            $this->assertNotEmpty($cell['summary']);
         }
+
+        // обидва методи ArticleCell знайдені
+        $paths = array_column($result[self::PLUGIN_NAME], 'path');
+        $this->assertContains('BareBone.Article::recent', $paths);
+        $this->assertContains('BareBone.Article::popular', $paths);
     }
 
     public function testGetLinks(): void
@@ -97,7 +102,20 @@ class ResourcesExplorerTest extends TestCase
             $this->assertArrayHasKey('url', $link);
             $this->assertArrayHasKey('target', $link);
             $this->assertIsArray($link['url']);
+            $this->assertNotEmpty($link['summary']);
         }
+
+        // index — пряме посилання
+        $selfLinks = array_filter($result[self::PLUGIN_NAME], fn($l) => $l['target'] === '_self');
+        $this->assertNotEmpty($selfLinks);
+
+        // view з picker — модалка
+        $blankLinks = array_filter($result[self::PLUGIN_NAME], fn($l) => $l['target'] === '_blank');
+        $this->assertNotEmpty($blankLinks);
+
+        // category без #[Link] — не потрапляє
+        $actions = array_column(array_column($result[self::PLUGIN_NAME], 'url'), 'action');
+        $this->assertNotContains('category', $actions);
     }
 
     public function testGetAdminLinks(): void
@@ -107,12 +125,31 @@ class ResourcesExplorerTest extends TestCase
         $this->assertArrayHasKey(self::PLUGIN_NAME, $result);
         $this->assertNotEmpty($result[self::PLUGIN_NAME]);
 
-        foreach ($result[self::PLUGIN_NAME] as $link) {
-            $this->assertArrayHasKey('summary', $link);
-            $this->assertArrayHasKey('description', $link);
-            $this->assertArrayHasKey('url', $link);
-            $this->assertArrayHasKey('target', $link);
-            $this->assertIsArray($link['url']);
+        foreach ($result[self::PLUGIN_NAME] as $item) {
+            $this->assertArrayHasKey('controller', $item);
+            $this->assertArrayHasKey('actions', $item);
+            $this->assertArrayHasKey('url', $item);
+            $this->assertIsArray($item['actions']);
+            $this->assertNotEmpty($item['actions']);
         }
+
+        // Dashboard завжди першим
+        $this->assertEquals('Dashboard', $result[self::PLUGIN_NAME][0]['controller']);
+
+        // Dashboard має index і settings
+        $dashboard = $result[self::PLUGIN_NAME][0];
+        $this->assertContains('index', $dashboard['actions']);
+        $this->assertContains('settings', $dashboard['actions']);
+
+        // Articles має index і add, але не edit/delete (мають параметри)
+        $articles = array_values(array_filter(
+            $result[self::PLUGIN_NAME],
+            fn($i) => $i['controller'] === 'Articles',
+        ))[0] ?? null;
+        $this->assertNotNull($articles);
+        $this->assertContains('index', $articles['actions']);
+        $this->assertContains('add', $articles['actions']);
+        $this->assertNotContains('edit', $articles['actions']);
+        $this->assertNotContains('delete', $articles['actions']);
     }
 }

@@ -2,7 +2,6 @@
 /**
  * @var \App\View\AppView $this
  * @var mixed $allowed
- * @var mixed $blocked
  * @var mixed $inherited
  * @var mixed $resources
  * @var \App\Model\Entity\Role $role
@@ -54,7 +53,7 @@
                                     <i><?= $indents . $resource['alias'] ?></i>
                                 <?php endif; ?>
                             </td>
-                            <?php [$allowed, $inherited, $blocked] = $resource['permissions']; ?>
+                            <?php ['allowed' => $allowed, 'inherited' => $inherited] = $resource['permissions']; ?>
                             <?php $name = "perms.{$resource['id']}.{$role->id}"; ?>
                             <?php $value = $inherited ? 'inherit' : ($allowed ? 'allow' : 'deny'); ?>
                             <td>
@@ -62,7 +61,7 @@
                                     <span class="input-group-text" style="color:hsl(<?= $allowed ? 120 : 0 ?>, 60%, <?= $inherited ? 70 : 50 ?>%)">
                                         <i class="fa-solid fa-lg fa-<?= $allowed ? 'check' : 'times' ?>-circle"></i>
                                     </span>
-                                    <?php if ($role->isRoot() || $blocked) : ?>
+                                    <?php if ($role->isRoot()) : ?>
                                         <?= $this->Form->text($name, ['value' => ucfirst($value), 'disabled' => true]) ?>
                                     <?php else : ?>
                                         <?php $options = ['allow' => __('Allow'), 'deny' => __('Deny'), 'inherit' => __('Inherit')] ?>

@@ -27,7 +27,7 @@ class RolePolicy implements BeforePolicyInterface
         }
 
         if ($identity->isRoot()) {
-            if ($action === 'delete' && $identity->id == $resource->id) {
+            if ($action === 'delete' && $resource->isRoot()) {
                 return new Result(false, __('Root role cannot be deleted.'));
             }
 
