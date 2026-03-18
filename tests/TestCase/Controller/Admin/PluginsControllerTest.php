@@ -6,8 +6,10 @@ namespace App\Test\TestCase\Controller\Admin;
 use App\Lib\ComposerManager;
 use App\Lib\PluginManager;
 use Cake\Cache\Cache;
+use Cake\Core\Configure;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use Exception;
 use Laminas\Diactoros\UploadedFile;
 use Symfony\Component\Filesystem\Filesystem;
 use ZipArchive;
@@ -388,5 +390,137 @@ class PluginsControllerTest extends TestCase
 
         $plugin = $pluginsTable->get($plugin->id);
         $this->assertFalse($plugin->enabled);
+    }
+
+    // -------------------------------------------------------------------------
+    // Additional tests
+    // -------------------------------------------------------------------------
+
+    /**
+     * testEditPost should persist the changed data.
+     */
+    public function testEditPostSavesData(): void
+    {
+        $this->post('/admin/plugins/edit/1', ['alias' => 'new-alias']);
+
+        $this->assertResponseCode(302);
+        $plugin = $this->fetchTable('Plugins')->get(1);
+        $this->assertSame('new-alias', $plugin->alias);
+    }
+
+    /**
+     * install() with a non-ZIP file should show an error flash.
+     * PluginManager::install() throws when the file is not a valid ZIP.
+     */
+    public function testInstallInvalidFileShowsError(): void
+    {
+        $tmpName = tempnam(sys_get_temp_dir(), 'php');
+        file_put_contents($tmpName, 'not a zip');
+
+        $this->mockService(PluginManager::class, function () {
+            $mock = $this->createMock(PluginManager::class);
+            $mock->expects($this->once())
+                ->method('install')
+                ->willThrowException(new Exception('Invalid ZIP file.'));
+
+            return $mock;
+        });
+
+        $zipFile = new UploadedFile(
+            $tmpName,
+            filesize($tmpName),
+            UPLOAD_ERR_OK,
+            'invalid.zip',
+            'application/octet-stream',
+        );
+
+        $this->configRequest(['files' => ['plugin' => $zipFile]]);
+        $this->post('/admin/plugins/install');
+
+        $this->assertResponseCode(302);
+        $this->assertFlashMessage('Invalid ZIP file.');
+
+        unlink($tmpName);
+    }
+
+    /**
+     * deactivate() should refuse to deactivate the default dashboard plugin.
+     */
+    public function testDeactivateDefaultDashboardShowsError(): void
+    {
+        // Enable the plugin first so we can verify it stays enabled after the blocked deactivation
+        $table = $this->fetchTable('Plugins');
+        $plugin = $table->get(1);
+        $plugin->enabled = true;
+        $table->save($plugin);
+
+        Configure::write('Cms.defaultDashboard', 'TestPlugin1');
+
+        $this->post('/admin/plugins/deactivate/1');
+
+        $this->assertResponseCode(302);
+        $this->assertFlashMessage('The plugin "TestPlugin1" cannot be modified. Its dashboard is set as the default one.');
+
+        // Plugin should still be enabled — deactivation was blocked
+        $this->assertTrue((bool)$table->get(1)->enabled);
+
+        Configure::delete('Cms.defaultDashboard');
+    }
+
+    /**
+     * uninstall() should refuse to uninstall the default dashboard plugin.
+     */
+    public function testUninstallDefaultDashboardShowsError(): void
+    {
+        Configure::write('Cms.defaultDashboard', 'TestPlugin1');
+
+        $this->mockService(PluginManager::class, function () {
+            $mock = $this->createMock(PluginManager::class);
+            $mock->expects($this->never())->method('uninstall');
+
+            return $mock;
+        });
+        $this->mockService(ComposerManager::class, function () {
+            $mock = $this->createMock(ComposerManager::class);
+            $mock->expects($this->never())->method('dumpAutoload');
+
+            return $mock;
+        });
+
+        $this->post('/admin/plugins/uninstall/TestPlugin1');
+
+        $this->assertResponseCode(302);
+        $this->assertFlashMessage('The plugin "TestPlugin1" cannot be modified. Its dashboard is set as the default one.');
+
+        // Plugin record should still exist
+        $this->assertTrue($this->fetchTable('Plugins')->exists(['name' => 'TestPlugin1']));
+
+        Configure::delete('Cms.defaultDashboard');
+    }
+
+    /**
+     * activate() for an existing plugin should set enabled=true.
+     * PluginManager::activate() should NOT be called — plugin already exists in DB.
+     */
+    public function testActivateExistingPluginDoesNotCallPluginManager(): void
+    {
+        // Set plugin as disabled
+        $table = $this->fetchTable('Plugins');
+        $plugin = $table->get(1);
+        $plugin->enabled = false;
+        $table->save($plugin);
+
+        $this->mockService(PluginManager::class, function () {
+            $mock = $this->createMock(PluginManager::class);
+            $mock->expects($this->never())->method('activate');
+
+            return $mock;
+        });
+
+        $this->post('/admin/plugins/activate/TestPlugin1');
+
+        $this->assertResponseCode(302);
+        $this->assertFlashMessage('The plugin has been activated.');
+        $this->assertTrue((bool)$table->get(1)->enabled);
     }
 }

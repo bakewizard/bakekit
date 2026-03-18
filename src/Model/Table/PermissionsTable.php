@@ -6,6 +6,8 @@ namespace App\Model\Table;
 use Cake\Cache\Cache;
 use Cake\Collection\Collection;
 use Cake\Collection\CollectionInterface;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -87,7 +89,41 @@ class PermissionsTable extends Table
     }
 
     /**
-     * Allows a role to access a resource.
+     * Clears the permissions cache after a record is saved.
+     *
+     * @param \Cake\Event\EventInterface $event
+     * @param \Cake\Datasource\EntityInterface $entity
+     * @return void
+     */
+    public function afterSave(EventInterface $event, EntityInterface $entity): void
+    {
+        $this->clearPermissionsCache();
+    }
+
+    /**
+     * Clears the permissions cache after a record is deleted.
+     *
+     * @param \Cake\Event\EventInterface $event
+     * @param \Cake\Datasource\EntityInterface $entity
+     * @return void
+     */
+    public function afterDelete(EventInterface $event, EntityInterface $entity): void
+    {
+        $this->clearPermissionsCache();
+    }
+
+    /**
+     * Clears the permissions cache.
+     * Call this explicitly after bulk operations (e.g. deleteAll) that bypass callbacks.
+     *
+     * @return void
+     */
+    public function clearPermissionsCache(): void
+    {
+        Cache::clear('permissions');
+    }
+
+    /**
      * Updates an existing record if one already exists (upsert).
      *
      * @param string|int $role Role id

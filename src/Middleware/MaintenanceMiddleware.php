@@ -28,6 +28,7 @@ class MaintenanceMiddleware implements MiddlewareInterface
     protected array $_defaultConfig = [
         'allowedIps' => [],
         'className' => View::class,
+        'message' => '',
         'templatePath' => 'Error',
         'statusCode' => 503,
         'templateLayout' => 'maintenance',
@@ -80,23 +81,23 @@ class MaintenanceMiddleware implements MiddlewareInterface
         $cakeRequest = ServerRequestFactory::fromGlobals();
         $builder = new ViewBuilder();
         $view = $builder
-                ->setClassName($this->_config['className'])
-                ->setTemplatePath(Inflector::camelize($this->_config['templatePath']))
-                ->setLayout($this->_config['templateLayout'])
-                ->setVar('message', $this->_config['message'])
-                ->build($cakeRequest);
+            ->setClassName($this->_config['className'])
+            ->setTemplatePath(Inflector::camelize($this->_config['templatePath']))
+            ->setLayout($this->_config['templateLayout'])
+            ->setVar('message', $this->_config['message'])
+            ->build($cakeRequest);
 
         $bodyString = $view->render($this->_config['templateFileName']);
 
         $response = new Response();
 
-        $response
-                ->withHeader('Retry-After', (string)3600)
-                ->withHeader('Content-Type', $this->_config['contentType'])
-                ->withStatus($this->_config['statusCode']);
+        $response = $response
+            ->withHeader('Retry-After', (string)3600)
+            ->withHeader('Content-Type', $this->_config['contentType'])
+            ->withStatus($this->_config['statusCode']);
 
         $body = new CallbackStream(function () use ($bodyString) {
-                    return $bodyString;
+            return $bodyString;
         });
 
         return $response->withBody($body);
@@ -116,7 +117,7 @@ class MaintenanceMiddleware implements MiddlewareInterface
             return false;
         }
         foreach ($ipAddressList as $allowIP) {
-            if (strpos($allowIP, '/') == 0) {
+            if (strpos($allowIP, '/') === false) {
                 $allowIP .= '/32';
             }
 

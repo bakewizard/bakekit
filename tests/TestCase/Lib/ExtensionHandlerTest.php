@@ -114,12 +114,12 @@ class ExtensionHandlerTest extends TestCase
         $zip->close();
 
         $stream = $this->createMock(StreamInterface::class);
-        $stream->method('getMetadata')->with('uri')->willReturn($zipPath);
+        $stream->expects($this->once())->method('getMetadata')->with('uri')->willReturn($zipPath);
 
         $file = $this->createMock(UploadedFileInterface::class);
-        $file->method('getClientFilename')->willReturn('TestPlugin.zip');
-        $file->method('getStream')->willReturn($stream);
-        $file->method('moveTo')->willReturnCallback(function ($target) use ($zipPath) {
+        $file->expects($this->once())->method('getClientFilename')->willReturn('TestPlugin.zip');
+        $file->expects($this->once())->method('getStream')->willReturn($stream);
+        $file->expects($this->once())->method('moveTo')->willReturnCallback(function ($target) use ($zipPath) {
             copy($zipPath, $target);
         });
 
@@ -148,18 +148,20 @@ class ExtensionHandlerTest extends TestCase
     {
         $handler = new ExtensionHandler();
 
+        // Must be a real ZIP so validateZipMime() passes and validateName() is reached
         $zipPath = tempnam(sys_get_temp_dir(), 'bad_zip_');
-        file_put_contents($zipPath, 'fake zip');
+        $zip = new ZipArchive();
+        $zip->open($zipPath, ZipArchive::OVERWRITE);
+        $zip->addFromString('invalid-name/readme.txt', 'hello');
+        $zip->close();
 
         $stream = $this->createMock(StreamInterface::class);
-        $stream->method('getMetadata')->with('uri')->willReturn($zipPath);
+        $stream->expects($this->once())->method('getMetadata')->with('uri')->willReturn($zipPath);
 
         $uploadedFile = $this->createMock(UploadedFileInterface::class);
-        $uploadedFile->method('getClientFilename')->willReturn('invalid-name.zip');
-        $uploadedFile->method('getStream')->willReturn($stream);
-        $uploadedFile->method('moveTo')->willReturnCallback(function ($target) use ($zipPath) {
-            copy($zipPath, $target);
-        });
+        $uploadedFile->expects($this->once())->method('getClientFilename')->willReturn('invalid-name.zip');
+        $uploadedFile->expects($this->once())->method('getStream')->willReturn($stream);
+        $uploadedFile->expects($this->never())->method('moveTo');
 
         $this->expectException(Exception::class);
         $handler->load($uploadedFile, $this->baseDir);

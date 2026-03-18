@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Test\Fixture;
@@ -25,7 +24,7 @@ class PluginsFixture extends TestFixture
                 'alias' => 'test_plugin_1',
                 'description' => 'This is a test plugin 1',
                 'parent_plugin' => null,
-                'enabled' => 1,
+                'enabled' => 0,
             ],
             [
                 'id' => 2,
@@ -33,7 +32,7 @@ class PluginsFixture extends TestFixture
                 'alias' => 'test_plugin_2',
                 'description' => 'This is a test plugin 2',
                 'parent_plugin' => null,
-                'enabled' => 1,
+                'enabled' => 0,
             ],
             [
                 'id' => 3,
@@ -41,7 +40,7 @@ class PluginsFixture extends TestFixture
                 'alias' => 'test_plugin_3',
                 'description' => 'This is a test plugin 3',
                 'parent_plugin' => null,
-                'enabled' => 1,
+                'enabled' => 0,
             ],
         ];
         parent::init();

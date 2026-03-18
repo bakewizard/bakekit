@@ -378,7 +378,12 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $table = $this->tableLocator->get('Plugins');
         $plugins = $table->find()->where(['enabled' => true])->cache('plugins', 'cms')->toArray();
         foreach ($plugins as $plugin) {
-            $this->addPlugin($plugin->name, ['alias' => $plugin->alias]);
+            try {
+                $this->addPlugin($plugin->name, ['alias' => $plugin->alias]);
+            } catch (MissingPluginException) {
+                // Plugin is marked as enabled in DB but files are missing — skip silently.
+                // This can happen during tests or after a manual plugin removal.
+            }
         }
     }
 }

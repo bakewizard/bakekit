@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Lib\ResourcesExplorer;
-use Cake\Cache\Cache;
 use Cake\Event\EventInterface;
 use Override;
 
@@ -26,10 +25,6 @@ class RolesController extends AppController
     public function beforeFilter(EventInterface $event)
     {
         parent::beforeFilter($event);
-
-        if (!$this->request->is('get') && $this->request->getParam('action') !== 'add') {
-            Cache::clear('permissions');
-        }
 
         $request = $this->getRequest();
         if ($request->getParam('action') !== 'index') {
@@ -175,6 +170,7 @@ class RolesController extends AppController
         $this->request->allowMethod(['post', 'delete']);
 
         if ($this->Roles->Permissions->deleteAll(['role_id is' => $id])) {
+            $this->Roles->Permissions->clearPermissionsCache();
             $this->Flash->success(__('Permissions cleared.'));
         } else {
             $this->Flash->error(__('Error while trying to clear permissions.'));
@@ -195,22 +191,24 @@ class RolesController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
 
-        $conn = $this->Roles->getConnection();
-        $conn->execute('DELETE FROM resources');
-        $conn->execute('ALTER TABLE resources AUTO_INCREMENT = 1');
-
         /** @var \App\Model\Table\PluginsTable $pluginsTable */
         $pluginsTable = $this->fetchTable('Plugins');
         /** @var \App\Model\Table\ResourcesTable $resourcesTable */
         $resourcesTable = $this->fetchTable('Resources');
 
-        $plugins = $pluginsTable->getActivePlugins(true, true);
+        $conn = $resourcesTable->getConnection();
+        $conn->transactional(function () use ($resourcesTable, $pluginsTable, $re, $conn): void {
+            $this->Roles->Permissions->deleteAll(['1 = 1']);
+            $conn->execute('DELETE FROM resources');
+            $conn->execute('ALTER TABLE resources AUTO_INCREMENT = 1');
 
-        $resources = $re->getResources($plugins);
+            $plugins = $pluginsTable->getActivePlugins(true, true);
+            $resources = $re->getResources($plugins);
+            $resourcesTable->addResources($resources);
 
-        $resourcesTable->addResources($resources);
-
-        $this->Roles->Permissions->allow(1, 1);
+            $this->Roles->Permissions->allow(1, 1);
+            $this->Roles->Permissions->clearPermissionsCache();
+        });
 
         $this->Flash->success(__('All resources were recreated.'));
 

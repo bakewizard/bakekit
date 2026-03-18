@@ -92,7 +92,6 @@ class PermissionsTableTest extends TestCase
     public function testCheckReturnsFalseWhenDenied(): void
     {
         $this->Permissions->deny(2, 6); // deny Admin access to Blocks/delete
-        Cache::clear('permissions');
 
         $result = $this->Permissions->check(2, 'Site/System/Blocks/delete');
         $this->assertFalse($result);
@@ -105,7 +104,6 @@ class PermissionsTableTest extends TestCase
     public function testCheckInheritsParentDeny(): void
     {
         $this->Permissions->deny(2, 6); // Admin denies Blocks/delete
-        Cache::clear('permissions');
 
         $result = $this->Permissions->check(3, 'Site/System/Blocks/delete');
         $this->assertFalse($result, 'Child role should inherit deny from parent');
@@ -118,7 +116,6 @@ class PermissionsTableTest extends TestCase
     {
         // Root already allows everything via fixture
         $this->Permissions->deny(3, 12); // User explicitly denies Dashboard/index
-        Cache::clear('permissions');
 
         $result = $this->Permissions->check(3, 'Site/System/Dashboard/index');
         $this->assertFalse($result, 'Child role can deny what parent allowed');
@@ -131,7 +128,6 @@ class PermissionsTableTest extends TestCase
     {
         $this->Permissions->deny(2, 4); // Admin denies Blocks/add
         $this->Permissions->allow(3, 4); // User explicitly allows Blocks/add
-        Cache::clear('permissions');
 
         $result = $this->Permissions->check(3, 'Site/System/Blocks/add');
         $this->assertTrue($result, 'Child role can allow what parent denied');
@@ -253,31 +249,30 @@ class PermissionsTableTest extends TestCase
 
     /**
      * The result of getPermissions() should be cached.
-     * A new allow() without clearing the cache should not appear in the result.
+     * Two consecutive calls without any data changes should return the same result.
      */
     public function testGetPermissionsIsCached(): void
     {
         $perms1 = $this->Permissions->getPermissions(1);
-        $this->Permissions->allow(1, 12); // change data without clearing cache
-
         $perms2 = $this->Permissions->getPermissions(1);
+
         $this->assertSame($perms1, $perms2, 'getPermissions() should return cached result');
     }
 
     /**
-     * After clearing the cache, getPermissions() should reflect updated data.
+     * After allow()/deny()/inherit(), getPermissions() should reflect updated data.
+     * Cache is cleared automatically via afterSave/afterDelete callbacks.
      */
     public function testGetPermissionsRefreshesAfterCacheClear(): void
     {
         $perms1 = $this->Permissions->getPermissions(2);
-        $this->Permissions->deny(2, 12);
-        Cache::clear('permissions');
+        $this->Permissions->deny(2, 12); // afterSave clears the cache automatically
         $perms2 = $this->Permissions->getPermissions(2);
 
         $this->assertNotSame(
             $perms1['Site/System/Dashboard/index']['permissions']['allowed'],
             $perms2['Site/System/Dashboard/index']['permissions']['allowed'],
-            'getPermissions() should return fresh data after cache is cleared',
+            'getPermissions() should return fresh data after a permission change',
         );
     }
 }
