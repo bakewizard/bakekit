@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\Resource;
+
 /**
  * Regions Controller
  *
@@ -19,6 +21,7 @@ class RegionsController extends AppController
      *
      * @return \Cake\Http\Response|void
      */
+    #[Resource(label: 'List regions')]
     public function index()
     {
         $regions = $this->paginate($this->Regions);
@@ -33,6 +36,7 @@ class RegionsController extends AppController
      * @return \Cake\Http\Response|void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'View region blocks')]
     public function view(?string $id = null)
     {
         $region = $this->Regions->get($id, contain: ['Blocks']);
@@ -45,6 +49,7 @@ class RegionsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
+    #[Resource(label: 'Add a region')]
     public function add()
     {
         $region = $this->Regions->newEmptyEntity();
@@ -67,6 +72,7 @@ class RegionsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'Edit a region')]
     public function edit(?string $id = null)
     {
         $region = $this->Regions->get($id);
@@ -89,6 +95,7 @@ class RegionsController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'Delete a region')]
     public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);

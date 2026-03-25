@@ -205,6 +205,7 @@ class PermissionsTable extends Table
      * Each entry contains:
      *   'id'          => resource id
      *   'alias'       => resource alias
+     *   'label'       => resource human-readable label
      *   'permissions' => [
      *       'allowed'   => bool,
      *       'inherited' => bool  // true if the value came from a parent role or resource
@@ -277,6 +278,7 @@ class PermissionsTable extends Table
                 $perms[$paths[$resource['id']]] = [
                     'id' => $resource['id'],
                     'alias' => $resource['alias'],
+                    'label' => $resource['label'] ?? '',
                     'permissions' => [
                         'allowed' => $allowed,
                         'inherited' => $inherited,

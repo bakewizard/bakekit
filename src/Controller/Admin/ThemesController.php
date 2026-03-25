@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\Resource;
 use App\Lib\ComposerManager;
 use App\Lib\ThemeManager;
 use Cake\Core\Configure;
@@ -25,6 +26,7 @@ class ThemesController extends AppController
      * @param \App\Lib\ThemeManager $themeManager Theme manager instance.
      * @return \Cake\Http\Response|null|void Renders view
      */
+    #[Resource(label: 'List themes')]
     public function index(ThemeManager $themeManager)
     {
         $activeTheme = $this->getConfig('Cms.theme');
@@ -41,6 +43,7 @@ class ThemesController extends AppController
      * @param string $name Theme name.
      * @return \Cake\Http\Response|null|void Renders view
      */
+    #[Resource(label: 'View theme details')]
     public function view(ThemeManager $themeManager, string $name)
     {
         $activeTheme = $this->getConfig('Cms.theme');
@@ -64,6 +67,7 @@ class ThemesController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Exception When error is encountered.
      */
+    #[Resource(label: 'Install a theme')]
     public function install(ThemeManager $themeManager, ComposerManager $composer): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
@@ -104,6 +108,7 @@ class ThemesController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Exception When error is encountered.
      */
+    #[Resource(label: 'Uninstall a theme')]
     public function uninstall(ThemeManager $themeManager, ComposerManager $composer, string $name): ?Response
     {
         $this->request->allowMethod(['post', 'delete']);
@@ -127,6 +132,7 @@ class ThemesController extends AppController
      * @param string|null $name Theme name.
      * @return \Cake\Http\Response|null Redirects to index.
      */
+    #[Resource(label: 'Activate a theme')]
     public function activate(?string $name = null): ?Response
     {
         $this->request->allowMethod(['post', 'put']);

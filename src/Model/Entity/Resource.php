@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int|null $parent_id
  * @property string $alias
+ * @property string $label
  * @property int $lft
  * @property int $rght
  *
@@ -28,6 +29,7 @@ class Resource extends Entity
     protected array $_accessible = [
         'parent_id' => true,
         'alias' => true,
+        'label' => true,
         'lft' => true,
         'rght' => true,
         'parent_resource' => true,

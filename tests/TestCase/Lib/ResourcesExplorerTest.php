@@ -10,18 +10,7 @@ use ZipArchive;
 
 class ResourcesExplorerTest extends TestCase
 {
-    /**
-     * The name of the plugin being tested
-     *
-     * @var string
-     */
     private const string PLUGIN_NAME = 'BareBone';
-
-    /**
-     * The path to the plugin directory
-     *
-     * @var string
-     */
     private const string PLUGINS_DIR = ROOT . DS . 'plugins' . DS;
 
     protected ResourcesExplorer $explorer;
@@ -55,6 +44,14 @@ class ResourcesExplorerTest extends TestCase
         }
     }
 
+    // -------------------------------------------------------------------------
+    // getResources()
+    // -------------------------------------------------------------------------
+
+    /**
+     * getResources() should return only methods marked with #[Resource].
+     * Format: [plugin => [controller => [action => label]]].
+     */
     public function testGetResources(): void
     {
         $result = $this->explorer->getResources([self::PLUGIN_NAME]);
@@ -63,11 +60,60 @@ class ResourcesExplorerTest extends TestCase
         $this->assertArrayHasKey('Articles', $result[self::PLUGIN_NAME]);
 
         $actions = $result[self::PLUGIN_NAME]['Articles'];
-        $this->assertContains('index', $actions);
-        $this->assertContains('add', $actions);
-        $this->assertContains('edit', $actions);
-        $this->assertContains('delete', $actions);
+
+        // Keys are action names, values are labels
+        $this->assertArrayHasKey('index', $actions);
+        $this->assertArrayHasKey('add', $actions);
+        $this->assertArrayHasKey('edit', $actions);
+        $this->assertArrayHasKey('delete', $actions);
+
+        // Labels are stored correctly
+        $this->assertEquals('List articles', $actions['index']);
+        $this->assertEquals('Create an article', $actions['add']);
+        $this->assertEquals('Edit an article', $actions['edit']);
+        $this->assertEquals('Delete an article', $actions['delete']);
     }
+
+    /**
+     * Methods without #[Resource] should not appear in the result.
+     */
+    public function testGetResourcesExcludesMethodsWithoutAttribute(): void
+    {
+        $result = $this->explorer->getResources([self::PLUGIN_NAME]);
+
+        $actions = $result[self::PLUGIN_NAME]['Articles'];
+
+        // view() has no #[Resource] attribute
+        $this->assertArrayNotHasKey('view', $actions);
+    }
+
+    /**
+     * Controllers with no #[Resource] methods should not appear in the result.
+     * Plugins with no eligible controllers should not appear either.
+     */
+    public function testGetResourcesSkipsEmptyControllers(): void
+    {
+        $result = $this->explorer->getResources([self::PLUGIN_NAME]);
+
+        // AppController and controllers with no #[Resource] methods are excluded
+        $this->assertArrayNotHasKey('App', $result[self::PLUGIN_NAME] ?? []);
+    }
+
+    /**
+     * Dashboard controller with #[Resource] methods should appear.
+     */
+    public function testGetResourcesIncludesDashboard(): void
+    {
+        $result = $this->explorer->getResources([self::PLUGIN_NAME]);
+
+        $this->assertArrayHasKey('Dashboard', $result[self::PLUGIN_NAME]);
+        $this->assertArrayHasKey('index', $result[self::PLUGIN_NAME]['Dashboard']);
+        $this->assertEquals('View dashboard', $result[self::PLUGIN_NAME]['Dashboard']['index']);
+    }
+
+    // -------------------------------------------------------------------------
+    // getCells()
+    // -------------------------------------------------------------------------
 
     public function testGetCells(): void
     {
@@ -83,11 +129,14 @@ class ResourcesExplorerTest extends TestCase
             $this->assertNotEmpty($cell['summary']);
         }
 
-        // обидва методи ArticleCell знайдені
         $paths = array_column($result[self::PLUGIN_NAME], 'path');
         $this->assertContains('BareBone.Article::recent', $paths);
         $this->assertContains('BareBone.Article::popular', $paths);
     }
+
+    // -------------------------------------------------------------------------
+    // getLinks()
+    // -------------------------------------------------------------------------
 
     public function testGetLinks(): void
     {
@@ -105,18 +154,22 @@ class ResourcesExplorerTest extends TestCase
             $this->assertNotEmpty($link['summary']);
         }
 
-        // index — пряме посилання
+        // Direct links
         $selfLinks = array_filter($result[self::PLUGIN_NAME], fn($l) => $l['target'] === '_self');
         $this->assertNotEmpty($selfLinks);
 
-        // view з picker — модалка
+        // Modal links (picker)
         $blankLinks = array_filter($result[self::PLUGIN_NAME], fn($l) => $l['target'] === '_blank');
         $this->assertNotEmpty($blankLinks);
 
-        // category без #[Link] — не потрапляє
+        // Methods without #[Link] should not appear
         $actions = array_column(array_column($result[self::PLUGIN_NAME], 'url'), 'action');
         $this->assertNotContains('category', $actions);
     }
+
+    // -------------------------------------------------------------------------
+    // getAdminLinks()
+    // -------------------------------------------------------------------------
 
     public function testGetAdminLinks(): void
     {
@@ -133,15 +186,15 @@ class ResourcesExplorerTest extends TestCase
             $this->assertNotEmpty($item['actions']);
         }
 
-        // Dashboard завжди першим
+        // Dashboard is always first
         $this->assertEquals('Dashboard', $result[self::PLUGIN_NAME][0]['controller']);
 
-        // Dashboard має index і settings
+        // Dashboard has index and settings
         $dashboard = $result[self::PLUGIN_NAME][0];
         $this->assertContains('index', $dashboard['actions']);
         $this->assertContains('settings', $dashboard['actions']);
 
-        // Articles має index і add, але не edit/delete (мають параметри)
+        // Articles has index and add, but not edit/delete (they require parameters)
         $articles = array_values(array_filter(
             $result[self::PLUGIN_NAME],
             fn($i) => $i['controller'] === 'Articles',

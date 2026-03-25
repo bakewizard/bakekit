@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\Resource;
+
 /**
  * Meta Controller
  *
@@ -19,6 +21,7 @@ class MetaController extends AppController
      *
      * @return \Cake\Http\Response|void
      */
+    #[Resource(label: 'List plugin meta')]
     public function index()
     {
         $meta = $this->paginate($this->Meta->find('all', contain: ['Plugins']));
@@ -31,6 +34,7 @@ class MetaController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
+    #[Resource(label: 'Add plugin meta')]
     public function add()
     {
         $metum = $this->Meta->newEmptyEntity();
@@ -56,6 +60,7 @@ class MetaController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'Edit plugin meta')]
     public function edit(?string $id = null)
     {
         $metum = $this->Meta->get($id);
@@ -81,6 +86,7 @@ class MetaController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'Delete plugin meta')]
     public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);

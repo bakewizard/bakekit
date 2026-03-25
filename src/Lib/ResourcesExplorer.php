@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Lib;
 
 use App\Attribute\Link;
+use App\Attribute\Resource;
 use DirectoryIterator;
 use ReflectionClass;
 use ReflectionMethod;
@@ -55,7 +56,18 @@ class ResourcesExplorer
                 }
 
                 $methods = $this->getDeclaredPublicMethods($fqcn, self::COMMON_CONTROLLER_METHODS);
-                $controllers[$controller] = array_map(fn($m) => $m->name, $methods);
+                $controllers[$controller] = array_reduce(
+                    $methods,
+                    function (array $carry, ReflectionMethod $method): array {
+                        $attr = $this->getAttribute($method, Resource::class);
+                        if ($attr !== null) {
+                            $carry[$method->name] = $attr->label;
+                        }
+
+                        return $carry;
+                    },
+                    [],
+                );
             }
 
             if ($controllers) {

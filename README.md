@@ -2,7 +2,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/bakewizard/bakekit?style=social)](https://github.com/bakewizard/bakekit)
 [![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue)](https://php.net)
-![Coverage](https://img.shields.io/badge/coverage-68.55%25-yellowgreen)
+![Coverage](https://img.shields.io/badge/coverage-68.83%25-yellowgreen)
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen)](https://phpstan.org/)
 [![GitHub release](https://img.shields.io/github/v/release/bakewizard/bakekit?label=stable&sort=semver)](https://github.com/bakewizard/bakekit/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/bakewizard/bakekit/blob/develop/LICENSE)

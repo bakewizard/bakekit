@@ -46,6 +46,11 @@ class AppMigration extends BaseMigration
                 'limit' => 255,
                 'null' => false,
             ])
+            ->addColumn('label', 'string', [
+                'default' => '',
+                'limit' => 255,
+                'null' => false,
+            ])
             ->addPrimaryKey('id')
             ->addForeignKey('parent_id', 'resources', 'id', ['update' => 'CASCADE', 'delete' => 'CASCADE'])
             ->addIndex('parent_id')

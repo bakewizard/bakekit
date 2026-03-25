@@ -50,7 +50,7 @@
                                 <?php elseif ($indentsCount === 2) : ?>
                                     <b><i><?= $indents . $resource['alias'] ?></i></b>
                                 <?php else : ?>
-                                    <i><?= $indents . $resource['alias'] ?></i>
+                                    <i><?= $indents . ($resource['label'] ?? '' ?: $resource['alias']) ?></i>
                                 <?php endif; ?>
                             </td>
                             <?php ['allowed' => $allowed, 'inherited' => $inherited] = $resource['permissions']; ?>

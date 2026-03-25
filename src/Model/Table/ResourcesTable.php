@@ -81,6 +81,11 @@ class ResourcesTable extends Table
             ->requirePresence('alias', 'create')
             ->notEmptyString('alias');
 
+        $validator
+            ->scalar('label')
+            ->maxLength('label', 255)
+            ->allowEmptyString('label');
+
         return $validator;
     }
 
@@ -103,22 +108,26 @@ class ResourcesTable extends Table
      * Creates a resource node.
      *
      * @param string $path The path to resource.
-     * @param int $parentId The parent id to use when creating.
-     * @return \App\Model\Entity\Resource|null The created resource node or false on failure.
+     * @param int|null $parentId The parent id to use when creating.
+     * @param string $label Optional human-readable label shown in the permissions UI.
+     * @return \App\Model\Entity\Resource|null The created resource node or null on failure.
      */
-    public function createNode(string $path, ?int $parentId = null): ?Resource
+    public function createNode(string $path, ?int $parentId = null, string $label = ''): ?Resource
     {
         $node = null;
+        $segments = explode('/', $path);
+        $lastIndex = count($segments) - 1;
 
-        foreach (explode('/', $path) as $alias) {
+        foreach ($segments as $i => $alias) {
             $entity = $this->newEntity([
                 'parent_id' => $node->id ?? $parentId,
                 'alias' => $alias,
+                'label' => $i === $lastIndex ? $label : '',
             ]);
 
             $node = $this->save($entity);
             if (!$node) {
-                return null; // Stop if any level fails
+                return null;
             }
         }
 
@@ -142,7 +151,8 @@ class ResourcesTable extends Table
     /**
      * Saves plugin resource structure to the database using nested nodes.
      *
-     * @param array<string, array<string, array<string>>> $resourceTree Structured plugin resource tree.
+     * @param array<string, array<string, array<string, string>>> $resourceTree Structured plugin resource tree.
+     *        Format: [plugin => [controller => [action => label]]]
      * @return void
      */
     public function addResources(array $resourceTree): void
@@ -156,6 +166,12 @@ class ResourcesTable extends Table
             }
 
             foreach ($resourceTree as $plugin => $controllers) {
+                // Skip plugins where no controller has any actions
+                $controllers = array_filter($controllers, fn($actions) => !empty($actions));
+                if (empty($controllers)) {
+                    continue;
+                }
+
                 $pluginNode = $this->createNode($plugin, $rootNode->id);
                 if (!$pluginNode) {
                     continue;
@@ -167,8 +183,8 @@ class ResourcesTable extends Table
                         continue;
                     }
 
-                    foreach ($actions as $action) {
-                        $this->createNode($action, $controllerNode->id);
+                    foreach ($actions as $action => $label) {
+                        $this->createNode($action, $controllerNode->id, $label);
                     }
                 }
             }

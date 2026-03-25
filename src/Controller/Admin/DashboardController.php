@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\Resource;
 use Cake\Http\Response;
 use Override;
 
@@ -18,6 +19,7 @@ class DashboardController extends AppController
      *
      * @return void
      */
+    #[Resource(label: 'System dashboard')]
     public function index()
     {
     }
@@ -27,6 +29,7 @@ class DashboardController extends AppController
      *
      * @return \Cake\Http\Response
      */
+    #[Resource(label: 'System info')]
     public function info()
     {
         ob_start();
@@ -43,6 +46,7 @@ class DashboardController extends AppController
      * @return \Cake\Http\Response|null|void
      */
     #[Override]
+    #[Resource(label: 'System settings')]
     public function settings()
     {
         parent::settings();

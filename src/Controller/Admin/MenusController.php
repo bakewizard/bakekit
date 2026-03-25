@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\Resource;
 use Cake\Cache\Cache;
 use Cake\Event\EventInterface;
 use Override;
@@ -36,6 +37,7 @@ class MenusController extends AppController
      *
      * @return \Cake\Http\Response|void
      */
+    #[Resource(label: 'List menus')]
     public function index()
     {
         $menus = $this->paginate($this->Menus);
@@ -50,6 +52,7 @@ class MenusController extends AppController
      * @return \Cake\Http\Response|void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'View menu links')]
     public function view(?string $id = null)
     {
         $menu = $this->Menus->get($id);
@@ -65,6 +68,7 @@ class MenusController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
+    #[Resource(label: 'Create a menu')]
     public function add()
     {
         $menu = $this->Menus->newEmptyEntity();
@@ -87,6 +91,7 @@ class MenusController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'Edit a menu')]
     public function edit(?string $id = null)
     {
         $menu = $this->Menus->get($id);
@@ -109,6 +114,7 @@ class MenusController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'Delete a menu')]
     public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);

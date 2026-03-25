@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\Resource;
 use App\Lib\ComposerManager;
 use App\Lib\PluginManager;
 use Cake\Cache\Cache;
@@ -24,6 +25,7 @@ class PluginsController extends AppController
      *
      * @return \Cake\Http\Response|void
      */
+    #[Resource(label: 'List plugins')]
     public function index(PluginManager $pluginManager)
     {
         $installedPlugins = $this->Plugins->find('all')->all()->indexBy('name')->toArray();
@@ -40,6 +42,7 @@ class PluginsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'Edit plugin alias')]
     public function edit(?string $id = null)
     {
         $plugin = $this->Plugins->get($id);
@@ -68,6 +71,7 @@ class PluginsController extends AppController
      * @return \Cake\Http\Response|null Redirects to the index page.
      * @throws \Exception If the plugin cannot be installed.
      */
+    #[Resource(label: 'Install a plugin')]
     public function install(PluginManager $pluginManager, ComposerManager $composer): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
@@ -118,6 +122,7 @@ class PluginsController extends AppController
      * @return \Cake\Http\Response|null Redirects to the index page.
      * @throws \Exception If the plugin cannot be uninstalled or its database entry cannot be deleted.
      */
+    #[Resource(label: 'Uninstall a plugin')]
     public function uninstall(PluginManager $pluginManager, ComposerManager $composer, string $name): ?Response
     {
         $this->request->allowMethod(['post', 'delete']);
@@ -155,6 +160,7 @@ class PluginsController extends AppController
      * @return \Cake\Http\Response|null Redirects to the index page.
      * @throws \Exception If the plugin cannot be activated or saved to the database.
      */
+    #[Resource(label: 'Activate a plugin')]
     public function activate(PluginManager $pluginManager, string $name): ?Response
     {
         $this->request->allowMethod(['post', 'put']);
@@ -204,6 +210,7 @@ class PluginsController extends AppController
      * @return \Cake\Http\Response|null Redirects to the index page.
      * @throws \Exception If the plugin cannot be deactivated due to being the default dashboard.
      */
+    #[Resource(label: 'Deactivate a plugin')]
     public function deactivate(string|int $id): ?Response
     {
         $this->request->allowMethod(['post', 'put']);

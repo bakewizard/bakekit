@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\Resource;
 use Cake\Event\EventInterface;
 use Override;
 
@@ -36,6 +37,7 @@ class UsersController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders the index view.
      */
+    #[Resource(label: 'List users')]
     public function index()
     {
         $user = $this->request->getAttribute('identity');
@@ -86,6 +88,7 @@ class UsersController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
+    #[Resource(label: 'Edit a user')]
     public function edit(?string $id = null)
     {
         $images = $this->getConfig('Cms.images');

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\Resource;
 use App\Lib\ResourcesExplorer;
 use Cake\Core\App;
 use Cake\Http\Response;
@@ -24,6 +25,7 @@ class BlocksController extends AppController
      * @param string|null $id Region id.
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
+    #[Resource(label: 'Add a block')]
     public function add(?string $id = null)
     {
         $block = $this->Blocks->newEmptyEntity();
@@ -48,6 +50,7 @@ class BlocksController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'Edit a block')]
     public function edit(?string $id = null)
     {
         $block = $this->Blocks->get($id);
@@ -71,6 +74,7 @@ class BlocksController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'Delete a block')]
     public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
@@ -136,6 +140,7 @@ class BlocksController extends AppController
      * @param string $id
      * @return \Cake\Http\Response|null A redirect response or null on GET render.
      */
+    #[Resource(label: 'Configure a block')]
     public function config(string $id): ?Response
     {
         $block = $this->Blocks->get($id);

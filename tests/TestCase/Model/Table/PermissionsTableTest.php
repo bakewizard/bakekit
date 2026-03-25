@@ -20,8 +20,8 @@ use Cake\TestSuite\TestCase;
  *   Root (id=1) → Admin (id=2) → User (id=3) → Authenticated (id=4)
  *
  * Resource hierarchy (Site/System/Controller/action):
- *   Site (id=1) → System (id=2) → Dashboard (id=11) → index (id=12)
- *                               → Menus (id=22) → index (id=23) → ...
+ *   Site (id=1) → System (id=2) → Blocks (id=27) → add (id=28), delete (id=30)
+ *                               → Dashboard (id=32) → index (id=33)
  *
  * @uses \App\Model\Table\PermissionsTable
  */
@@ -91,7 +91,7 @@ class PermissionsTableTest extends TestCase
      */
     public function testCheckReturnsFalseWhenDenied(): void
     {
-        $this->Permissions->deny(2, 6); // deny Admin access to Blocks/delete
+        $this->Permissions->deny(2, 30); // deny Admin access to Blocks/delete (id=30)
 
         $result = $this->Permissions->check(2, 'Site/System/Blocks/delete');
         $this->assertFalse($result);
@@ -103,7 +103,7 @@ class PermissionsTableTest extends TestCase
      */
     public function testCheckInheritsParentDeny(): void
     {
-        $this->Permissions->deny(2, 6); // Admin denies Blocks/delete
+        $this->Permissions->deny(2, 30); // Admin denies Blocks/delete (id=30)
 
         $result = $this->Permissions->check(3, 'Site/System/Blocks/delete');
         $this->assertFalse($result, 'Child role should inherit deny from parent');
@@ -115,7 +115,7 @@ class PermissionsTableTest extends TestCase
     public function testCheckChildCanOverrideParentAllow(): void
     {
         // Root already allows everything via fixture
-        $this->Permissions->deny(3, 12); // User explicitly denies Dashboard/index
+        $this->Permissions->deny(3, 33); // User explicitly denies Dashboard/index (id=33)
 
         $result = $this->Permissions->check(3, 'Site/System/Dashboard/index');
         $this->assertFalse($result, 'Child role can deny what parent allowed');
@@ -126,8 +126,8 @@ class PermissionsTableTest extends TestCase
      */
     public function testCheckChildCanOverrideParentDeny(): void
     {
-        $this->Permissions->deny(2, 4); // Admin denies Blocks/add
-        $this->Permissions->allow(3, 4); // User explicitly allows Blocks/add
+        $this->Permissions->deny(2, 28); // Admin denies Blocks/add (id=28)
+        $this->Permissions->allow(3, 28); // User explicitly allows Blocks/add (id=28)
 
         $result = $this->Permissions->check(3, 'Site/System/Blocks/add');
         $this->assertTrue($result, 'Child role can allow what parent denied');
@@ -143,11 +143,11 @@ class PermissionsTableTest extends TestCase
      */
     public function testAllow(): void
     {
-        $result = $this->Permissions->allow(2, 12);
+        $result = $this->Permissions->allow(2, 33); // Dashboard/index (id=33)
         $this->assertTrue($result);
 
         $perm = $this->Permissions->find()
-            ->where(['role_id' => 2, 'resource_id' => 12])
+            ->where(['role_id' => 2, 'resource_id' => 33])
             ->first();
         $this->assertNotNull($perm);
         $this->assertTrue($perm->allowed);
@@ -158,11 +158,11 @@ class PermissionsTableTest extends TestCase
      */
     public function testDeny(): void
     {
-        $result = $this->Permissions->deny(2, 12);
+        $result = $this->Permissions->deny(2, 33); // Dashboard/index (id=33)
         $this->assertTrue($result);
 
         $perm = $this->Permissions->find()
-            ->where(['role_id' => 2, 'resource_id' => 12])
+            ->where(['role_id' => 2, 'resource_id' => 33])
             ->first();
         $this->assertNotNull($perm);
         $this->assertFalse($perm->allowed);
@@ -174,16 +174,16 @@ class PermissionsTableTest extends TestCase
      */
     public function testInherit(): void
     {
-        $this->Permissions->allow(2, 12);
+        $this->Permissions->allow(2, 33); // Dashboard/index (id=33)
         $this->assertNotNull(
-            $this->Permissions->find()->where(['role_id' => 2, 'resource_id' => 12])->first(),
+            $this->Permissions->find()->where(['role_id' => 2, 'resource_id' => 33])->first(),
         );
 
-        $result = $this->Permissions->inherit(2, 12);
+        $result = $this->Permissions->inherit(2, 33);
         $this->assertTrue($result);
 
         $perm = $this->Permissions->find()
-            ->where(['role_id' => 2, 'resource_id' => 12])
+            ->where(['role_id' => 2, 'resource_id' => 33])
             ->first();
         $this->assertNull($perm, 'inherit() should delete the permission record');
     }
@@ -209,7 +209,7 @@ class PermissionsTableTest extends TestCase
 
     /**
      * Each entry in getPermissions() should contain a permissions array
-     * with exactly two elements: [allowed, inherited].
+     * with 'allowed' and 'inherited' keys.
      */
     public function testGetPermissionsEntryStructure(): void
     {
@@ -218,8 +218,10 @@ class PermissionsTableTest extends TestCase
         foreach ($perms as $path => $entry) {
             $this->assertArrayHasKey('id', $entry, "Entry '$path' must have 'id'");
             $this->assertArrayHasKey('alias', $entry, "Entry '$path' must have 'alias'");
+            $this->assertArrayHasKey('label', $entry, "Entry '$path' must have 'label'");
             $this->assertArrayHasKey('permissions', $entry, "Entry '$path' must have 'permissions'");
-            $this->assertCount(2, $entry['permissions'], "permissions[$path] must have two elements: [allowed, inherited]");
+            $this->assertArrayHasKey('allowed', $entry['permissions'], "permissions[$path] must have 'allowed'");
+            $this->assertArrayHasKey('inherited', $entry['permissions'], "permissions[$path] must have 'inherited'");
         }
     }
 
@@ -266,7 +268,7 @@ class PermissionsTableTest extends TestCase
     public function testGetPermissionsRefreshesAfterCacheClear(): void
     {
         $perms1 = $this->Permissions->getPermissions(2);
-        $this->Permissions->deny(2, 12); // afterSave clears the cache automatically
+        $this->Permissions->deny(2, 33); // afterSave clears cache automatically
         $perms2 = $this->Permissions->getPermissions(2);
 
         $this->assertNotSame(

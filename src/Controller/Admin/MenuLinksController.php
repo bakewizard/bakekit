@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Attribute\Resource;
 use App\Lib\ResourcesExplorer;
 use Cake\Cache\Cache;
 use Cake\Event\EventInterface;
@@ -39,6 +40,7 @@ class MenuLinksController extends AppController
      * @param string|null $id Menu id.
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
+    #[Resource(label: 'Add a menu link')]
     public function add(?string $id = null)
     {
         $menuLink = $this->MenuLinks->newEmptyEntity();
@@ -65,6 +67,7 @@ class MenuLinksController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
+    #[Resource(label: 'Edit a menu link')]
     public function edit(?string $id = null)
     {
         $menuLink = $this->MenuLinks->get($id);
@@ -90,6 +93,7 @@ class MenuLinksController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    #[Resource(label: 'Delete a menu link')]
     public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);

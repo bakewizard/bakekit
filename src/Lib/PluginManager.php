@@ -5,6 +5,7 @@ namespace App\Lib;
 
 use App\Model\Table\ResourcesTable;
 use App\Model\Table\SettingsTable;
+use Cake\Cache\Cache;
 use Cake\Form\Form;
 use Cake\Utility\Hash;
 use Exception;
@@ -201,8 +202,8 @@ class PluginManager
     {
         $migrationsPath = 'config' . DS . 'Migrations';
         $path = $plugin === null
-        ? ROOT . DS . $migrationsPath
-        : $this->pluginsDir . $plugin . DS . $migrationsPath;
+            ? ROOT . DS . $migrationsPath
+            : $this->pluginsDir . $plugin . DS . $migrationsPath;
 
         if (is_dir($path)) {
             $this->migrations->rollback(['plugin' => $plugin]);
@@ -261,6 +262,7 @@ class PluginManager
     {
         $resources = $this->resourcesExplorer->getResources($plugin);
         $this->resourcesTable->addResources($resources);
+        Cache::clear('permissions');
     }
 
     /**
@@ -272,5 +274,6 @@ class PluginManager
     public function deleteResources(string $plugin): void
     {
         $this->resourcesTable->deleteResources($plugin);
+        Cache::clear('permissions');
     }
 }

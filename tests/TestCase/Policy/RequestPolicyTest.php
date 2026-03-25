@@ -46,8 +46,6 @@ class RequestPolicyTest extends TestCase
         parent::setUp();
         $this->policy = new RequestPolicy();
 
-        // Register an in-memory cache for tests if not already configured.
-        // Application::bootstrap() normally does this, but it's not called in unit tests.
         if (!Cache::getConfig('permissions')) {
             Cache::setConfig('permissions', ['className' => ArrayEngine::class]);
         }
@@ -149,7 +147,7 @@ class RequestPolicyTest extends TestCase
         $user = $this->makeUser(2, 2); // Admin (role_id=2)
 
         $permissions = $this->fetchTable('Permissions');
-        $permissions->deny(2, 6); // deny Admin access to Blocks/delete (resource_id=6)
+        $permissions->deny(2, 30); // deny Admin access to Blocks/delete (resource_id=30)
 
         $request = (new ServerRequest())->withAttribute('params', [
             'plugin' => null,
@@ -173,7 +171,7 @@ class RequestPolicyTest extends TestCase
         $user->last_name = 'User';
 
         $permissions = $this->fetchTable('Permissions');
-        $permissions->deny(2, 6);
+        $permissions->deny(2, 30); // Blocks/delete (resource_id=30)
 
         $request = (new ServerRequest())->withAttribute('params', [
             'plugin' => null,
@@ -201,7 +199,6 @@ class RequestPolicyTest extends TestCase
             'prefix' => 'Admin',
         ]);
 
-        // Resource does not exist in fixtures, so check() returns true by default
         $result = $this->policy->canAccess($user, $request);
         $this->assertInstanceOf(Result::class, $result);
     }
@@ -210,10 +207,6 @@ class RequestPolicyTest extends TestCase
     // Helpers
     // -------------------------------------------------------------------------
 
-    /**
-     * Creates a User entity stub without an Authorization service.
-     * Policy unit tests do not need a real authorization service instance.
-     */
     private function makeUser(int $userId, int $roleId): User
     {
         $user = new User([
