@@ -527,32 +527,78 @@
     2. 📋 Roles
   </a>
   
+    <nav class="md-nav" aria-label="2. 📋 Roles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#permission-inheritance" class="md-nav__link">
+    Permission inheritance
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-permissions" class="md-nav__link">
-    3. 📜 Permissions
+  <a href="#3-resources" class="md-nav__link">
+    3. 🗂️ Resources
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 🗂️ Resources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#declaring-resources-in-a-plugin" class="md-nav__link">
+    Declaring resources in a plugin
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-how-it-works" class="md-nav__link">
+    4. ⚙️ How It Works
+  </a>
+  
+    <nav class="md-nav" aria-label="4. ⚙️ How It Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#request-level-check-rbac" class="md-nav__link">
+    Request-level check (RBAC)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-level-check-abac" class="md-nav__link">
+    Entity-level check (ABAC)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-managing-permissions" class="md-nav__link">
+    5. 🛠️ Managing Permissions
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-resources" class="md-nav__link">
-    4. 🗂️ Resources
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-how-it-works" class="md-nav__link">
-    5. 📜 How It works
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-setting-permissions" class="md-nav__link">
-    6. 🛠️ Setting Permissions
+  <a href="#6-for-plugin-developers" class="md-nav__link">
+    6. 🔌 For Plugin Developers
   </a>
   
 </li>
@@ -592,42 +638,36 @@
 
 
 <h1 id="access-control">🔐 Access Control<a class="headerlink" href="#access-control" title="Permanent link">&para;</a></h1>
-<p>BakeKit provides a powerful, flexible access control system for managing users, roles, and permissions.
-It uses hierarchical roles and dynamic action detection from plugins to automatically identify available actions.
-This approach gives you fine-grained, dynamic control over what users can see and do within the system, making it easy to adapt permissions as your project grows.</p>
+<p>BakeKit provides a hybrid access control system that combines <strong>RBAC</strong> (Role-Based Access Control)
+for HTTP request authorization with <strong>ABAC</strong> (Attribute-Based Access Control) for fine-grained
+entity-level checks. It uses hierarchical roles and explicit resource declarations via PHP attributes
+to give you precise, maintainable control over what users can do.</p>
 <hr />
 <h2 id="1-users">1. 👥 Users<a class="headerlink" href="#1-users" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Each <strong>user</strong> in the system is assigned a <strong>role</strong>.</li>
-<li>Users automatically <strong>gain the permissions</strong> defined for their assigned role.</li>
+<li>Each <strong>user</strong> is assigned a <strong>role</strong>.</li>
+<li>Users automatically <strong>inherit the permissions</strong> defined for their role.</li>
 <li>Changing a user's role <strong>immediately changes</strong> their permissions.</li>
+<li>Only the <strong>Root user</strong> can create or delete other users.</li>
+<li>Any user can view and edit <strong>their own profile</strong>.</li>
 </ul>
 <hr />
 <h2 id="2-roles">2. 📋 Roles<a class="headerlink" href="#2-roles" title="Permanent link">&para;</a></h2>
+<p>Roles are structured as a <strong>upside-down tree</strong>:</p>
 <ul>
-<li>Roles are structured <strong>like an upside-down tree</strong>:<ul>
-<li><strong>Root Role</strong> (topmost) has <strong>all permissions</strong>.</li>
-<li><strong>Child Roles</strong> inherit permissions from their parents <strong>unless overridden</strong>.</li>
+<li>The <strong>Root role</strong> (id=1) has full access to everything and cannot be deleted.</li>
+<li><strong>Child roles</strong> inherit permissions from their parent unless explicitly overridden.</li>
 </ul>
-</li>
-</ul>
-<blockquote>
-<p>The <strong>Root Role</strong> cannot be deleted and always has full access to everything.</p>
-</blockquote>
-<p>Example:</p>
 <div class="highlight"><pre><span></span><code>Root
- ├── Manager
- │    ├── Editor
- │    └── Author
- └── Support
+ └── Manager
+      ├── Editor
+      └── Author
 </code></pre></div>
-<p>Each child can <strong>inherit</strong>, <strong>allow</strong>, or <strong>deny</strong> specific actions.</p>
-<hr />
-<h2 id="3-permissions">3. 📜 Permissions<a class="headerlink" href="#3-permissions" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Each Permission is tied to a resource.</li>
-<li>Each permission can have one of the following statuses:</li>
-</ul>
+<blockquote>
+<p>Only the Root user can create, edit, or delete roles.</p>
+</blockquote>
+<h3 id="permission-inheritance">Permission inheritance<a class="headerlink" href="#permission-inheritance" title="Permanent link">&para;</a></h3>
+<p>Each child role can <strong>inherit</strong>, <strong>allow</strong>, or <strong>deny</strong> any resource:</p>
 <table>
 <thead>
 <tr>
@@ -638,11 +678,11 @@ This approach gives you fine-grained, dynamic control over what users can see an
 <tbody>
 <tr>
 <td>✅ Allow</td>
-<td>Explicitly allow the action</td>
+<td>Explicitly grant access</td>
 </tr>
 <tr>
 <td>❌ Deny</td>
-<td>Explicitly deny the action</td>
+<td>Explicitly deny access</td>
 </tr>
 <tr>
 <td>🧬 Inherit</td>
@@ -650,54 +690,122 @@ This approach gives you fine-grained, dynamic control over what users can see an
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="4-resources">4. 🗂️ Resources<a class="headerlink" href="#4-resources" title="Permanent link">&para;</a></h2>
-<p><code>Resources</code> are the actions of BakeKit that you can control with permissions.</p>
-<p>They are organized hierarchically, like roles:</p>
-<div class="highlight"><pre><span></span><code>Blogger
- ├── Articles
- │    ├── index
- │    ├── view
- |    └── add
- └── Categories
-      ├── index
-      ├── add
-      └── edit
+<p>The closest explicit record in the role hierarchy wins.
+If no record exists anywhere in the chain, access is <strong>allowed by default</strong>.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight"><pre><span></span><code>Root       → allows Articles
+  Manager  → no record    → inherits allow from Root
+    Editor → denies Articles/delete → can do everything except delete
 </code></pre></div>
-<p>In this example:</p>
+<hr />
+<h2 id="3-resources">3. 🗂️ Resources<a class="headerlink" href="#3-resources" title="Permanent link">&para;</a></h2>
+<p>Resources are the specific actions that can be controlled via permissions.
+They are organized as a tree mirroring the plugin/controller/action structure:</p>
+<div class="highlight"><pre><span></span><code>Site
+ └── Blogger
+      ├── Articles
+      │    ├── List articles
+      │    ├── Create an article
+      │    ├── Edit an article
+      │    └── Delete an article
+      └── Categories
+           ├── List categories
+           └── Edit a category
+</code></pre></div>
 <ul>
-<li>Blogger is a plugin.</li>
-<li>Articles and Categories are controllers of the Blogger.</li>
-<li>index, view, add, edit are the individual actions a user can perform.</li>
+<li><strong>Site</strong> — the root node (required for tree inheritance to work)</li>
+<li><strong>Blogger</strong> — a plugin name</li>
+<li><strong>Articles / Categories</strong> — controller names</li>
+<li><strong>List articles, Edit an article...</strong> — individual actions with human-readable labels</li>
 </ul>
 <blockquote>
-<p>When a plugin is installed, its resources are added to the permissions list and removed upon uninstallation.</p>
+<p>Resources are added automatically when a plugin is installed and removed when it is uninstalled.</p>
+</blockquote>
+<h3 id="declaring-resources-in-a-plugin">Declaring resources in a plugin<a class="headerlink" href="#declaring-resources-in-a-plugin" title="Permanent link">&para;</a></h3>
+<p>Only actions explicitly marked with the <code>#[Resource]</code> attribute are registered as resources.
+This keeps the permissions UI clean — utility methods like <code>moveUp</code>, <code>getCells</code>, or <code>getLinks</code>
+are never shown.</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">App\Attribute\Resource</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ArticlesController</span> <span class="k">extends</span> <span class="nx">AppController</span>
+<span class="p">{</span>
+    <span class="p">#[</span><span class="nd">Resource</span><span class="p">(</span><span class="nx">label</span><span class="o">:</span> <span class="s1">&#39;List articles&#39;</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+
+    <span class="p">#[</span><span class="nd">Resource</span><span class="p">(</span><span class="nx">label</span><span class="o">:</span> <span class="s1">&#39;Edit an article&#39;</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">edit</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$id</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+
+    <span class="c1">// Not a resource — never appears in the permissions UI</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">moveUp</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$id</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The <code>label</code> is optional. If omitted, the method name (alias) is shown as a fallback.</p>
+<hr />
+<h2 id="4-how-it-works">4. ⚙️ How It Works<a class="headerlink" href="#4-how-it-works" title="Permanent link">&para;</a></h2>
+<h3 id="request-level-check-rbac">Request-level check (RBAC)<a class="headerlink" href="#request-level-check-rbac" title="Permanent link">&para;</a></h3>
+<p>Every request to the admin area is checked against the <code>resources</code> table:</p>
+<div class="highlight"><pre><span></span><code>HTTP request
+    → RequestAuthorizationMiddleware
+    → RequestPolicy::before()   — Root user? Allow immediately
+    → RequestPolicy::canAccess() — build path Site/Plugin/Controller/action
+    → PermissionsTable::check() — look up role&#39;s permission tree (cached)
+    → allow / deny
+</code></pre></div>
+<p>The permission tree is <strong>cached per role</strong> and cleared automatically when
+permissions or resources change.</p>
+<h3 id="entity-level-check-abac">Entity-level check (ABAC)<a class="headerlink" href="#entity-level-check-abac" title="Permanent link">&para;</a></h3>
+<p>For certain entities, a second check runs after the request is allowed:</p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User</td>
+<td>Can only view and edit their own profile</td>
+</tr>
+<tr>
+<td>Role</td>
+<td>Only Root can create, edit, or delete roles</td>
+</tr>
+</tbody>
+</table>
+<p>This means even if a role is granted access to <code>Users/edit</code> via RBAC,
+a non-Root user can still only edit their own account.</p>
+<hr />
+<h2 id="5-managing-permissions">5. 🛠️ Managing Permissions<a class="headerlink" href="#5-managing-permissions" title="Permanent link">&para;</a></h2>
+<p>Go to <strong>Site Management → Roles</strong>, then click the permissions button next to a role:</p>
+<ol>
+<li>Each resource is shown with its human-readable label.</li>
+<li>Select <code>Allow</code>, <code>Deny</code>, or <code>Inherit</code> for each action.</li>
+<li>Save to apply.</li>
+</ol>
+<p>You can also <strong>reset all permissions</strong> for a role to start fresh.</p>
+<blockquote>
+<p>The <strong>Root role</strong> permissions are read-only — Root always has full access.</p>
 </blockquote>
 <hr />
-<h2 id="5-how-it-works">5. 📜 How It works<a class="headerlink" href="#5-how-it-works" title="Permanent link">&para;</a></h2>
-<p>You can <strong>Allow</strong> or <strong>Deny</strong> permissions at any level.
-Higher-level permissions automatically affect everything inside.</p>
-<p>For example:</p>
-<p>If you <strong>Allow</strong> access to <strong>Articles</strong>, the role will automatically be able to:</p>
-<ul>
-<li>View all articles</li>
-<li>Add new articles</li>
-<li>See the articles list</li>
-</ul>
-<p>If you <strong>Deny</strong> access to <strong>Categories</strong>, the role will not see or manage categories at all.</p>
-<p>You can still <strong><em>fine-tune</em></strong>:</p>
-<ul>
-<li>Allow general access to <strong>Articles</strong>, but <strong>Deny</strong> just the <strong>add</strong> action if you don't want a role to create new content.</li>
-</ul>
-<hr />
-<h2 id="6-setting-permissions">6. 🛠️ Setting Permissions<a class="headerlink" href="#6-setting-permissions" title="Permanent link">&para;</a></h2>
-<p>You can manage roles and permissions via the <strong>Site Management → Roles</strong> page:</p>
-<ol>
-<li>Click the first button in <strong>Actions</strong> column to view a list of available resources.</li>
-<li>Select permission settings (<code>Allow</code>, <code>Deny</code>, <code>Inherit</code>) for each action.</li>
-<li>Save changes to apply permissions.</li>
-</ol>
-<p>You can also reset all <strong>permissions</strong> if needed.</p>
+<h2 id="6-for-plugin-developers">6. 🔌 For Plugin Developers<a class="headerlink" href="#6-for-plugin-developers" title="Permanent link">&para;</a></h2>
+<p>To expose actions as manageable permissions, add <code>#[Resource]</code> to your controller methods:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">App\Attribute\Resource</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Resource</span><span class="p">(</span><span class="nx">label</span><span class="o">:</span> <span class="s1">&#39;Publish an article&#39;</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">publish</span><span class="p">(</span><span class="nx">int</span> <span class="nv">$id</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+</code></pre></div>
+<p><strong>Guidelines:</strong>
+- Add <code>#[Resource]</code> only to actions an administrator should be able to control.
+- Skip utility/AJAX actions (<code>moveUp</code>, <code>getItems</code>, etc.).
+- Use clear English labels — they appear directly in the permissions UI.
+- Actions without <code>#[Resource]</code> are accessible by default (open-by-default system).</p>
+<p>If an action should be restricted to Root only regardless of permissions,
+implement a Policy instead of relying on <code>#[Resource]</code>.</p>
 
 
 
