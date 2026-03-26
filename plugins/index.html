@@ -486,6 +486,53 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#admin-panel-integration" class="md-nav__link">
+    🧭 Admin Panel Integration
+  </a>
+  
+    <nav class="md-nav" aria-label="🧭 Admin Panel Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admin-controllers" class="md-nav__link">
+    Admin Controllers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frontend-menu-links" class="md-nav__link">
+    🔗 Frontend Menu Links
+  </a>
+  
+    <nav class="md-nav" aria-label="🔗 Frontend Menu Links">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#picker-selecting-a-specific-record" class="md-nav__link">
+    Picker (selecting a specific record)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cell-widgets" class="md-nav__link">
+    🧩 Cell Widgets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#settings-and-dashboard" class="md-nav__link">
     ⚙️ Settings and Dashboard
   </a>
@@ -692,28 +739,96 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>Optionally, you can define a parent plugin:
+<p>Optionally, you can define a parent plugin:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;parent-plugin&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Shop&quot;</span>
 <span class="p">}</span>
-</code></pre></div></p>
+</code></pre></div>
 <hr />
 <h2 id="how-plugin-loading-works">🚀 How Plugin Loading Works<a class="headerlink" href="#how-plugin-loading-works" title="Permanent link">&para;</a></h2>
 <h3 id="1-upload">1. <strong>Upload</strong><a class="headerlink" href="#1-upload" title="Permanent link">&para;</a></h3>
 <p>Go to <code>Site Management → Plugins</code>, upload your <code>.zip</code>. BakeKit extracts it to <code>plugins/</code>.</p>
 <h3 id="2-read-metadata">2. <strong>Read Metadata</strong><a class="headerlink" href="#2-read-metadata" title="Permanent link">&para;</a></h3>
-<p>The system reads the plugin’s <code>composer.json</code> to extract the <code>description</code> and the optional <code>extra.parent-plugin</code> key (used in the Admin Panel to indicate a parent plugin relationship — for example, a delivery plugin that depends on the Shop plugin).</p>
+<p>The system reads the plugin's <code>composer.json</code> to extract the <code>description</code> and the optional <code>extra.parent-plugin</code> key (used in the Admin Panel to indicate a parent plugin relationship — for example, a delivery plugin that depends on the Shop plugin).</p>
 <h3 id="3-composer-integration">3. <strong>Composer Integration</strong><a class="headerlink" href="#3-composer-integration" title="Permanent link">&para;</a></h3>
 <p>BakeKit uses its internal Composer setup to register the plugin:</p>
 <ul>
 <li><code>composer.phar</code> is downloaded during BakeKit's installation and placed in the <code>bin/</code> folder.</li>
 <li>Composer is run in sandboxed mode using custom environment variables to isolate its cache and config.</li>
-<li>It’s invoked via the phar:// wrapper.</li>
-<li>No need to touch your project’s <code>composer.json</code> or use the CLI — Composer is invoked programmatically:
-  <div class="highlight"><pre><span></span><code>php<span class="w"> </span>bin/composer.phar<span class="w"> </span>dump-autoload<span class="w"> </span>-o
-</code></pre></div></li>
-<li>The plugin is ready to use instantly — no manual steps needed.</li>
+<li>It's invoked via the phar:// wrapper.</li>
+<li>No need to touch your project's <code>composer.json</code> or use the CLI — Composer is invoked programmatically:</li>
 </ul>
+<p><div class="highlight"><pre><span></span><code>php bin/composer.phar dump-autoload -o
+</code></pre></div>
+* The plugin is ready to use instantly — no manual steps needed.</p>
+<hr />
+<h2 id="admin-panel-integration">🧭 Admin Panel Integration<a class="headerlink" href="#admin-panel-integration" title="Permanent link">&para;</a></h2>
+<p>BakeKit automatically discovers your plugin's admin pages using a simple convention — no configuration required.</p>
+<h3 id="admin-controllers">Admin Controllers<a class="headerlink" href="#admin-controllers" title="Permanent link">&para;</a></h3>
+<p>Place your admin controllers in <code>src/Controller/Admin/</code>. BakeKit will automatically include the following methods in the admin navigation:</p>
+<ul>
+<li><code>DashboardController</code> — <code>index</code> and <code>settings</code> (if present)</li>
+<li>All other controllers — <code>index</code> and <code>add</code> (if present, and only if they have no required parameters)</li>
+</ul>
+<p>Example structure:</p>
+<div class="highlight"><pre><span></span><code>src/Controller/Admin/
+├── DashboardController.php   → index, settings
+├── ArticlesController.php    → index, add
+└── CategoriesController.php  → index, add
+</code></pre></div>
+<p>This results in an admin menu like:</p>
+<div class="highlight"><pre><span></span><code>YourPlugin
+  Dashboard  [index] [settings]
+  Articles   [index] [add]
+  Categories [index] [add]
+</code></pre></div>
+<p>No annotations or attributes needed — just follow the convention.</p>
+<hr />
+<h2 id="frontend-menu-links">🔗 Frontend Menu Links<a class="headerlink" href="#frontend-menu-links" title="Permanent link">&para;</a></h2>
+<p>To make your plugin's frontend pages available in the <strong>Menu editor</strong>, use the <code>#[Link]</code> attribute on your controller actions:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">App\Attribute\Link</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">Link</span><span class="p">(</span><span class="nx">summary</span><span class="o">:</span> <span class="s1">&#39;Articles list&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Published articles&#39;</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">index</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The <code>summary</code> and <code>description</code> values are displayed in the menu link selector. They should be short and user-friendly — they are the labels your site editor will see when building menus.</p>
+<h3 id="picker-selecting-a-specific-record">Picker (selecting a specific record)<a class="headerlink" href="#picker-selecting-a-specific-record" title="Permanent link">&para;</a></h3>
+<p>If a page requires selecting a specific record (e.g. a single article), use the <code>picker</code> parameter to specify which admin controller provides the list:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="p">#[</span><span class="nd">Link</span><span class="p">(</span><span class="nx">summary</span><span class="o">:</span> <span class="s1">&#39;Single article&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Article details&#39;</span><span class="p">,</span> <span class="nx">picker</span><span class="o">:</span> <span class="s1">&#39;Articles&#39;</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">view</span><span class="p">(</span><span class="o">?</span><span class="nx">string</span> <span class="nv">$id</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>When a site editor selects this link in the menu editor, a modal will open with the list from <code>Admin/ArticlesController::index</code>, allowing them to pick a specific record.</p>
+<p>For this to work, you must create an ajax template for the picker. Copy your existing <code>index.php</code> to an <code>ajax/</code> subfolder:</p>
+<div class="highlight"><pre><span></span><code>templates/Admin/Articles/
+├── index.php        ← your regular admin list
+└── ajax/
+    └── index.php   ← stripped-down version for the picker modal
+</code></pre></div>
+<p>The <code>ajax/index.php</code> should contain the list of records — remove any filters, or action buttons that are not needed in the modal context. The picker will load this template via an Ajax request and display it inside the modal.</p>
+<hr />
+<h2 id="cell-widgets">🧩 Cell Widgets<a class="headerlink" href="#cell-widgets" title="Permanent link">&para;</a></h2>
+<p>To make your plugin's view cells available in the <strong>Block editor</strong>, use the same <code>#[Link]</code> attribute on your cell methods:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">App\Attribute\Link</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ArticleCell</span> <span class="k">extends</span> <span class="nx">Cell</span>
+<span class="p">{</span>
+    <span class="p">#[</span><span class="nd">Link</span><span class="p">(</span><span class="nx">summary</span><span class="o">:</span> <span class="s1">&#39;Recent articles&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Displays a recent articles list&#39;</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">recent</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The cell will then appear in the block selector, organized under your plugin name.</p>
 <hr />
 <h2 id="settings-and-dashboard">⚙️ Settings and Dashboard<a class="headerlink" href="#settings-and-dashboard" title="Permanent link">&para;</a></h2>
 <p>BakeKit plugins are just standard CakePHP 5 plugins without any extra overhead. But when we want to set plugin settings via the Admin Panel, we need to add some structure.</p>
@@ -760,7 +875,7 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>This form handles validation, saving configuration into the database, and auto-dumps the settings using CakePHP’s built-in Configure system.</p>
+<p>This form handles validation, saving configuration into the database, and auto-dumps the settings using CakePHP's built-in Configure system.</p>
 <h3 id="2-settings-template">2. 🖼️ Settings Template<a class="headerlink" href="#2-settings-template" title="Permanent link">&para;</a></h3>
 <p>Add the template view at <code>plugins/YourPluginName/templates/Admin/Dashboard/settings.php</code></p>
 <p>Example:</p>
@@ -786,7 +901,7 @@
 <span class="x">    </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Form</span><span class="o">-&gt;</span><span class="na">end</span><span class="p">()</span> <span class="cp">?&gt;</span>
 <span class="x">&lt;/div&gt;</span>
 </code></pre></div>
-<p>This page displays your plugin’s settings form in the Admin Panel.</p>
+<p>This page displays your plugin's settings form in the Admin Panel.</p>
 <p>You can link to this page via:</p>
 <p>🔗 <code>http://yourdomain.com/admin/plugin-name/dashboard/settings</code></p>
 <h3 id="3-optional-dashboard">3. 🧭 Optional Dashboard<a class="headerlink" href="#3-optional-dashboard" title="Permanent link">&para;</a></h3>
@@ -807,7 +922,7 @@
 <p>You can also link to this dashboard directly with:</p>
 <p>🔗 <code>http://yourdomain.com/admin/plugin-name/dashboard</code></p>
 <hr />
-<p>That’s it! Once these pieces are in place, your plugin will have a fully working Admin Panel settings and dashboard pages — the BakeKit way.</p>
+<p>That's it! Once these pieces are in place, your plugin will have a fully working Admin Panel settings and dashboard pages — the BakeKit way.</p>
 <hr />
 <h2 id="learn-more">📚 Learn More<a class="headerlink" href="#learn-more" title="Permanent link">&para;</a></h2>
 <p>More about CakePHP 5 plugins and forms can be found in the official CakePHP Cookbook:</p>

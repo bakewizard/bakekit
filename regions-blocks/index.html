@@ -651,28 +651,24 @@ Themes use region placeholders to mark where dynamic content should appear. Thes
 <hr />
 <h2 id="managing-regions-blocks">⚙️ Managing Regions &amp; Blocks<a class="headerlink" href="#managing-regions-blocks" title="Permanent link">&para;</a></h2>
 <ol>
-<li>
-<p>Go to: <code>SITE MANAGEMENT</code> → <strong>Regions &amp; Blocks</strong></p>
-</li>
+<li>Go to: <code>SITE MANAGEMENT</code> → <strong>Regions &amp; Blocks</strong></li>
 <li>
 <p>Click <strong>➕</strong> to add a new region.</p>
-<ul>
-<li>Fill in the <strong>Alias</strong> (must match your theme's placeholder).</li>
-<li>Fill in a <strong>Description</strong> (optional, for admin display).</li>
-</ul>
 </li>
 <li>
-<p>After creating a region, click the first button in the <strong>Actions</strong> column to view its blocks.</p>
+<p>Fill in the <strong>Alias</strong> (must match your theme's placeholder).</p>
 </li>
+<li>Fill in a <strong>Description</strong> (optional, for admin display).</li>
+<li>After creating a region, click the first button in the <strong>Actions</strong> column to view its blocks.</li>
 <li>
 <p>Click <strong>➕</strong> to add a new block:</p>
-<ul>
-<li><strong>Alias</strong>: Unique internal identifier.</li>
+</li>
+<li>
+<p><strong>Alias</strong>: Unique internal identifier.</p>
+</li>
 <li><strong>Title</strong>: Optional heading shown on the frontend as block title.</li>
 <li><strong>Description</strong>: Admin-only field.</li>
 <li>Click the <code>...</code> button next to the <strong>Cell</strong> field to open the cell selection window.</li>
-</ul>
-</li>
 </ol>
 <h3 id="selecting-a-cell">🔍 Selecting a Cell<a class="headerlink" href="#selecting-a-cell" title="Permanent link">&para;</a></h3>
 <ul>
@@ -682,9 +678,12 @@ Themes use region placeholders to mark where dynamic content should appear. Thes
 <li>Check <strong>Enabled</strong> to activate the block.</li>
 </ul>
 <blockquote>
-<p>💡 You may optionally enter a template name. If left blank, the system will automatically use the default template corresponding to the cell’s action name (e.g., <code>recent.php</code> for the <code>recent</code> action).</p>
+<p>💡 You may optionally enter a template name. If left blank, the system will automatically use the default template corresponding to the cell's action name (e.g., <code>recent.php</code> for the <code>recent</code> action).</p>
 </blockquote>
 <p>Finally, click <strong>Save &amp; Close</strong>.</p>
+<blockquote>
+<p>🔧 Cells appear in this selector only when their methods are annotated with the <code>#[Link]</code> attribute. See <a href="../plugins/#cell-widgets">Plugins</a> for how to declare them in your plugin.</p>
+</blockquote>
 <h3 id="text-only-blocks">✏️ Text-only Blocks<a class="headerlink" href="#text-only-blocks" title="Permanent link">&para;</a></h3>
 <p>If you leave the <strong>cell field empty</strong>, you can manually fill in the <strong>Content</strong> field to create a basic HTML/text block.</p>
 <hr />
@@ -695,7 +694,6 @@ Themes use region placeholders to mark where dynamic content should appear. Thes
 <p>Create a form class at <code>plugins/YourPluginName/src/Form/Cell/ArticleCellConfigForm.php</code></p>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
-
 <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
 
 <span class="k">namespace</span> <span class="nx">Blogger\Form\Cell</span><span class="p">;</span>
@@ -709,25 +707,12 @@ Themes use region placeholders to mark where dynamic content should appear. Thes
 <span class="sd"> */</span>
 <span class="k">class</span> <span class="nc">ArticleCellConfigForm</span> <span class="k">extends</span> <span class="nx">Form</span>
 <span class="p">{</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Builds the schema for the modelless form</span>
-<span class="sd">     *</span>
-<span class="sd">     * @param \Cake\Form\Schema $schema From schema</span>
-<span class="sd">     * @return \Cake\Form\Schema</span>
-<span class="sd">     */</span>
     <span class="p">#[</span><span class="nd">\Override</span><span class="p">]</span>
     <span class="k">protected</span> <span class="k">function</span> <span class="nf">_buildSchema</span><span class="p">(</span><span class="nx">Schema</span> <span class="nv">$schema</span><span class="p">)</span><span class="o">:</span> <span class="nx">Schema</span>
     <span class="p">{</span>
         <span class="k">return</span> <span class="nv">$schema</span><span class="o">-&gt;</span><span class="na">addField</span><span class="p">(</span><span class="s1">&#39;numberOfArticlesToShow&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">]);</span>
     <span class="p">}</span>
 
-    <span class="sd">/**</span>
-<span class="sd">     * Form validation builder</span>
-<span class="sd">     *</span>
-<span class="sd">     * @param \Cake\Validation\Validator $validator to use against the form</span>
-<span class="sd">     * @return \Cake\Validation\Validator</span>
-<span class="sd">     */</span>
     <span class="p">#[</span><span class="nd">\Override</span><span class="p">]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">validationDefault</span><span class="p">(</span><span class="nx">Validator</span> <span class="nv">$validator</span><span class="p">)</span><span class="o">:</span> <span class="nx">Validator</span>
     <span class="p">{</span>
@@ -760,7 +745,7 @@ Themes use region placeholders to mark where dynamic content should appear. Thes
 <p>🔗 <a href="https://book.cakephp.org/5/en/views/themes.html">https://book.cakephp.org/5/en/views/themes.html</a></p>
 <p>🔗 <a href="https://book.cakephp.org/5/en/core-libraries/form.html">https://book.cakephp.org/5/en/core-libraries/form.html</a></p>
 <blockquote>
-<p>“That's it!  🎉. Now go ahead and define your first region — your layout is about to get a lot more dynamic.”</p>
+<p>"That's it! 🎉. Now go ahead and define your first region — your layout is about to get a lot more dynamic."</p>
 </blockquote>
 
 

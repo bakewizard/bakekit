@@ -579,13 +579,11 @@
 <ol>
 <li>Go to: <code>SITE MANAGEMENT</code> → <strong>Menus</strong></li>
 <li>Click the <strong>➕ icon</strong> to create a new menu.</li>
-<li>Fill in:<ul>
+<li>Fill in:</li>
 <li><strong>Name</strong>: Display name for admins (e.g. <code>Main Navigation</code>)</li>
 <li><strong>Description</strong>: Optional helper for admins</li>
 <li><strong>Client</strong>: Choose <code>Frontend</code> or <code>Backend</code></li>
 <li><strong>Enabled</strong>: ✅ Checked to activate</li>
-</ul>
-</li>
 <li>Click <strong>Save &amp; Close</strong></li>
 </ol>
 <p>Your new menu will now appear in the Menus list.</p>
@@ -594,21 +592,15 @@
 <ol>
 <li>In the <strong>Actions</strong> column of Menus list, click the first button to show links.</li>
 <li>Click the <strong>➕ icon</strong> to add a link.</li>
-<li>
-<p>Fill in:</p>
-<ul>
+<li>Fill in:</li>
 <li><strong>Title</strong>: Link label (e.g. <code>Blog</code>)</li>
-<li>
-<p><strong>Icon</strong>: (Optional) Use <strong>Bootstrap</strong>/<strong>Font Awesome</strong> classes like <code>bi bi-book</code> or <code>fa fa-home</code></p>
-</li>
+<li><strong>Icon</strong>: (Optional) Use <strong>Bootstrap</strong>/<strong>Font Awesome</strong> classes like <code>bi bi-book</code> or <code>fa fa-home</code></li>
 <li>
 <p><strong>Link</strong>: You have two options:</p>
 <ul>
 <li><strong>Custom link</strong>: Enter a full internal or external URL.</li>
-<li><strong>Plugin action</strong>: Click the <code>...</code> button next to the link field. This opens a window similar to the <strong>Cell selector</strong> in Blocks. You may select a page from the plugin-provided options, organized by plugin name, to automatically populate the link field.</li>
-<li><strong>Target</strong>: Where to open a link(This tab/New tab)</li>
-</ul>
-</li>
+<li><strong>Plugin action</strong>: Click the <code>...</code> button next to the link field. This opens a window organized by plugin name. Each plugin exposes its available pages using the <code>#[Link]</code> attribute — see <a href="../plugins/#frontend-menu-links">Plugins</a> for how to declare them. Select a page to automatically populate the link field.</li>
+<li><strong>Target</strong>: Where to open a link (This tab / New tab)</li>
 <li>Click <strong>Save &amp; Close</strong></li>
 </ul>
 </li>
@@ -617,8 +609,8 @@
 <h2 id="rendering-menus-in-theme">🧱 Rendering Menus in Theme<a class="headerlink" href="#rendering-menus-in-theme" title="Permanent link">&para;</a></h2>
 <p>To display a menu, you must:</p>
 <ol>
-<li>Create a region in <a href="../regions-blocks/"><strong>Regions &amp; Blocks</strong></a> with <strong>Alias</strong> that matches the placeholder in your theme (<code>custom-menu</code>)</li>
-<li>Add a block with a <code>Menu cell</code> to that region:</li>
+<li>Create a region in <a href="https://github.com/bakewizard/bakekit/blob/develop/docs/regions-blocks.md"><strong>Regions &amp; Blocks</strong></a> with <strong>Alias</strong> that matches the placeholder in your theme (<code>custom-menu</code>)</li>
+<li>Add a block with a <code>Menu cell</code> to that region</li>
 <li>Select the created menu in Block Settings (e.g. <code>Main Navigation</code>)</li>
 </ol>
 <p>In your theme layout, use:</p>
