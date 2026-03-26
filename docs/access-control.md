@@ -1,111 +1,178 @@
 # 🔐 Access Control
 
-BakeKit provides a powerful, flexible access control system for managing users, roles, and permissions.
-It uses hierarchical roles and dynamic action detection from plugins to automatically identify available actions.
-This approach gives you fine-grained, dynamic control over what users can see and do within the system, making it easy to adapt permissions as your project grows.
+BakeKit provides a hybrid access control system that combines **RBAC** (Role-Based Access Control)
+for HTTP request authorization with **ABAC** (Attribute-Based Access Control) for fine-grained
+entity-level checks. It uses hierarchical roles and explicit resource declarations via PHP attributes
+to give you precise, maintainable control over what users can do.
 
 ---
 
 ## 1. 👥 Users
 
-- Each **user** in the system is assigned a **role**.
-- Users automatically **gain the permissions** defined for their assigned role.
+- Each **user** is assigned a **role**.
+- Users automatically **inherit the permissions** defined for their role.
 - Changing a user's role **immediately changes** their permissions.
+- Only the **Root user** can create or delete other users.
+- Any user can view and edit **their own profile**.
 
 ---
 
 ## 2. 📋 Roles
 
-- Roles are structured **like an upside-down tree**:
-    - **Root Role** (topmost) has **all permissions**.
-    - **Child Roles** inherit permissions from their parents **unless overridden**.
+Roles are structured as a **upside-down tree**:
 
-> The **Root Role** cannot be deleted and always has full access to everything.
-
-Example:
+- The **Root role** (id=1) has full access to everything and cannot be deleted.
+- **Child roles** inherit permissions from their parent unless explicitly overridden.
 
 ```
 Root
- ├── Manager
- │    ├── Editor
- │    └── Author
- └── Support
+ └── Manager
+      ├── Editor
+      └── Author
 ```
 
-Each child can **inherit**, **allow**, or **deny** specific actions.
+> Only the Root user can create, edit, or delete roles.
 
----
+### Permission inheritance
 
-## 3. 📜 Permissions
+Each child role can **inherit**, **allow**, or **deny** any resource:
 
-- Each Permission is tied to a resource.
-- Each permission can have one of the following statuses:
-
-
-| Status  | Meaning |
-|---------|---------|
-| ✅ Allow | Explicitly allow the action |
-| ❌ Deny  | Explicitly deny the action |
+| Status | Meaning |
+|--------|---------|
+| ✅ Allow | Explicitly grant access |
+| ❌ Deny | Explicitly deny access |
 | 🧬 Inherit | Follow the parent role's setting |
 
----
+The closest explicit record in the role hierarchy wins.
+If no record exists anywhere in the chain, access is **allowed by default**.
 
-## 4. 🗂️ Resources
-
-`Resources` are the actions of BakeKit that you can control with permissions.
-
-They are organized hierarchically, like roles:
+**Example:**
 
 ```
-Blogger
- ├── Articles
- │    ├── index
- │    ├── view
- |    └── add
- └── Categories
-      ├── index
-      ├── add
-      └── edit
+Root       → allows Articles
+  Manager  → no record    → inherits allow from Root
+    Editor → denies Articles/delete → can do everything except delete
 ```
 
-In this example:
+---
 
-- Blogger is a plugin.
-- Articles and Categories are controllers of the Blogger.
-- index, view, add, edit are the individual actions a user can perform.
+## 3. 🗂️ Resources
 
-> When a plugin is installed, its resources are added to the permissions list and removed upon uninstallation.
+Resources are the specific actions that can be controlled via permissions.
+They are organized as a tree mirroring the plugin/controller/action structure:
+
+```
+Site
+ └── Blogger
+      ├── Articles
+      │    ├── List articles
+      │    ├── Create an article
+      │    ├── Edit an article
+      │    └── Delete an article
+      └── Categories
+           ├── List categories
+           └── Edit a category
+```
+
+- **Site** — the root node (required for tree inheritance to work)
+- **Blogger** — a plugin name
+- **Articles / Categories** — controller names
+- **List articles, Edit an article...** — individual actions with human-readable labels
+
+> Resources are added automatically when a plugin is installed and removed when it is uninstalled.
+
+### Declaring resources in a plugin
+
+Only actions explicitly marked with the `#[Resource]` attribute are registered as resources.
+This keeps the permissions UI clean — utility methods like `moveUp`, `getCells`, or `getLinks`
+are never shown.
+
+```php
+<?php
+
+use App\Attribute\Resource;
+
+class ArticlesController extends AppController
+{
+    #[Resource(label: 'List articles')]
+    public function index() { ... }
+
+    #[Resource(label: 'Edit an article')]
+    public function edit(int $id) { ... }
+
+    // Not a resource — never appears in the permissions UI
+    public function moveUp(int $id) { ... }
+}
+```
+
+The `label` is optional. If omitted, the method name (alias) is shown as a fallback.
 
 ---
 
-## 5. 📜 How It works
+## 4. ⚙️ How It Works
 
-You can **Allow** or **Deny** permissions at any level.
-Higher-level permissions automatically affect everything inside.
+### Request-level check (RBAC)
 
-For example:
+Every request to the admin area is checked against the `resources` table:
 
-If you **Allow** access to **Articles**, the role will automatically be able to:
+```
+HTTP request
+    → RequestAuthorizationMiddleware
+    → RequestPolicy::before()   — Root user? Allow immediately
+    → RequestPolicy::canAccess() — build path Site/Plugin/Controller/action
+    → PermissionsTable::check() — look up role's permission tree (cached)
+    → allow / deny
+```
 
-- View all articles
-- Add new articles
-- See the articles list
+The permission tree is **cached per role** and cleared automatically when
+permissions or resources change.
 
-If you **Deny** access to **Categories**, the role will not see or manage categories at all.
+### Entity-level check (ABAC)
 
-You can still ***fine-tune***:
+For certain entities, a second check runs after the request is allowed:
 
-- Allow general access to **Articles**, but **Deny** just the **add** action if you don't want a role to create new content.
+| Entity | Rule |
+|--------|------|
+| User | Can only view and edit their own profile |
+| Role | Only Root can create, edit, or delete roles |
+
+This means even if a role is granted access to `Users/edit` via RBAC,
+a non-Root user can still only edit their own account.
 
 ---
 
-## 6. 🛠️ Setting Permissions
+## 5. 🛠️ Managing Permissions
 
-You can manage roles and permissions via the **Site Management → Roles** page:
+Go to **Site Management → Roles**, then click the permissions button next to a role:
 
-1. Click the first button in **Actions** column to view a list of available resources.
-2. Select permission settings (`Allow`, `Deny`, `Inherit`) for each action.
-3. Save changes to apply permissions.
+1. Each resource is shown with its human-readable label.
+2. Select `Allow`, `Deny`, or `Inherit` for each action.
+3. Save to apply.
 
-You can also reset all **permissions** if needed.
+You can also **reset all permissions** for a role to start fresh.
 
+> The **Root role** permissions are read-only — Root always has full access.
+
+---
+
+## 6. 🔌 For Plugin Developers
+
+To expose actions as manageable permissions, add `#[Resource]` to your controller methods:
+
+```php
+<?php
+
+use App\Attribute\Resource;
+
+#[Resource(label: 'Publish an article')]
+public function publish(int $id) { ... }
+```
+
+**Guidelines:**
+- Add `#[Resource]` only to actions an administrator should be able to control.
+- Skip utility/AJAX actions (`moveUp`, `getItems`, etc.).
+- Use clear English labels — they appear directly in the permissions UI.
+- Actions without `#[Resource]` are accessible by default (open-by-default system).
+
+If an action should be restricted to Root only regardless of permissions,
+implement a Policy instead of relying on `#[Resource]`.
