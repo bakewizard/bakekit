@@ -57,6 +57,7 @@ Each plugin **must** contain a valid `composer.json`, for example:
 ```
 
 Optionally, you can define a parent plugin:
+
 ```json
 "extra": {
   "parent-plugin": "Shop"
@@ -68,22 +69,126 @@ Optionally, you can define a parent plugin:
 ## 🚀 How Plugin Loading Works
 
 ### 1. **Upload**
+
 Go to `Site Management → Plugins`, upload your `.zip`. BakeKit extracts it to `plugins/`.
 
 ### 2. **Read Metadata**
-The system reads the plugin’s `composer.json` to extract the `description` and the optional `extra.parent-plugin` key (used in the Admin Panel to indicate a parent plugin relationship — for example, a delivery plugin that depends on the Shop plugin).
+
+The system reads the plugin's `composer.json` to extract the `description` and the optional `extra.parent-plugin` key (used in the Admin Panel to indicate a parent plugin relationship — for example, a delivery plugin that depends on the Shop plugin).
 
 ### 3. **Composer Integration**
+
 BakeKit uses its internal Composer setup to register the plugin:
 
-- `composer.phar` is downloaded during BakeKit's installation and placed in the `bin/` folder.
-- Composer is run in sandboxed mode using custom environment variables to isolate its cache and config.
-- It’s invoked via the phar:// wrapper.
-- No need to touch your project’s `composer.json` or use the CLI — Composer is invoked programmatically:
-  ```shell
+* `composer.phar` is downloaded during BakeKit's installation and placed in the `bin/` folder.
+* Composer is run in sandboxed mode using custom environment variables to isolate its cache and config.
+* It's invoked via the phar:// wrapper.
+* No need to touch your project's `composer.json` or use the CLI — Composer is invoked programmatically:
+
+  ```
   php bin/composer.phar dump-autoload -o
   ```
-- The plugin is ready to use instantly — no manual steps needed.
+* The plugin is ready to use instantly — no manual steps needed.
+
+---
+
+## 🧭 Admin Panel Integration
+
+BakeKit automatically discovers your plugin's admin pages using a simple convention — no configuration required.
+
+### Admin Controllers
+
+Place your admin controllers in `src/Controller/Admin/`. BakeKit will automatically include the following methods in the admin navigation:
+
+* `DashboardController` — `index` and `settings` (if present)
+* All other controllers — `index` and `add` (if present, and only if they have no required parameters)
+
+Example structure:
+
+```
+src/Controller/Admin/
+├── DashboardController.php   → index, settings
+├── ArticlesController.php    → index, add
+└── CategoriesController.php  → index, add
+```
+
+This results in an admin menu like:
+
+```
+YourPlugin
+  Dashboard  [index] [settings]
+  Articles   [index] [add]
+  Categories [index] [add]
+```
+
+No annotations or attributes needed — just follow the convention.
+
+---
+
+## 🔗 Frontend Menu Links
+
+To make your plugin's frontend pages available in the **Menu editor**, use the `#[Link]` attribute on your controller actions:
+
+```php
+<?php
+
+use App\Attribute\Link;
+
+#[Link(summary: 'Articles list', description: 'Published articles')]
+public function index(): void
+{
+}
+```
+
+The `summary` and `description` values are displayed in the menu link selector. They should be short and user-friendly — they are the labels your site editor will see when building menus.
+
+### Picker (selecting a specific record)
+
+If a page requires selecting a specific record (e.g. a single article), use the `picker` parameter to specify which admin controller provides the list:
+
+```php
+<?php
+
+#[Link(summary: 'Single article', description: 'Article details', picker: 'Articles')]
+public function view(?string $id = null): void
+{
+}
+```
+
+When a site editor selects this link in the menu editor, a modal will open with the list from `Admin/ArticlesController::index`, allowing them to pick a specific record.
+
+For this to work, you must create an ajax template for the picker. Copy your existing `index.php` to an `ajax/` subfolder:
+
+```
+templates/Admin/Articles/
+├── index.php        ← your regular admin list
+└── ajax/
+    └── index.php   ← stripped-down version for the picker modal
+```
+
+The `ajax/index.php` should contain the list of records — remove any filters, or action buttons that are not needed in the modal context. The picker will load this template via an Ajax request and display it inside the modal.
+
+---
+
+## 🧩 Cell Widgets
+
+To make your plugin's view cells available in the **Block editor**, use the same `#[Link]` attribute on your cell methods:
+
+```php
+<?php
+
+use App\Attribute\Link;
+
+class ArticleCell extends Cell
+{
+    #[Link(summary: 'Recent articles', description: 'Displays a recent articles list')]
+    public function recent(): void
+    {
+    }
+}
+```
+
+The cell will then appear in the block selector, organized under your plugin name.
 
 ---
 
@@ -139,7 +244,7 @@ class ConfigForm extends Form
 }
 ```
 
-This form handles validation, saving configuration into the database, and auto-dumps the settings using CakePHP’s built-in Configure system.
+This form handles validation, saving configuration into the database, and auto-dumps the settings using CakePHP's built-in Configure system.
 
 ### 2. 🖼️ Settings Template
 
@@ -171,12 +276,11 @@ Example:
 </div>
 ```
 
-This page displays your plugin’s settings form in the Admin Panel.
+This page displays your plugin's settings form in the Admin Panel.
 
 You can link to this page via:
 
 🔗 `http://yourdomain.com/admin/plugin-name/dashboard/settings`
-
 
 ### 3. 🧭 Optional Dashboard
 
@@ -204,7 +308,7 @@ You can also link to this dashboard directly with:
 
 ---
 
-That’s it! Once these pieces are in place, your plugin will have a fully working Admin Panel settings and dashboard pages — the BakeKit way.
+That's it! Once these pieces are in place, your plugin will have a fully working Admin Panel settings and dashboard pages — the BakeKit way.
 
 ---
 
@@ -212,9 +316,10 @@ That’s it! Once these pieces are in place, your plugin will have a fully worki
 
 More about CakePHP 5 plugins and forms can be found in the official CakePHP Cookbook:
 
-🔗 [https://book.cakephp.org/5/en/plugins.html](https://book.cakephp.org/5/en/plugins.html)
+🔗 <https://book.cakephp.org/5/en/plugins.html>
 
-🔗 [https://book.cakephp.org/5/en/core-libraries/form.html](https://book.cakephp.org/5/en/core-libraries/form.html)
+🔗 <https://book.cakephp.org/5/en/core-libraries/form.html>
 
 ## 💡 Tip
+
 You can create your own plugins using `cake bake plugin PluginName`, zip them up, and upload through the Admin panel.

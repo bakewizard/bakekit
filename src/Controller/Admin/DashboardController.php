@@ -19,7 +19,6 @@ class DashboardController extends AppController
      *
      * @return void
      */
-    #[Resource(label: 'System dashboard')]
     public function index()
     {
     }

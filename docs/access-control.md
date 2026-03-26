@@ -136,9 +136,6 @@ For certain entities, a second check runs after the request is allowed:
 | User | Can only view and edit their own profile |
 | Role | Only Root can create, edit, or delete roles |
 
-This means even if a role is granted access to `Users/edit` via RBAC,
-a non-Root user can still only edit their own account.
-
 ---
 
 ## 5. 🛠️ Managing Permissions
