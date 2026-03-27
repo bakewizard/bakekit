@@ -5,9 +5,11 @@ namespace App\Lib;
 
 use DirectoryIterator;
 use Exception;
+use FilesystemIterator;
 use finfo;
 use Psr\Http\Message\UploadedFileInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use ZipArchive;
 
 /**
@@ -115,10 +117,7 @@ class ExtensionHandler
             throw new Exception(__('Extension "{0}" not found.', $name));
         }
 
-        $fs = new Filesystem();
-        if ($fs->exists($path)) {
-            $fs->remove($path);
-        }
+        $this->removeDir($path);
     }
 
     /**
@@ -273,5 +272,28 @@ class ExtensionHandler
         }
 
         return implode(DIRECTORY_SEPARATOR, $normalized);
+    }
+
+    /**
+     * Recursively removes a directory and all its contents.
+     *
+     * @param string $path
+     * @return void
+     * @throws \Exception
+     */
+    private function removeDir(string $path): void
+    {
+        $items = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST,
+        );
+
+        foreach ($items as $item) {
+            $item->isDir() ? rmdir($item->getRealPath()) : unlink($item->getRealPath());
+        }
+
+        if (!rmdir($path)) {
+            throw new Exception(__('Failed to remove extension "{0}".', basename($path)));
+        }
     }
 }
