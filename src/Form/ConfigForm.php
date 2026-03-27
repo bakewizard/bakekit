@@ -10,7 +10,7 @@ use Cake\Validation\Validator;
 use Override;
 
 /**
- * Cms Config Form.
+ * System Config Form.
  */
 class ConfigForm extends Form
 {
@@ -21,14 +21,14 @@ class ConfigForm extends Form
     protected function _buildSchema(Schema $schema): Schema
     {
         return $schema
-                        ->addField('siteName', ['type' => 'string', 'default' => 'BakeKit'])
-                        ->addField('theme', 'string')
-                        ->addField('defaultDashboard', ['type' => 'string', 'default' => 'System'])
-                        ->addField('maintenance.mode', ['type' => 'boolean', 'default' => 0])
-                        ->addField('maintenance.allowedIps', 'string')
-                        ->addField('maintenance.message', 'text')
-                        ->addField('images.format', ['type' => 'string', 'default' => 'jpeg'])
-                        ->addField('images.quality', ['type' => 'integer', 'default' => 90]);
+            ->addField('siteName', ['type' => 'string', 'default' => 'BakeKit'])
+            ->addField('theme', 'string')
+            ->addField('defaultDashboard', ['type' => 'string', 'default' => 'System'])
+            ->addField('maintenance.mode', ['type' => 'boolean', 'default' => 0])
+            ->addField('maintenance.allowedIps', 'string')
+            ->addField('maintenance.message', 'text')
+            ->addField('images.format', ['type' => 'string', 'default' => 'jpeg'])
+            ->addField('images.quality', ['type' => 'integer', 'default' => 90]);
     }
 
     /**
@@ -38,10 +38,10 @@ class ConfigForm extends Form
     public function validationDefault(Validator $validator): Validator
     {
         return $validator
-                        ->addNested('images', (new Validator())->add('quality', [
-                                    'not-blank' => ['rule' => 'notBlank'],
-                                    'btw-1-100' => ['rule' => ['range', 1, 100]],
-        ]));
+            ->addNested('images', (new Validator())->add('quality', [
+                'not-blank' => ['rule' => 'notBlank'],
+                'btw-1-100' => ['rule' => ['range', 1, 100]],
+            ]));
     }
 
     /**

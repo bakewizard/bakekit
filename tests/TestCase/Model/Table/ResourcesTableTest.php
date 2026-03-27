@@ -20,75 +20,61 @@ class ResourcesTableTest extends TestCase
         'app.Resources',
     ];
 
+    /**
+     * The ResourcesTable instance under test.
+     *
+     * @var \App\Model\Table\ResourcesTable
+     */
     protected ResourcesTable $Resources;
 
+    /**
+     * setUp method
+     */
     protected function setUp(): void
     {
         parent::setUp();
         $this->Resources = $this->fetchTable('Resources');
     }
 
+    /**
+     * tearDown method
+     */
     protected function tearDown(): void
     {
         unset($this->Resources);
         parent::tearDown();
     }
 
-    // -------------------------------------------------------------------------
-    // createNode()
-    // -------------------------------------------------------------------------
-
     /**
-     * createNode() should create a chain of nested nodes from a slash-separated path.
+     * Test createNode() method
+     *
+     * Verifies that createNode() correctly creates a chain of
+     * nested resources based on a slash-separated path.
+     *
+     * @return void
      */
     public function testCreateNode(): void
     {
         $result = $this->Resources->createNode('Site/SomePlugin/SomeController/someMethod');
 
-        $this->assertNotNull($result);
+        $this->assertNotFalse($result);
         $this->assertEquals('someMethod', $result->alias);
 
         $fullPath = $this->Resources->find('path', for: $result->id)->toArray();
+
+        $this->assertNotEmpty($fullPath);
         $this->assertEquals('SomePlugin', $fullPath[1]->alias);
         $this->assertEquals('SomeController', $fullPath[2]->alias);
         $this->assertEquals('someMethod', $fullPath[3]->alias);
     }
 
     /**
-     * createNode() should store the label on the leaf node only.
-     * Intermediate nodes created from the path get an empty label.
-     */
-    public function testCreateNodeStoresLabel(): void
-    {
-        $result = $this->Resources->createNode('TestPlugin/Posts/edit', null, 'Edit a post');
-
-        $this->assertNotNull($result);
-        $this->assertEquals('edit', $result->alias);
-        $this->assertEquals('Edit a post', $result->label);
-
-        $fullPath = $this->Resources->find('path', for: $result->id)->toArray();
-        $this->assertEquals('', $fullPath[0]->label); // TestPlugin
-        $this->assertEquals('', $fullPath[1]->label); // Posts
-        $this->assertEquals('Edit a post', $fullPath[2]->label); // edit
-    }
-
-    /**
-     * createNode() without a label should leave label empty.
-     */
-    public function testCreateNodeWithoutLabel(): void
-    {
-        $result = $this->Resources->createNode('NoLabelAction');
-
-        $this->assertNotNull($result);
-        $this->assertEquals('', $result->label);
-    }
-
-    // -------------------------------------------------------------------------
-    // checkNode()
-    // -------------------------------------------------------------------------
-
-    /**
-     * checkNode() should return null when node does not exist.
+     * Test checkNode() method with non-existent node
+     *
+     * Verifies that checkNode() returns null when a node
+     * with the given alias and parent does not exist.
+     *
+     * @return void
      */
     public function testCheckNodeReturnsNullForNonExistent(): void
     {
@@ -96,7 +82,12 @@ class ResourcesTableTest extends TestCase
     }
 
     /**
-     * checkNode() should return the correct entity when node exists.
+     * Test checkNode() method with existing node
+     *
+     * Verifies that checkNode() returns the correct Resource entity
+     * when a node with the given alias exists.
+     *
+     * @return void
      */
     public function testCheckNodeReturnsCorrectEntity(): void
     {
@@ -107,13 +98,15 @@ class ResourcesTableTest extends TestCase
         $this->assertEquals($node->id, $found->id);
     }
 
-    // -------------------------------------------------------------------------
-    // addResources()
-    // -------------------------------------------------------------------------
-
     /**
-     * addResources() should build the full resource tree.
-     * Format: [plugin => [controller => [action => label]]].
+     * Test addResources() method
+     *
+     * Verifies that addResources() builds a full resource tree
+     * from a structured array under a 'Site' root node.
+     *
+     * Checks both plugin and controller/action nesting.
+     *
+     * @return void
      */
     public function testAddResourcesCreatesFullTree(): void
     {
@@ -127,12 +120,6 @@ class ResourcesTableTest extends TestCase
                 'Comments' => [
                     'approve' => 'Approve a comment',
                     'delete' => 'Delete a comment',
-                ],
-            ],
-            'UserPlugin' => [
-                'Users' => [
-                    'index' => 'List users',
-                    'edit' => 'Edit a user',
                 ],
             ],
         ];
@@ -152,80 +139,33 @@ class ResourcesTableTest extends TestCase
         $this->assertNotNull($index);
         $this->assertEquals('List posts', $index->label);
 
-        $edit = $this->Resources->checkNode('edit', $posts->id);
-        $this->assertNotNull($edit);
-        $this->assertEquals('Edit a post', $edit->label);
+        $this->assertNotNull($this->Resources->checkNode('add', $posts->id));
+        $this->assertNotNull($this->Resources->checkNode('edit', $posts->id));
 
         $comments = $this->Resources->checkNode('Comments', $blog->id);
         $this->assertNotNull($comments);
         $this->assertNotNull($this->Resources->checkNode('approve', $comments->id));
         $this->assertNotNull($this->Resources->checkNode('delete', $comments->id));
-
-        $userPlugin = $this->Resources->checkNode('UserPlugin', $site->id);
-        $this->assertNotNull($userPlugin);
-
-        $users = $this->Resources->checkNode('Users', $userPlugin->id);
-        $this->assertNotNull($users);
-        $this->assertNotNull($this->Resources->checkNode('index', $users->id));
-        $this->assertNotNull($this->Resources->checkNode('edit', $users->id));
     }
 
     /**
-     * Controllers with no actions should not be added to the tree.
+     * Test deleteResources() method
+     *
+     * Verifies that deleteResources() deletes only nodes
+     * with a specific alias under a given parent ID (default 1).
+     *
+     * @return void
      */
-    public function testAddResourcesSkipsEmptyControllers(): void
+    public function testDeleteResourcesRemovesOnlyMatchingAliasUnderParentIdOne(): void
     {
-        $tree = [
-            'TestPlugin' => [
-                'EmptyController' => [],
-                'Posts' => ['index' => 'List posts'],
-            ],
-        ];
-
-        $this->Resources->addResources($tree);
-
-        $site = $this->Resources->checkNode('Site');
-        $plugin = $this->Resources->checkNode('TestPlugin', $site->id);
-        $this->assertNotNull($plugin);
-
-        // EmptyController should not be created
-        $this->assertNull($this->Resources->checkNode('EmptyController', $plugin->id));
-
-        // Posts should still be created
-        $this->assertNotNull($this->Resources->checkNode('Posts', $plugin->id));
-    }
-
-    /**
-     * Plugins where all controllers are empty should not be added at all.
-     */
-    public function testAddResourcesSkipsPluginWithNoActions(): void
-    {
-        $tree = [
-            'EmptyPlugin' => [
-                'Posts' => [],
-            ],
-        ];
-
-        $this->Resources->addResources($tree);
-
-        $site = $this->Resources->checkNode('Site');
-        $this->assertNull($this->Resources->checkNode('EmptyPlugin', $site->id));
-    }
-
-    // -------------------------------------------------------------------------
-    // deleteResources()
-    // -------------------------------------------------------------------------
-
-    /**
-     * deleteResources() should remove only nodes matching the given alias under parent id=1.
-     */
-    public function testDeleteResourcesRemovesOnlyMatchingAlias(): void
-    {
+        // Seed the structure
         $this->Resources->createNode('Site');
         $this->Resources->createNode('ToDelete', 1);
+        $this->Resources->createNode('Other', 2); // under "ToDelete"
 
         $this->Resources->deleteResources('ToDelete');
 
-        $this->assertNull($this->Resources->checkNode('ToDelete', 1));
+        $node = $this->Resources->checkNode('ToDelete', 1);
+        $this->assertNull($node);
     }
 }

@@ -105,7 +105,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         parent::bootstrap();
 
         if (PHP_SAPI !== 'cli') {
-            FactoryLocator::add('Table', $this->tableLocator->allowFallbackClass(true)); // @phpstan-ignore argument.type
+            FactoryLocator::add('Table', $this->tableLocator->allowFallbackClass(true));
         }
 
         // Provide default cache configs, unless overridden in app_local.php
@@ -376,7 +376,12 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     private function loadPlugins(): void
     {
         $table = $this->tableLocator->get('Plugins');
-        $plugins = $table->find()->where(['enabled' => true])->cache('plugins', 'cms')->toArray();
+        /** @var array<\App\Model\Entity\Plugin> $plugins */
+        $plugins = $table->find()
+            ->where(['enabled' => true])
+            ->cache('plugins', 'cms')
+            ->toArray();
+
         foreach ($plugins as $plugin) {
             try {
                 $this->addPlugin($plugin->name, ['alias' => $plugin->alias]);

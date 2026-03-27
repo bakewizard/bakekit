@@ -45,6 +45,7 @@ class ResourcesExplorer
             }
 
             $files = $this->getPhpFiles($path, 'Controller.php', ['AppController.php', 'ErrorController.php']);
+            sort($files);
             $controllers = [];
 
             foreach ($files as $file) {
@@ -56,7 +57,7 @@ class ResourcesExplorer
                 }
 
                 $methods = $this->getDeclaredPublicMethods($fqcn, self::COMMON_CONTROLLER_METHODS);
-                $controllers[$controller] = array_reduce(
+                $actions = array_reduce(
                     $methods,
                     function (array $carry, ReflectionMethod $method): array {
                         $attr = $this->getAttribute($method, Resource::class);
@@ -68,6 +69,16 @@ class ResourcesExplorer
                     },
                     [],
                 );
+                ksort($actions);
+                $crudOrder = ['index', 'view', 'add', 'edit', 'delete'];
+                $sorted = [];
+                foreach ($crudOrder as $name) {
+                    if (isset($actions[$name])) {
+                        $sorted[$name] = $actions[$name];
+                        unset($actions[$name]);
+                    }
+                }
+                $controllers[$controller] = $sorted + $actions;
             }
 
             if ($controllers) {

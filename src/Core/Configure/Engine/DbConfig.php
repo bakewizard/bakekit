@@ -54,7 +54,7 @@ class DbConfig implements ConfigEngineInterface
                 $this->_table->aliasField('namespace') . ' IS' => $key,
             ]);
         }
-
+        /** @var array<string, array<string, mixed>> $data */
         $data = $query
             ->cache($this->_cacheKey($key), $this->_cacheConfig)
             ->formatResults(function ($results) {
