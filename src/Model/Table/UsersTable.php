@@ -27,8 +27,8 @@ use Override;
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\User> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $UserFiles
- * @mixin \App\Model\Behavior\UploadBehavior
- * @extends \Cake\ORM\Table<array{Timestamp: \Cake\ORM\Behavior\TimestampBehavior, Upload: \App\Model\Behavior\UploadBehavior}>
+ * @mixin \App\Model\Behavior\AttachmentBehavior
+ * @extends \Cake\ORM\Table<array{Timestamp: \Cake\ORM\Behavior\TimestampBehavior, Upload: \App\Model\Behavior\AttachmentBehavior}>
  */
 class UsersTable extends Table
 {
@@ -50,11 +50,7 @@ class UsersTable extends Table
         ]);
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('Upload', [
-            'uploadHandler' => [
-                'class' => '\\App\\Lib\\ImageUploadHandler',
-                'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40],
-            ],
+        $this->addBehavior('Attachment', [
             'dirDepth' => 0,
             'tablePostfix' => 'images',
         ]);

@@ -12,12 +12,13 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Override;
+use RuntimeException;
 use const UPLOAD_ERR_NO_FILE;
 
 /**
- * Image behavior
+ * Attachment behavior
  */
-class UploadBehavior extends Behavior
+class AttachmentBehavior extends Behavior
 {
     private AbstractUploadHandler $uploadHandler;
     private string $tableAlias = 'Files';
@@ -26,14 +27,9 @@ class UploadBehavior extends Behavior
      * @inheritDoc
      */
     protected array $_defaultConfig = [
-        'maxFiles' => 10,
-        'allowedFiles' => ['image/jpeg', 'image/png', 'image/gif'],
         'multiple' => false,
         'modelPath' => null,
         'dirDepth' => 2,
-        'uploadHandler' => [
-            'class' => '\\App\\Lib\\DefaultUploadHandler',
-        ],
     ];
 
     /**
@@ -50,8 +46,6 @@ class UploadBehavior extends Behavior
         } else {
             $this->setConfig('modelPath', '/' . $config['modelPath']);
         }
-
-        $this->loadUploadHandler();
 
         $singularName = Inflector::singularize($this->_table->getAlias());
 
@@ -201,31 +195,29 @@ class UploadBehavior extends Behavior
     }
 
     /**
+     * Sets upload handler
+     *
+     * @return void
+     */
+    public function setUploadHandler(AbstractUploadHandler $uploadHandler): void
+    {
+        $this->uploadHandler = $uploadHandler;
+    }
+
+    /**
      * Returns upload handler
      *
      * @return \App\Lib\AbstractUploadHandler
      */
     public function getUploadHandler(): AbstractUploadHandler
     {
-        return $this->uploadHandler;
-    }
-
-    /**
-     * Loads upload handler
-     *
-     * @return void
-     */
-    private function loadUploadHandler(): void
-    {
-        $uploadHandlerClass = $this->_config['uploadHandler']['class'];
-        unset($this->_config['uploadHandler']['class']);
-        $config = $this->_config['uploadHandler'];
-
-        $uploadHandler = new $uploadHandlerClass($config);
-
-        if ($uploadHandler instanceof AbstractUploadHandler) {
-            $this->uploadHandler = $uploadHandler;
+        if (!isset($this->uploadHandler)) {
+            throw new RuntimeException(
+                'UploadHandler is not set. Use setUploadHandler() before calling this method.',
+            );
         }
+
+        return $this->uploadHandler;
     }
 
     /**

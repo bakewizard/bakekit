@@ -178,28 +178,6 @@ class AppController extends Controller
     }
 
     /**
-     * Deletes loaded file
-     *
-     * @param string|null $id
-     * @return \Cake\Http\Response|null
-     */
-    public function deleteFiles(?string $id = null): ?Response
-    {
-        $this->request->allowMethod(['post', 'delete']);
-
-        $modelClass = pluginSplit($this->name)[1];
-
-        $entity = $this->{$modelClass}->get($id);
-
-        /** @var \App\Model\Behavior\UploadBehavior $upload */
-        $upload = $this->{$modelClass}->getBehavior('Upload');
-
-        $upload->remove($entity->files);
-
-        return $this->redirect($this->referer());
-    }
-
-    /**
      * Config helper
      *
      * @param string|null $var Variable to obtain. Use '.' to access array elements.

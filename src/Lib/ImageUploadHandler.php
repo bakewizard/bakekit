@@ -10,10 +10,7 @@ use Imagine\Image\Palette\RGB;
 use Imagine\Image\Point;
 use InvalidArgumentException;
 use League\Flysystem\Filesystem;
-use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Flysystem\StorageAttributes;
-use League\Flysystem\UnixVisibility\PortableVisibilityConverter;
-use League\Flysystem\Visibility;
 use Override;
 
 class ImageUploadHandler extends AbstractUploadHandler
@@ -24,13 +21,12 @@ class ImageUploadHandler extends AbstractUploadHandler
      * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
-        'basePath' => WWW_ROOT . 'media',
         'thumbs' => [],
         'quality' => 75,
         'format' => 'jpeg', // Options: 'jpeg', 'webp', 'avif'
         'watermark' => null,
     ];
-    private Filesystem $_storage;
+    private Filesystem $storage;
     private Imagine $imagine;
 
     /**
@@ -39,7 +35,7 @@ class ImageUploadHandler extends AbstractUploadHandler
      * @param array<string, mixed> $config Configuration options.
      * @throws \InvalidArgumentException If an unsupported image format is specified.
      */
-    public function __construct(array $config = [])
+    public function __construct(Filesystem $storage, array $config = [])
     {
         $this->setConfig($config);
 
@@ -49,13 +45,7 @@ class ImageUploadHandler extends AbstractUploadHandler
             throw new InvalidArgumentException("Unsupported image format: $format");
         }
 
-        $visibility = PortableVisibilityConverter::fromArray([
-            'file' => ['public' => 0640, 'private' => 0600],
-            'dir' => ['public' => 0750, 'private' => 0700],
-                ], Visibility::PUBLIC);
-
-        $adapter = new LocalFilesystemAdapter($this->_config['basePath'], $visibility);
-        $this->_storage = new Filesystem($adapter);
+        $this->storage = $storage;
     }
 
     /**
@@ -98,13 +88,13 @@ class ImageUploadHandler extends AbstractUploadHandler
         foreach ($files as $file) {
             $pattern = '/' . preg_quote((string)$file['id'], '/') . '-[A-Za-z]+\.(jpe?g|webp|avif)$/i';
 
-            $foundFiles = $this->_storage->listContents($file['path'])
+            $foundFiles = $this->storage->listContents($file['path'])
                     ->filter(fn(StorageAttributes $attr) => $attr->isFile())
                     ->filter(fn(StorageAttributes $attr) => (bool)preg_match($pattern, basename($attr->path())))
                     ->toArray();
 
             foreach ($foundFiles as $foundFile) {
-                $this->_storage->delete(DS . $foundFile->path());
+                $this->storage->delete(DS . $foundFile->path());
             }
         }
     }
@@ -142,7 +132,7 @@ class ImageUploadHandler extends AbstractUploadHandler
         };
 
         $imageData = $background->get($format, $options);
-        $this->_storage->write($path . DS . $name, $imageData);
+        $this->storage->write($path . DS . $name, $imageData);
     }
 
     /**

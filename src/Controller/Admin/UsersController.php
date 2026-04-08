@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Lib\ImageUploadHandler;
 use Cake\Event\EventInterface;
 use Override;
 
@@ -55,13 +56,16 @@ class UsersController extends AppController
     {
         $images = $this->getConfig('Cms.images');
 
-        /** @var \App\Model\Behavior\UploadBehavior $upload */
-        $upload = $this->Users->getBehavior('Upload');
+        /** @var \App\Model\Behavior\AttachmentBehavior $attachment */
+        $attachment = $this->Users->getBehavior('Attachment');
 
-        $upload->getUploadHandler()->setConfig([
+        $uploadHandler = new ImageUploadHandler($this->getStorage(WWW_ROOT . 'media'), [
+            'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40],
             'format' => $images['format'],
             'quality' => $images['quality'],
         ]);
+
+        $attachment->setUploadHandler($uploadHandler);
 
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
@@ -90,13 +94,16 @@ class UsersController extends AppController
     {
         $images = $this->getConfig('Cms.images');
 
-        /** @var \App\Model\Behavior\UploadBehavior $upload */
-        $upload = $this->Users->getBehavior('Upload');
+        /** @var \App\Model\Behavior\AttachmentBehavior $attachment */
+        $attachment = $this->Users->getBehavior('Attachment');
 
-        $upload->getUploadHandler()->setConfig([
+        $uploadHandler = new ImageUploadHandler($this->getStorage(WWW_ROOT . 'media'), [
+            'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40],
             'format' => $images['format'],
             'quality' => $images['quality'],
         ]);
+
+        $attachment->setUploadHandler($uploadHandler);
 
         $user = $this->Users->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
