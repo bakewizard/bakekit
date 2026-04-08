@@ -30,20 +30,22 @@
                     $this->Form->file('uploads[]', [
                         'accept' => 'image/*',
                         'id' => 'users-images-input',
-                        'append' => $this->Form->deleteLink(
+                        'append' => $this->Form->button(
                             '<i class="fa-solid fa-lg fa-eraser"></i>',
-                            ['action' => 'deleteFiles', $user->id],
                             [
-                                    'block' => true,
-                                    'escape' => false,
-                                    'confirm' => __('Are you sure you want to delete {0}?', $user->full_name),
-                                    'class' => 'text-danger',
-                                    'data-bs-toggle' => 'modal',
-                                    'data-bs-target' => '#confirm-modal',
-                                ],
+                                'escapeTitle' => false,
+                                'id' => 'users-images-delete-btn',
+                                'class' => 'btn-light border text-danger',
+                            ],
                         ),
                     ]);
                     ?>
+                    <?php if (!empty($user->files)): ?>
+                        <?= $this->Form->hidden('files.0.id', [
+                            'value' => $user->files[0]->id,
+                            'id' => 'users-file-id',
+                        ]) ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

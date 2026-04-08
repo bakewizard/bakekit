@@ -1,22 +1,37 @@
-function addImage(e) {
-    var files = e.target.files;
-    var i, length = files.length;
+let mainImage = document.getElementById('users-main-image');
+let imagesInput = document.getElementById('users-images-input');
+let hiddenInput = document.getElementById('users-file-id');
+let deleteImageButton = document.getElementById('users-images-delete-btn');
 
-    if (!length)
-        return;
+function onAddImage(e) {
+    const file = e.target.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
 
-    for (i = 0; i < length; i++) {
-        var file = files[i];
-        if (file.type.match(/image.*/)) {
-            var image = document.getElementById('users-main-image');
-            image.setAttribute('style', 'width:200px;height:200px');
-            image.setAttribute('src', window.URL.createObjectURL(file));
-            image.addEventListener('load', function () {
-                window.URL.revokeObjectURL(this.src);
-            });
+    const url = URL.createObjectURL(file);
+    mainImage.style.width = '200px';
+    mainImage.style.height = '200px';
+    mainImage.src = url;
+    mainImage.onload = () => URL.revokeObjectURL(url);
 
-        }
+    if (hiddenInput) {
+        hiddenInput.remove();
     }
+
+    hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'files[0][sort_order]';
+    hiddenInput.id = 'users-file-id';
+    hiddenInput.value = 1;
+    imagesInput.after(hiddenInput);
 }
 
-document.getElementById('users-images-input').addEventListener('change', addImage);
+function onDeleteImage(e) {
+    e.preventDefault();
+    if (!hiddenInput) return;
+    mainImage.src = '/img/noimage.svg';
+    hiddenInput.remove();
+    hiddenInput = null;
+}
+
+imagesInput.addEventListener('change', onAddImage);
+deleteImageButton?.addEventListener('click', onDeleteImage);

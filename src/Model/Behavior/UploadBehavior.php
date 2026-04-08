@@ -121,31 +121,25 @@ class UploadBehavior extends Behavior
 
         $uploads = $data['uploads'];
 
-        if ($this->_config['multiple']) {
-            if (!isset($data['files'])) {
-                $data['files'] = [];
-            }
-            foreach ($data['files'] as $i => $file) {
-                if (!isset($file['id'])) {
-                    $upload = array_shift($uploads);
+        if (!isset($data['files'])) {
+            $data['files'] = [];
+        }
 
-                    if ($upload->getError() == UPLOAD_ERR_NO_FILE) {
-                        continue;
-                    }
+        foreach ($data['files'] as $i => $file) {
+            if (!empty($file['id'])) {
+                continue;
+            }
 
-                    $data['files'][$i]['name'] = $upload->getClientFilename();
-                    $data['files'][$i]['path'] = $this->getConfig('modelPath') . $this->generatePath();
-                    $data['files'][$i]['format'] = $this->uploadHandler->getConfig('format');
-                    $data['files'][$i]['tmp_name'] = $upload->getStream()->getMetadata('uri');
-                }
+            $upload = array_shift($uploads);
+
+            if ($upload->getError() == UPLOAD_ERR_NO_FILE) {
+                continue;
             }
-        } else {
-            if ($uploads[0]->getSize() > 0) {
-                $data['files'][0]['name'] = $uploads[0]->getClientFilename();
-                $data['files'][0]['path'] = $this->getConfig('modelPath') . $this->generatePath();
-                $data['files'][0]['format'] = $this->uploadHandler->getConfig('format');
-                $data['files'][0]['tmp_name'] = $uploads[0]->getStream()->getMetadata('uri');
-            }
+
+            $data['files'][$i]['name'] = $upload->getClientFilename();
+            $data['files'][$i]['path'] = $this->getConfig('modelPath') . $this->generatePath();
+            $data['files'][$i]['format'] = $this->uploadHandler->getConfig('format');
+            $data['files'][$i]['tmp_name'] = $upload->getStream()->getMetadata('uri');
         }
     }
 

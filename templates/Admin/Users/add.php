@@ -26,7 +26,19 @@
                 ]);
                 ?>
                 <div class="my-2">
-                    <?= $this->Form->file('images[]', ['accept' => 'image/*', 'id' => 'users-images-input']); ?>
+                    <?= $this->Form->file('uploads[]', [
+                        'accept' => 'image/*',
+                        'id' => 'users-images-input',
+                        'append' => $this->Form->button(
+                            '<i class="fa-solid fa-lg fa-eraser"></i>',
+                            [
+                                'escapeTitle' => false,
+                                'id' => 'users-images-delete-btn',
+                                'class' => 'btn-light border text-danger',
+                            ],
+                        ),
+                    ]);
+                    ?>
                 </div>
             </div>
         </div>
