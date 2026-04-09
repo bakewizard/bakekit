@@ -25,7 +25,18 @@ class UsersController extends AppController
         $this->Authentication->allowUnauthenticated(['login']);
 
         $request = $this->getRequest();
-        if (in_array($request->getParam('action'), ['view', 'add', 'edit', 'delete'])) {
+        if (in_array($request->getParam('action'), ['add', 'edit', 'delete'])) {
+            $images = $this->getConfig('Cms.images');
+            /** @var \App\Model\Behavior\AttachmentBehavior $attachment */
+            $attachment = $this->Users->getBehavior('Attachment');
+            $uploadHandler = new ImageUploadHandler($this->getStorage(WWW_ROOT . 'media'), [
+                'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40],
+                'format' => $images['format'],
+                'quality' => $images['quality'],
+            ]);
+
+            $attachment->setUploadHandler($uploadHandler);
+
             $id = $request->getParam('pass.0');
             $user = isset($id) ? $this->Users->get($id) : $this->Users->newEmptyEntity();
             $this->Authorization->authorize($user);
@@ -54,19 +65,6 @@ class UsersController extends AppController
      */
     public function add()
     {
-        $images = $this->getConfig('Cms.images');
-
-        /** @var \App\Model\Behavior\AttachmentBehavior $attachment */
-        $attachment = $this->Users->getBehavior('Attachment');
-
-        $uploadHandler = new ImageUploadHandler($this->getStorage(WWW_ROOT . 'media'), [
-            'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40],
-            'format' => $images['format'],
-            'quality' => $images['quality'],
-        ]);
-
-        $attachment->setUploadHandler($uploadHandler);
-
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
@@ -92,19 +90,6 @@ class UsersController extends AppController
      */
     public function edit(?string $id = null)
     {
-        $images = $this->getConfig('Cms.images');
-
-        /** @var \App\Model\Behavior\AttachmentBehavior $attachment */
-        $attachment = $this->Users->getBehavior('Attachment');
-
-        $uploadHandler = new ImageUploadHandler($this->getStorage(WWW_ROOT . 'media'), [
-            'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40],
-            'format' => $images['format'],
-            'quality' => $images['quality'],
-        ]);
-
-        $attachment->setUploadHandler($uploadHandler);
-
         $user = $this->Users->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->getData());

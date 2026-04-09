@@ -135,6 +135,18 @@ class AttachmentBehavior extends Behavior
             $data['files'][$i]['format'] = $this->uploadHandler->getConfig('format');
             $data['files'][$i]['tmp_name'] = $upload->getStream()->getMetadata('uri');
         }
+
+        foreach ($uploads as $upload) {
+            if ($upload->getError() === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+            $data['files'][] = [
+                'name' => $upload->getClientFilename(),
+                'path' => $this->getConfig('modelPath') . $this->generatePath(),
+                'format' => $this->uploadHandler->getConfig('format'),
+                'tmp_name' => $upload->getStream()->getMetadata('uri'),
+            ];
+        }
     }
 
     /**

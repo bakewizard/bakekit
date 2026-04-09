@@ -15,20 +15,15 @@ function onAddImage(e) {
 
     if (hiddenInput) {
         hiddenInput.remove();
+        hiddenInput = null;
     }
-
-    hiddenInput = document.createElement('input');
-    hiddenInput.type = 'hidden';
-    hiddenInput.name = 'files[0][sort_order]';
-    hiddenInput.id = 'users-file-id';
-    hiddenInput.value = 1;
-    imagesInput.after(hiddenInput);
 }
 
 function onDeleteImage(e) {
     e.preventDefault();
-    if (!hiddenInput) return;
     mainImage.src = '/img/noimage.svg';
+    imagesInput.value = '';
+    if (!hiddenInput) return;
     hiddenInput.remove();
     hiddenInput = null;
 }
