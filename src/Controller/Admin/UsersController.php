@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Lib\ImageUploadHandler;
+use App\Lib\ImageFileHandler;
 use Cake\Event\EventInterface;
 use Override;
 
@@ -29,7 +29,7 @@ class UsersController extends AppController
             $images = $this->getConfig('Cms.images');
             /** @var \App\Model\Behavior\AttachmentBehavior $attachment */
             $attachment = $this->Users->getBehavior('Attachment');
-            $uploadHandler = new ImageUploadHandler($this->getStorage(WWW_ROOT . 'media'), [
+            $uploadHandler = new ImageFileHandler($this->getStorage(WWW_ROOT . 'media'), [
                 'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40],
                 'format' => $images['format'],
                 'quality' => $images['quality'],

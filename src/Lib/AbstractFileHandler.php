@@ -5,14 +5,14 @@ namespace App\Lib;
 
 use Cake\Core\InstanceConfigTrait;
 
-abstract class AbstractUploadHandler
+abstract class AbstractFileHandler
 {
     use InstanceConfigTrait;
 
     /**
      * Handle the upload of files.
      *
-     * @param array<array-key, mixed> $files An array of file data to be uploaded.
+     * @param array<\Cake\ORM\Entity> $files
      * @return void
      */
     abstract public function handle(array $files): void;
@@ -20,7 +20,7 @@ abstract class AbstractUploadHandler
     /**
      * Remove specified files.
      *
-     * @param array<array-key, mixed> $files An array of file data to be removed.
+     * @param array<\Cake\ORM\Entity> $files
      * @return void
      */
     abstract public function remove(array $files): void;

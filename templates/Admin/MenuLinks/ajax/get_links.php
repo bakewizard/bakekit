@@ -2,6 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var mixed $data
+ * @var \App\Model\Entity\Menu $menu
  */
 ?>
 <div id="accordion">

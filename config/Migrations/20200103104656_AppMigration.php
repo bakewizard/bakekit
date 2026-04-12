@@ -282,7 +282,7 @@ class AppMigration extends BaseMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('target', 'char', [
+            ->addColumn('target', 'string', [
                 'default' => '_self',
                 'limit' => 10,
                 'null' => false,

@@ -14,7 +14,7 @@ use Cake\Utility\Inflector;
  * @property string $alias
  * @property string|null $description
  * @property string|null $parent_plugin
- * @property bool|null $enabled
+ * @property bool $enabled
  *
  * @property array<\App\Model\Entity\Metum> $meta
  */

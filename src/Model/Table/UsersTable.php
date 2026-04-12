@@ -26,9 +26,9 @@ use Override;
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\User>|false deleteMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\User> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $UserFiles
+ * @property \App\Model\Table\UserImagesTable&\Cake\ORM\Association\HasMany $UserFiles
  * @mixin \App\Model\Behavior\AttachmentBehavior
- * @extends \Cake\ORM\Table<array{Timestamp: \Cake\ORM\Behavior\TimestampBehavior, Upload: \App\Model\Behavior\AttachmentBehavior}>
+ * @extends \Cake\ORM\Table<array{Attachment: \App\Model\Behavior\AttachmentBehavior, Timestamp: \Cake\ORM\Behavior\TimestampBehavior}>
  */
 class UsersTable extends Table
 {
@@ -48,12 +48,15 @@ class UsersTable extends Table
             'foreignKey' => 'role_id',
             'joinType' => 'INNER',
         ]);
+        $this->hasMany('UserFiles', [
+            'className' => 'UserImages',
+            'foreignKey' => 'user_id',
+            'saveStrategy' => 'replace',
+            'propertyName' => 'files',
+        ]);
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('Attachment', [
-            'dirDepth' => 0,
-            'tablePostfix' => 'images',
-        ]);
+        $this->addBehavior('Attachment');
     }
 
     /**
@@ -66,45 +69,45 @@ class UsersTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-                ->nonNegativeInteger('id')
-                ->allowEmptyString('id', null, 'create');
+            ->nonNegativeInteger('id')
+            ->allowEmptyString('id', null, 'create');
 
         $validator
-                ->scalar('first_name')
-                ->maxLength('first_name', 255)
-                ->requirePresence('first_name', 'create')
-                ->notEmptyString('first_name');
+            ->scalar('first_name')
+            ->maxLength('first_name', 255)
+            ->requirePresence('first_name', 'create')
+            ->notEmptyString('first_name');
 
         $validator
-                ->scalar('last_name')
-                ->maxLength('last_name', 255)
-                ->requirePresence('last_name', 'create')
-                ->notEmptyString('last_name');
+            ->scalar('last_name')
+            ->maxLength('last_name', 255)
+            ->requirePresence('last_name', 'create')
+            ->notEmptyString('last_name');
 
         $validator
-                ->scalar('alias')
-                ->maxLength('alias', 150)
-                ->requirePresence('alias', 'create')
-                ->notEmptyString('alias');
+            ->scalar('alias')
+            ->maxLength('alias', 150)
+            ->requirePresence('alias', 'create')
+            ->notEmptyString('alias');
 
         $validator
-                ->email('email')
-                ->requirePresence('email', 'create')
-                ->notEmptyString('email');
+            ->email('email')
+            ->requirePresence('email', 'create')
+            ->notEmptyString('email');
 
         $validator
-                ->scalar('password')
-                ->maxLength('password', 255)
-                ->requirePresence('password', 'create')
-                ->notEmptyString('password', null, 'create');
+            ->scalar('password')
+            ->maxLength('password', 255)
+            ->requirePresence('password', 'create')
+            ->notEmptyString('password', null, 'create');
 
         $validator
-                ->add('role_id', 'custom', [
-                    'rule' => function ($value, $context) {
-                        return !($value == 1);
-                    },
-                    'message' => __('Only one root is allowed!'),
-        ]);
+            ->add('role_id', 'custom', [
+                'rule' => function ($value, $context) {
+                    return !($value == 1);
+                },
+                'message' => __('Only one root is allowed!'),
+            ]);
 
         return $validator;
     }

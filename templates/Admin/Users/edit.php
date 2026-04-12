@@ -22,19 +22,19 @@
                     'width' => 200,
                     'height' => 200,
                     'class' => 'img-thumbnail',
-                    'id' => 'users-main-image',
+                    'id' => 'image-preview',
                 ]);
                 ?>
                 <div class="my-2">
                     <?=
                     $this->Form->file('uploads[]', [
                         'accept' => 'image/*',
-                        'id' => 'users-images-input',
+                        'id' => 'image-input',
                         'append' => $this->Form->button(
                             '<i class="fa-solid fa-lg fa-eraser"></i>',
                             [
                                 'escapeTitle' => false,
-                                'id' => 'users-images-delete-btn',
+                                'id' => 'image-delete-btn',
                                 'class' => 'btn-light border text-danger',
                             ],
                         ),
@@ -43,7 +43,7 @@
                     <?php if (!empty($user->files)): ?>
                         <?= $this->Form->hidden('files.0.id', [
                             'value' => $user->files[0]->id,
-                            'id' => 'users-file-id',
+                            'id' => 'hidden-input',
                         ]) ?>
                     <?php endif; ?>
                 </div>

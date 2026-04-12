@@ -25,7 +25,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\DateTime|null $modified
  *
  * @property \App\Model\Entity\Role $role
- * @property array<\Cake\ORM\Entity> $files
+ * @property array<\App\Model\Entity\UserImage> $files
  * @property-read string|null $full_name
  * @property \Authorization\AuthorizationServiceInterface $authorization
  */

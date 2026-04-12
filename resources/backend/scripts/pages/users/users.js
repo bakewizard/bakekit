@@ -1,17 +1,20 @@
-let mainImage = document.getElementById('users-main-image');
-let imagesInput = document.getElementById('users-images-input');
-let hiddenInput = document.getElementById('users-file-id');
-let deleteImageButton = document.getElementById('users-images-delete-btn');
+let imagePreview = document.getElementById('image-preview');
+let imageInput = document.getElementById('image-input');
+let imageDeleteButton = document.getElementById('image-delete-btn');
+let hiddenInput = document.getElementById('hidden-input');
+
+imageInput.addEventListener('change', onAddImage);
+imageDeleteButton?.addEventListener('click', onDeleteImage);
 
 function onAddImage(e) {
     const file = e.target.files[0];
     if (!file || !file.type.startsWith('image/')) return;
 
     const url = URL.createObjectURL(file);
-    mainImage.style.width = '200px';
-    mainImage.style.height = '200px';
-    mainImage.src = url;
-    mainImage.onload = () => URL.revokeObjectURL(url);
+    imagePreview.style.width = '200px';
+    imagePreview.style.height = '200px';
+    imagePreview.src = url;
+    imagePreview.onload = () => URL.revokeObjectURL(url);
 
     if (hiddenInput) {
         hiddenInput.remove();
@@ -21,12 +24,9 @@ function onAddImage(e) {
 
 function onDeleteImage(e) {
     e.preventDefault();
-    mainImage.src = '/img/noimage.svg';
-    imagesInput.value = '';
+    imagePreview.src = '/img/noimage.svg';
+    imageInput.value = '';
     if (!hiddenInput) return;
     hiddenInput.remove();
     hiddenInput = null;
 }
-
-imagesInput.addEventListener('change', onAddImage);
-deleteImageButton?.addEventListener('click', onDeleteImage);

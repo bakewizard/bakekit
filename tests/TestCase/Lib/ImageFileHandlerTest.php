@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Lib;
 
-use App\Lib\ImageUploadHandler;
+use App\Lib\ImageFileHandler;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
 
-class ImageUploadHandlerTest extends TestCase
+class ImageFileHandlerTest extends TestCase
 {
     private string $tempDir;
 
@@ -39,9 +39,9 @@ class ImageUploadHandlerTest extends TestCase
     }
 
     /**
-     * Tests the handle and remove functionality of the ImageUploadHandler.
+     * Tests the handle and remove functionality of the ImageFileHandler.
      *
-     * This test creates a temporary image file, processes it with the ImageUploadHandler to generate
+     * This test creates a temporary image file, processes it with the ImageFileHandler to generate
      * thumbnail images in specified sizes and quality, and verifies that the expected files are created
      * with correct dimensions. It then removes the generated files and asserts that they no longer exist.
      *
@@ -58,7 +58,7 @@ class ImageUploadHandlerTest extends TestCase
             'path' => '', // root in temp dir
         ];
 
-        $handler = new ImageUploadHandler([
+        $handler = new ImageFileHandler([
             'basePath' => $this->tempDir,
             'format' => 'jpeg',
             'thumbs' => [
@@ -99,7 +99,7 @@ class ImageUploadHandlerTest extends TestCase
     /**
      * Tests the handle method with a watermark.
      *
-     * This test creates a temporary image file, processes it with the ImageUploadHandler to generate
+     * This test creates a temporary image file, processes it with the ImageFileHandler to generate
      * a thumbnail with a watermark, and verifies that the expected file is created.
      *
      * @return void
@@ -109,7 +109,7 @@ class ImageUploadHandlerTest extends TestCase
         $watermarkPath = $this->tempDir . '/watermark.png';
         $this->createWatermarkImage($watermarkPath);
 
-        $handler = new ImageUploadHandler([
+        $handler = new ImageFileHandler([
             'basePath' => $this->tempDir,
             'format' => 'jpeg',
             'thumbs' => ['marked' => [120, 120]],
@@ -136,7 +136,7 @@ class ImageUploadHandlerTest extends TestCase
     }
 
     /**
-     * Tests that the ImageUploadHandler generates WebP format thumbnails.
+     * Tests that the ImageFileHandler generates WebP format thumbnails.
      *
      * This test checks if the system supports WebP image generation. If not, the test is skipped.
      * It creates a test JPEG image, configures the handler to generate a 100x100 WebP thumbnail,
@@ -148,7 +148,7 @@ class ImageUploadHandlerTest extends TestCase
             $this->markTestSkipped('WebP not supported on this system.');
         }
 
-        $handler = new ImageUploadHandler([
+        $handler = new ImageFileHandler([
             'basePath' => $this->tempDir,
             'format' => 'webp',
             'thumbs' => ['web' => [100, 100]],
@@ -170,10 +170,10 @@ class ImageUploadHandlerTest extends TestCase
     }
 
     /**
-     * Tests that the ImageUploadHandler generates AVIF format thumbnails.
+     * Tests that the ImageFileHandler generates AVIF format thumbnails.
      *
      * This test checks if the system supports AVIF image creation. If not, the test is skipped.
-     * It sets up an ImageUploadHandler configured to generate AVIF thumbnails, creates a test image,
+     * It sets up an ImageFileHandler configured to generate AVIF thumbnails, creates a test image,
      * and simulates an upload. After handling the upload, it asserts that the expected AVIF thumbnail
      * file exists in the temporary directory.
      */
@@ -183,7 +183,7 @@ class ImageUploadHandlerTest extends TestCase
             $this->markTestSkipped('AVIF not supported on this system.');
         }
 
-        $handler = new ImageUploadHandler([
+        $handler = new ImageFileHandler([
             'basePath' => $this->tempDir,
             'format' => 'avif',
             'thumbs' => ['av' => [100, 100]],
@@ -206,14 +206,14 @@ class ImageUploadHandlerTest extends TestCase
 
     /**
      * Tests that an InvalidArgumentException is thrown when an unsupported image format ('tiff') is provided
-     * to the ImageUploadHandler constructor.
+     * to the ImageFileHandler constructor.
      *
      * @return void
      */
     public function testInvalidFormatThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new ImageUploadHandler([
+        new ImageFileHandler([
             'basePath' => $this->tempDir,
             'format' => 'tiff',
         ]);

@@ -20,7 +20,7 @@ use Cake\Utility\Text;
  * @property string|null $template
  * @property string|null $params
  * @property int|null $position
- * @property bool|null $enabled
+ * @property bool $enabled
  *
  * @property \App\Model\Entity\Region $region
  * @property string $cell_full_name

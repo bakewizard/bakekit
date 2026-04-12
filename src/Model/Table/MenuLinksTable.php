@@ -6,7 +6,6 @@ namespace App\Model\Table;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Behavior\Translate\ShadowTableStrategy;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -63,7 +62,6 @@ class MenuLinksTable extends Table
 
         $this->addBehavior('Tree');
         $this->addBehavior('Translate', [
-            'strategyClass' => ShadowTableStrategy::class,
             'fields' => ['title'],
             'translationTable' => 'MenuLinksI18n',
         ]);

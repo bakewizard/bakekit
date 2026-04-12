@@ -14,7 +14,7 @@ use Cake\ORM\Entity;
  * @property string $title
  * @property string|null $icon
  * @property string|null $link
- * @property string|null $target
+ * @property string $target
  * @property int $lft
  * @property int $rght
  *

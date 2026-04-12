@@ -11,7 +11,9 @@ use Exception;
 use Override;
 
 /**
- * Installs CMS.
+ * Install Command
+ *
+ * Command to install the application by running all necessary setup steps.
  */
 class InstallCommand extends Command
 {

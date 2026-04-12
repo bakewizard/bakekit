@@ -13,7 +13,7 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\StorageAttributes;
 use Override;
 
-class ImageUploadHandler extends AbstractUploadHandler
+class ImageFileHandler extends AbstractFileHandler
 {
     /**
      * Default configuration.
@@ -30,9 +30,10 @@ class ImageUploadHandler extends AbstractUploadHandler
     private Imagine $imagine;
 
     /**
-     * ImageUploadHandler constructor.
+     * Constructor.
      *
-     * @param array<string, mixed> $config Configuration options.
+     * @param \League\Flysystem\Filesystem $storage Storage instance for file operations.
+     * @param array<string, mixed> $config Configuration options for image processing.
      * @throws \InvalidArgumentException If an unsupported image format is specified.
      */
     public function __construct(Filesystem $storage, array $config = [])
@@ -51,7 +52,7 @@ class ImageUploadHandler extends AbstractUploadHandler
     /**
      * Handles image upload and thumbnail generation.
      *
-     * @param array<int, array<string, mixed>> $files Uploaded files.
+     * @param array<\Cake\ORM\Entity> $files Uploaded files.
      * @return void
      */
     #[Override]
@@ -59,19 +60,19 @@ class ImageUploadHandler extends AbstractUploadHandler
     {
         $this->imagine = new Imagine();
         $format = strtolower($this->_config['format']);
-//        $extension = $format === 'jpeg' ? 'jpg' : $format;
 
         foreach ($files as $file) {
-            if (empty($file['tmp_name'])) {
+            $tmpName = $file->get('tmp_name');
+            if (empty($tmpName)) {
                 continue;
             }
 
-            $image = $this->imagine->open($file['tmp_name']);
+            $image = $this->imagine->open($tmpName);
 
             foreach ($this->_config['thumbs'] as $alias => $size) {
-                $thumbName = $file['id'] . '-' . $alias . '.' . $format;
+                $thumbName = $file->get('id') . '-' . $alias . '.' . $format;
                 [$thumbWidth, $thumbHeight] = is_array($size) ? $size : [$size, $size];
-                $this->createThumbnail($image, $file['path'], $thumbName, (int)$thumbWidth, (int)$thumbHeight);
+                $this->createThumbnail($image, $file->get('path'), $thumbName, (int)$thumbWidth, (int)$thumbHeight);
             }
         }
     }
@@ -79,19 +80,19 @@ class ImageUploadHandler extends AbstractUploadHandler
     /**
      * Removes uploaded files and thumbnails from storage.
      *
-     * @param array<int, array<string, mixed>> $files Files to remove.
+     * @param array<\Cake\ORM\Entity> $files Files to remove.
      * @return void
      */
     #[Override]
     public function remove(array $files): void
     {
         foreach ($files as $file) {
-            $pattern = '/' . preg_quote((string)$file['id'], '/') . '-[A-Za-z]+\.(jpe?g|webp|avif)$/i';
+            $pattern = '/' . preg_quote((string)$file->get('id'), '/') . '-[A-Za-z]+\.(jpe?g|webp|avif)$/i';
 
-            $foundFiles = $this->storage->listContents($file['path'])
-                    ->filter(fn(StorageAttributes $attr) => $attr->isFile())
-                    ->filter(fn(StorageAttributes $attr) => (bool)preg_match($pattern, basename($attr->path())))
-                    ->toArray();
+            $foundFiles = $this->storage->listContents($file->get('path'))
+                ->filter(fn(StorageAttributes $attr) => $attr->isFile())
+                ->filter(fn(StorageAttributes $attr) => (bool)preg_match($pattern, basename($attr->path())))
+                ->toArray();
 
             foreach ($foundFiles as $foundFile) {
                 $this->storage->delete(DS . $foundFile->path());
@@ -148,8 +149,8 @@ class ImageUploadHandler extends AbstractUploadHandler
         $watermarkPath = $this->_config['watermark']['image'];
 
         return $this->imagine
-                        ->open($watermarkPath)
-                        ->thumbnail(new Box((int)($width * $scale), (int)($height * $scale)));
+            ->open($watermarkPath)
+            ->thumbnail(new Box((int)($width * $scale), (int)($height * $scale)));
     }
 
     /**

@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace App\Model\Behavior;
 
-use App\Lib\AbstractUploadHandler;
+use App\Lib\AbstractFileHandler;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query\SelectQuery;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Override;
 use RuntimeException;
@@ -20,16 +19,15 @@ use const UPLOAD_ERR_NO_FILE;
  */
 class AttachmentBehavior extends Behavior
 {
-    private AbstractUploadHandler $uploadHandler;
+    private AbstractFileHandler $uploadHandler;
     private string $tableAlias = 'Files';
 
     /**
      * @inheritDoc
      */
     protected array $_defaultConfig = [
-        'multiple' => false,
         'modelPath' => null,
-        'dirDepth' => 2,
+        'dirDepth' => 0,
     ];
 
     /**
@@ -39,40 +37,14 @@ class AttachmentBehavior extends Behavior
     public function initialize(array $config): void
     {
         [$plugin, $table] = pluginSplit(strtolower($this->_table->getRegistryAlias()));
-        $modelPath = '/' . ($plugin ?? 'main') . '/' . $table;
 
         if (!isset($config['modelPath'])) {
-            $this->setConfig('modelPath', $modelPath);
+            $this->setConfig('modelPath', '/' . ($plugin ?? 'system') . '/' . $table);
         } else {
             $this->setConfig('modelPath', '/' . $config['modelPath']);
         }
 
-        $singularName = Inflector::singularize($this->_table->getAlias());
-
-        $this->tableAlias = $singularName . 'Files';
-
-        $foreignKey = strtolower($singularName) . '_id';
-
-        $filesTable = TableRegistry::getTableLocator()->get($this->tableAlias, [
-            'table' => Inflector::singularize($this->_table->getTable()) . '_' . ($config['tablePostfix'] ?? 'files'),
-        ]);
-
-        if ($this->_config['multiple']) {
-            $this->_table->hasMany($this->tableAlias, [
-                'targetTable' => $filesTable,
-                'saveStrategy' => 'replace',
-                'foreignKey' => $foreignKey,
-                'propertyName' => 'files',
-                'sort' => 'sort_order asc',
-            ]);
-        } else {
-            $this->_table->hasMany($this->tableAlias, [
-                'targetTable' => $filesTable,
-                'saveStrategy' => 'replace',
-                'foreignKey' => $foreignKey,
-                'propertyName' => 'files',
-            ]);
-        }
+        $this->tableAlias = Inflector::singularize($this->_table->getAlias()) . 'Files';
     }
 
     /**
@@ -211,7 +183,7 @@ class AttachmentBehavior extends Behavior
      *
      * @return void
      */
-    public function setUploadHandler(AbstractUploadHandler $uploadHandler): void
+    public function setUploadHandler(AbstractFileHandler $uploadHandler): void
     {
         $this->uploadHandler = $uploadHandler;
     }
@@ -219,9 +191,9 @@ class AttachmentBehavior extends Behavior
     /**
      * Returns upload handler
      *
-     * @return \App\Lib\AbstractUploadHandler
+     * @return \App\Lib\AbstractFileHandler
      */
-    public function getUploadHandler(): AbstractUploadHandler
+    public function getUploadHandler(): AbstractFileHandler
     {
         if (!isset($this->uploadHandler)) {
             throw new RuntimeException(

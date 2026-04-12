@@ -92,7 +92,7 @@ class PermissionsTable extends Table
      * Clears the permissions cache after a record is saved.
      *
      * @param \Cake\Event\EventInterface $event
-     * @param \Cake\Datasource\EntityInterface $entity
+     * @param \App\Model\Entity\Permission $entity
      * @return void
      */
     public function afterSave(EventInterface $event, EntityInterface $entity): void
@@ -104,7 +104,7 @@ class PermissionsTable extends Table
      * Clears the permissions cache after a record is deleted.
      *
      * @param \Cake\Event\EventInterface $event
-     * @param \Cake\Datasource\EntityInterface $entity
+     * @param \App\Model\Entity\Permission $entity
      * @return void
      */
     public function afterDelete(EventInterface $event, EntityInterface $entity): void
