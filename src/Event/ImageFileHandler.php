@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Lib;
+namespace App\Event;
 
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
@@ -56,7 +56,7 @@ class ImageFileHandler extends AbstractFileHandler
      * @return void
      */
     #[Override]
-    public function handle(array $files): void
+    protected function processFiles(array $files): void
     {
         $this->imagine = new Imagine();
         $format = strtolower($this->_config['format']);
@@ -84,7 +84,7 @@ class ImageFileHandler extends AbstractFileHandler
      * @return void
      */
     #[Override]
-    public function remove(array $files): void
+    protected function removeFiles(array $files): void
     {
         foreach ($files as $file) {
             $pattern = '/' . preg_quote((string)$file->get('id'), '/') . '-[A-Za-z]+\.(jpe?g|webp|avif)$/i';

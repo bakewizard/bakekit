@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Lib\ImageFileHandler;
+use App\Event\ImageFileHandler;
 use Cake\Event\EventInterface;
 use Override;
 
@@ -27,15 +27,14 @@ class UsersController extends AppController
         $request = $this->getRequest();
         if (in_array($request->getParam('action'), ['add', 'edit', 'delete'])) {
             $images = $this->getConfig('Cms.images');
-            /** @var \App\Model\Behavior\AttachmentBehavior $attachment */
-            $attachment = $this->Users->getBehavior('Attachment');
-            $uploadHandler = new ImageFileHandler($this->getStorage(WWW_ROOT . 'media'), [
+
+            $fileHandler = new ImageFileHandler($this->getStorage(WWW_ROOT . 'media'), [
                 'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40],
                 'format' => $images['format'],
                 'quality' => $images['quality'],
             ]);
 
-            $attachment->setUploadHandler($uploadHandler);
+            $this->Users->getEventManager()->on($fileHandler);
 
             $id = $request->getParam('pass.0');
             $user = isset($id) ? $this->Users->get($id) : $this->Users->newEmptyEntity();

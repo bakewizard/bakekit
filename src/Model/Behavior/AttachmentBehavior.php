@@ -3,23 +3,30 @@ declare(strict_types=1);
 
 namespace App\Model\Behavior;
 
-use App\Lib\AbstractFileHandler;
 use ArrayObject;
-use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Inflector;
 use Override;
-use RuntimeException;
 use const UPLOAD_ERR_NO_FILE;
 
 /**
- * Attachment behavior
+ * AttachmentBehavior
+ *
+ * This behavior handles file attachments for a model. It processes uploaded files data,
+ * manages their paths, and ensures they are properly associated with the model's entities.
+ *
+ * Configuration options:
+ * - modelPath: Base path for storing files (default: '/{plugin}/{table}').
+ * - dirDepth: Number of subdirectory levels to generate for file storage (default: 0).
+ *
+ * The behavior listens to the following events:
+ * - Model.beforeFind: Modifies the query to include associated files.
+ * - Model.beforeMarshal: Processes uploaded files data before marshalling into an entity.
  */
 class AttachmentBehavior extends Behavior
 {
-    private AbstractFileHandler $uploadHandler;
     private string $tableAlias = 'Files';
 
     /**
@@ -104,7 +111,7 @@ class AttachmentBehavior extends Behavior
 
             $data['files'][$i]['name'] = $upload->getClientFilename();
             $data['files'][$i]['path'] = $this->getConfig('modelPath') . $this->generatePath();
-            $data['files'][$i]['format'] = $this->uploadHandler->getConfig('format');
+            $data['files'][$i]['format'] = $upload->getClientMediaType();
             $data['files'][$i]['tmp_name'] = $upload->getStream()->getMetadata('uri');
         }
 
@@ -115,93 +122,10 @@ class AttachmentBehavior extends Behavior
             $data['files'][] = [
                 'name' => $upload->getClientFilename(),
                 'path' => $this->getConfig('modelPath') . $this->generatePath(),
-                'format' => $this->uploadHandler->getConfig('format'),
+                'format' => $upload->getClientMediaType(),
                 'tmp_name' => $upload->getStream()->getMetadata('uri'),
             ];
         }
-    }
-
-    /**
-     * Handles file uploads after the entity is saved.
-     *
-     * If the 'files' property of the entity has been modified, it processes
-     * the uploaded files using the configured upload handler. It also handles
-     * removal of previously associated files if the entity is being updated.
-     *
-     * @template TSubject of \Cake\Datasource\EntityInterface
-     * @param \Cake\Event\EventInterface<TSubject> $event The afterSave event.
-     * @param \Cake\Datasource\EntityInterface $entity The saved entity.
-     * @return void
-     */
-    public function afterSave(EventInterface $event, EntityInterface $entity): void
-    {
-        if ($entity->isDirty('files')) {
-            $files = $entity->get('files');
-
-            if (!$entity->isNew()) {
-                $filesToRemove = array_udiff($entity->getOriginal('files'), $files, fn($a, $b) => $a->id <=> $b->id);
-                if (!empty($filesToRemove)) {
-                    $this->uploadHandler->remove($filesToRemove);
-                }
-            }
-
-            $this->uploadHandler->handle($files);
-        }
-    }
-
-    /**
-     * Handles the removal of associated files after the entity is deleted.
-     *
-     * @template TSubject of \Cake\Datasource\EntityInterface
-     * @param \Cake\Event\EventInterface<TSubject> $event The afterDelete event.
-     * @param \Cake\Datasource\EntityInterface $entity The deleted entity.
-     * @return void
-     */
-    public function afterDelete(EventInterface $event, EntityInterface $entity): void
-    {
-        $this->uploadHandler->remove($entity->get('files'));
-    }
-
-    /**
-     * Removes loaded files
-     *
-     * @param array<\Cake\ORM\Entity> $files An array of objects to remove (each expected to have an 'id' property).
-     * @return void
-     */
-    public function remove(array $files): void
-    {
-        if ($files) {
-            $fileIds = array_map(fn($file) => $file->id, $files);
-            $this->_table->{$this->tableAlias}->deleteAll(['id IN' => $fileIds]);
-
-            $this->uploadHandler->remove($files);
-        }
-    }
-
-    /**
-     * Sets upload handler
-     *
-     * @return void
-     */
-    public function setUploadHandler(AbstractFileHandler $uploadHandler): void
-    {
-        $this->uploadHandler = $uploadHandler;
-    }
-
-    /**
-     * Returns upload handler
-     *
-     * @return \App\Lib\AbstractFileHandler
-     */
-    public function getUploadHandler(): AbstractFileHandler
-    {
-        if (!isset($this->uploadHandler)) {
-            throw new RuntimeException(
-                'UploadHandler is not set. Use setUploadHandler() before calling this method.',
-            );
-        }
-
-        return $this->uploadHandler;
     }
 
     /**
