@@ -30,8 +30,8 @@ class UsersController extends AppController
 
             $fileHandler = new ImageFileHandler($this->getStorage(WWW_ROOT . 'media'), [
                 'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40],
-                'format' => $images['format'],
-                'quality' => $images['quality'],
+                'format' => $images['format'] ?? 'jpeg',
+                'quality' => $images['quality'] ?? 90,
             ]);
 
             $this->Users->getEventManager()->on($fileHandler);
