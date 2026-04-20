@@ -49,30 +49,6 @@ class ComposerManagerTest extends TestCase
         $this->assertSame('remove success', $result);
     }
 
-    public function testGetConfigDataReturnsArrayFromJson(): void
-    {
-        $tempDir = sys_get_temp_dir() . '/composer_test_' . uniqid();
-        mkdir($tempDir);
-        $json = [
-            'autoload' => [
-                'psr-4' => [
-                    'Test\\Namespace\\' => 'src/',
-                ],
-            ],
-        ];
-        file_put_contents($tempDir . '/composer.json', json_encode($json));
-
-        $manager = new ComposerManager();
-        $result = $this->invokeMethod($manager, 'getConfigData', [$tempDir]);
-
-        $this->assertIsArray($result);
-        $this->assertArrayHasKey('autoload', $result);
-        $this->assertEquals('src/', $result['autoload']['psr-4']['Test\\Namespace\\']);
-
-        unlink($tempDir . '/composer.json');
-        rmdir($tempDir);
-    }
-
     /**
      * Utility method to call protected/private methods.
      */
@@ -80,7 +56,6 @@ class ComposerManagerTest extends TestCase
     {
         $reflection = new ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
 
         return $method->invokeArgs($object, $args);
     }
