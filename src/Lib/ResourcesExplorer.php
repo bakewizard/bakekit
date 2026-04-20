@@ -9,6 +9,10 @@ use DirectoryIterator;
 use ReflectionClass;
 use ReflectionMethod;
 
+/**
+ * Discovers and explores plugin resources, cells, and links
+ * by scanning controller and view directories using PHP Reflection.
+ */
 class ResourcesExplorer
 {
     /**

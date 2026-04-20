@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 /**
  * Simple Composer wrapper class.
  *
- * A wrapper class for Composer to call it's commands from inside your code
+ * A wrapper class for Composer to call its commands from inside your code
  * using a simple object oriented API: turns php composer.phar require monolog/monolog
  * into $composer->require(['monolog/monolog:*']);.
  */
@@ -155,58 +155,5 @@ class ComposerManager
         $command = 'dump-autoload';
 
         return $this->run(compact('command') + $options);
-    }
-
-    /**
-     * Adds/removes psr4 autoload path.
-     *
-     * @param string $name Plugin name.
-     * @param string|null $path
-     * @return void
-     */
-    public function modifyPsr4Autoload(string $name, ?string $path = null): void
-    {
-        $file = ROOT . DS . 'composer.json';
-        $config = $this->getConfigData();
-        $namespace = str_replace('/', '\\', $name);
-
-        if ($path) {
-            $config['autoload']['psr-4'][$namespace . '\\'] = $path . '/src/';
-            $config['autoload-dev']['psr-4'][$namespace . '\\Test\\'] = $path . '/tests/';
-            $classLoader = include ROOT . '/vendor/autoload.php';
-            $classLoader->addPsr4($namespace . '\\', [ROOT . '/' . $path . '/src']);
-        } else {
-            unset($config['autoload']['psr-4'][$namespace . '\\']);
-            unset($config['autoload-dev']['psr-4'][$namespace . '\\Test\\']);
-        }
-
-        $out = json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n";
-        file_put_contents($file, $out);
-    }
-
-    /**
-     * Reads composer.json into array.
-     *
-     * @param string $path
-     * @return array<string, mixed>
-     */
-    private function getConfigData(?string $path = null): array
-    {
-        if (!$path) {
-            $path = ROOT;
-        }
-
-        $configFile = $path . DS . 'composer.json';
-
-        if (!file_exists($configFile) || !is_readable($configFile)) {
-            return [];
-        }
-
-        $content = file_get_contents($configFile);
-        if ($content === false) {
-            return [];
-        }
-
-        return json_decode($content, true);
     }
 }

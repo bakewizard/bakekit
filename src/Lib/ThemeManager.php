@@ -6,6 +6,9 @@ namespace App\Lib;
 use Exception;
 use Psr\Http\Message\UploadedFileInterface;
 
+/**
+ * Manages the lifecycle of themes: discovery, installation, and uninstallation.
+ */
 class ThemeManager
 {
     /**
@@ -69,7 +72,7 @@ class ThemeManager
     /**
      * Uninstalls a theme by removing its migrations, settings, and resources.
      *
-     * @param string $theme Plugin name to uninstall.
+     * @param string $theme Theme name to uninstall.
      * @param bool $isActive Whether the theme is currently active.
      * @return void
      */

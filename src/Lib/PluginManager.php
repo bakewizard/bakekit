@@ -14,8 +14,8 @@ use Migrations\Migrations;
 use Psr\Http\Message\UploadedFileInterface;
 
 /**
- * @property \App\Model\Table\SettingsTable $Settings
- * @property \App\Model\Table\ResourcesTable $Resources
+ * Manages the full lifecycle of plugins: discovery, installation,
+ * activation, deactivation, and uninstallation.
  */
 class PluginManager
 {
@@ -145,7 +145,6 @@ class PluginManager
 
             return $this->extensionHandler->readComposerConfig($this->pluginsDir . $plugin);
         } catch (Exception $e) {
-            // Компенсуючі дії у зворотньому порядку
             if ($resourcesAdded) {
                 $this->deleteResources($plugin);
             }

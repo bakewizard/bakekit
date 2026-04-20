@@ -197,6 +197,8 @@ class ExtensionHandler
     /**
      * Extracts a ZIP file into a target directory.
      *
+     * Performs security checks to prevent ZIP Slip vulnerabilities and ensures the target directory is valid.
+     *
      * @param string $inputZipPath
      * @param string $targetDir
      * @return void
@@ -222,7 +224,7 @@ class ExtensionHandler
             throw new Exception(__('Failed to resolve target directory path.'));
         }
 
-        // Перевіряємо кожен запис перед розпакуванням
+        // Validate each entry before extracting
         for ($i = 0; $i < $zip->numFiles; $i++) {
             $entry = $zip->getNameIndex($i);
 
@@ -231,13 +233,13 @@ class ExtensionHandler
                 throw new Exception(__('Failed to read ZIP entry.'));
             }
 
-            // Забороняємо абсолютні шляхи і null bytes
+            // Reject absolute paths and null bytes
             if (str_starts_with($entry, '/') || str_contains($entry, "\0")) {
                 $zip->close();
                 throw new Exception(__('Invalid path in ZIP archive: {0}', $entry));
             }
 
-            // Перевіряємо що шлях не виходить за межі targetDir
+            // Ensure the path does not escape the target directory
             $entryPath = $realTargetDir . DIRECTORY_SEPARATOR . $entry;
             $normalizedPath = $this->normalizePath($entryPath);
 

@@ -8,7 +8,6 @@ use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\I18n\I18n;
 use Cake\ORM\Query\SelectQuery;
-use Cake\ORM\TableRegistry;
 use Override;
 
 class RegionChangeListener implements EventListenerInterface
@@ -38,14 +37,15 @@ class RegionChangeListener implements EventListenerInterface
      */
     public function createCache(EventInterface $event): void
     {
-        $regions = TableRegistry::getTableLocator()->get('Regions');
-
         $table = $event->getSubject();
 
         if ($table->getAlias() === 'Blocks') {
             /** @var \Cake\ORM\Behavior\TranslateBehavior $translate */
             $translate = $table->getBehavior('Translate');
             $translate->setLocale(I18n::getDefaultLocale());
+            $regions = $table->getAssociation('Regions')->getTarget();
+        } else {
+            $regions = $table;
         }
 
         $cache = $regions
