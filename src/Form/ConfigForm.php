@@ -51,6 +51,6 @@ class ConfigForm extends Form
     {
         Configure::write($data);
 
-        return Configure::dump('Cms', 'db', array_keys($data));
+        return Configure::dump('System', 'db', array_keys($data));
     }
 }

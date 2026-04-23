@@ -26,7 +26,7 @@ class UsersController extends AppController
 
         $request = $this->getRequest();
         if (in_array($request->getParam('action'), ['add', 'edit', 'delete'])) {
-            $images = $this->getConfig('Cms.images');
+            $images = $this->getConfig('System.images');
 
             $fileHandler = new ImageFileHandler($this->getStorage(WWW_ROOT . 'media'), [
                 'thumbs' => ['lg' => 200, 'sm' => 60, 'th' => 40],
@@ -138,7 +138,7 @@ class UsersController extends AppController
         $result = $this->Authentication->getResult();
 
         if ($result && $result->isValid()) {
-            $plugin = $this->getConfig('Cms.defaultDashboard', 'System');
+            $plugin = $this->getConfig('System.defaultDashboard', 'System');
             $defaultDashboard = ['plugin' => $plugin == 'System' ? null : $plugin, 'prefix' => 'Admin', 'controller' => 'Dashboard'];
             $target = $this->Authentication->getLoginRedirect() ?? $defaultDashboard;
 

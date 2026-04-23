@@ -303,7 +303,7 @@ class AppController extends Controller
     {
         $plugin = $this->getPlugin() ?? 'App';
         $formClass = $plugin . '\Form\ConfigForm';
-        $namespace = $plugin === 'App' ? 'Cms' : $plugin;
+        $namespace = $plugin === 'App' ? 'System' : $plugin;
         $settings = new $formClass();
 
         if (!$settings instanceof Form) {

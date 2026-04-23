@@ -38,9 +38,9 @@ class DashboardController extends AppController
     }
 
     /**
-     * Cms settings
+     * System settings
      *
-     * Displays/Sets the Cms settings
+     * Displays/Sets the System settings
      *
      * @return \Cake\Http\Response|null|void
      */

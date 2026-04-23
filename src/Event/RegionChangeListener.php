@@ -59,6 +59,6 @@ class RegionChangeListener implements EventListenerInterface
             ->indexBy('alias')
             ->toArray();
 
-        Cache::write('regions', $cache, 'cms');
+        Cache::write('regions', $cache, 'system');
     }
 }

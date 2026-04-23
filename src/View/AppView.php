@@ -66,7 +66,7 @@ class AppView extends View
         $this->loadHelper('Menu');
 
         if (!$this->isRenderingCell()) {
-            $cachedRegions = Cache::read('regions', 'cms');
+            $cachedRegions = Cache::read('regions', 'system');
             $this->_regions = $cachedRegions ?: [];
             $this->Form->setTemplates([
                 'confirmJs' => 'initModal({{formName}}); return false;',
@@ -160,7 +160,7 @@ class AppView extends View
 
         /** @var array<string, mixed> $config */
         $config = $this->get('config');
-        $outputFormat = $config['Cms']['images']['format'] ?? 'jpeg';
+        $outputFormat = $config['System']['images']['format'] ?? 'jpeg';
 
         $imagePath = '/img/noimage.svg';
         if ($image) {

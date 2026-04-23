@@ -33,7 +33,7 @@ class SchemaHelper extends Helper
         $this->_data[] = [
             '@context' => 'https://schema.org',
             '@type' => 'Organization',
-            'name' => $this->getView()->get('config')['Cms']['siteName'] ?? '',
+            'name' => $this->getView()->get('config')['System']['siteName'] ?? '',
             'url' => Router::fullBaseUrl(),
             'logo' => $this->getView()->Url->image('/img/logo.png', ['fullBase' => true]),
 //            'sameAs' => []

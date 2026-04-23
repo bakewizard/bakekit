@@ -28,12 +28,12 @@ class DbConfigTest extends TestCase
      */
     public function testReadByNamespace(): void
     {
-        $result = $this->dbConfig->read('Cms');
+        $result = $this->dbConfig->read('System');
 
         $this->assertIsArray($result);
-        $this->assertArrayHasKey('Cms', $result);
-        $this->assertEquals('BakeKit CMS', $result['Cms']['siteName']);
-        $this->assertEquals('jpeg', $result['Cms']['images']['format']);
+        $this->assertArrayHasKey('System', $result);
+        $this->assertEquals('BakeKit', $result['System']['siteName']);
+        $this->assertEquals('jpeg', $result['System']['images']['format']);
     }
 
     /**
@@ -44,8 +44,8 @@ class DbConfigTest extends TestCase
         $result = $this->dbConfig->read('*');
 
         $this->assertIsArray($result);
-        $this->assertArrayHasKey('Cms', $result);
-        $this->assertEquals('BakeKit CMS', $result['Cms']['siteName']);
+        $this->assertArrayHasKey('System', $result);
+        $this->assertEquals('BakeKit', $result['System']['siteName']);
     }
 
     /**
@@ -62,9 +62,9 @@ class DbConfigTest extends TestCase
      */
     public function testReadGroupsNestedKeys(): void
     {
-        $result = $this->dbConfig->read('Cms');
-        $this->assertArrayHasKey('maintenance', $result['Cms']);
-        $this->assertEquals('0', $result['Cms']['maintenance']['mode']);
+        $result = $this->dbConfig->read('System');
+        $this->assertArrayHasKey('maintenance', $result['System']);
+        $this->assertEquals('0', $result['System']['maintenance']['mode']);
     }
 
     /**
@@ -80,12 +80,12 @@ class DbConfigTest extends TestCase
             ],
         ];
 
-        $result = $this->dbConfig->dump('Cms', $data);
+        $result = $this->dbConfig->dump('System', $data);
         $this->assertTrue($result);
 
         $table = $this->fetchTable('Settings');
         $count = $table->find()
-            ->where(['namespace' => 'Cms', 'path' => 'maintenance.message'])
+            ->where(['namespace' => 'System', 'path' => 'maintenance.message'])
             ->count();
 
         $this->assertSame(1, $count);
@@ -96,7 +96,7 @@ class DbConfigTest extends TestCase
      */
     public function testDumpReturnsFalseOnNoData(): void
     {
-        $result = $this->dbConfig->dump('Cms', []);
+        $result = $this->dbConfig->dump('System', []);
 
         $this->assertFalse($result);
     }
@@ -107,10 +107,10 @@ class DbConfigTest extends TestCase
     public function testDumpOverwritesExistingValue(): void
     {
         $data = ['siteName' => 'NewName'];
-        $this->dbConfig->dump('Cms', $data);
+        $this->dbConfig->dump('System', $data);
 
-        $result = $this->dbConfig->read('Cms');
-        $this->assertEquals('NewName', $result['Cms']['siteName']);
+        $result = $this->dbConfig->read('System');
+        $this->assertEquals('NewName', $result['System']['siteName']);
     }
 
     /**
@@ -119,11 +119,11 @@ class DbConfigTest extends TestCase
     public function testDumpAddsNestedSetting(): void
     {
         $data = ['images' => ['compression' => 'auto']];
-        $this->dbConfig->dump('Cms', $data);
+        $this->dbConfig->dump('System', $data);
 
         $table = $this->fetchTable('Settings');
         $exists = $table->exists([
-            'namespace' => 'Cms',
+            'namespace' => 'System',
             'path' => 'images.compression',
         ]);
 
@@ -136,11 +136,11 @@ class DbConfigTest extends TestCase
     public function testDumpHandlesNullValues(): void
     {
         $data = ['maintenance' => ['allowedIps' => null]];
-        $this->dbConfig->dump('Cms', $data);
+        $this->dbConfig->dump('System', $data);
 
         $table = $this->fetchTable('Settings');
         $value = $table->find()
-            ->where(['namespace' => 'Cms', 'path' => 'maintenance.allowedIps'])
+            ->where(['namespace' => 'System', 'path' => 'maintenance.allowedIps'])
             ->first()?->value;
 
         $this->assertNull($value);

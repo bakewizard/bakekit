@@ -29,7 +29,7 @@ class ThemesController extends AppController
     #[Resource(label: 'List themes')]
     public function index(ThemeManager $themeManager)
     {
-        $activeTheme = $this->getConfig('Cms.theme');
+        $activeTheme = $this->getConfig('System.theme');
 
         $themes = $themeManager->list();
 
@@ -46,7 +46,7 @@ class ThemesController extends AppController
     #[Resource(label: 'View theme details')]
     public function view(ThemeManager $themeManager, string $name)
     {
-        $activeTheme = $this->getConfig('Cms.theme');
+        $activeTheme = $this->getConfig('System.theme');
 
         $config = $themeManager->view($name);
 
@@ -113,7 +113,7 @@ class ThemesController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
 
-        $activeTheme = Configure::read('Cms.theme');
+        $activeTheme = Configure::read('System.theme');
 
         try {
             $themeManager->uninstall($name, $name === $activeTheme);
@@ -138,7 +138,7 @@ class ThemesController extends AppController
         $this->request->allowMethod(['post', 'put']);
 
         Configure::write('theme', $name);
-        Configure::dump('Cms', 'db', ['theme']);
+        Configure::dump('System', 'db', ['theme']);
 
         return $this->redirect(['action' => 'index']);
     }

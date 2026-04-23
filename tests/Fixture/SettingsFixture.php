@@ -20,15 +20,15 @@ class SettingsFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'namespace' => 'Cms',
+                'namespace' => 'System',
                 'path' => 'siteName',
-                'value' => 'BakeKit CMS',
+                'value' => 'BakeKit',
                 'created' => '2025-05-12 08:22:12',
                 'modified' => '2025-05-12 08:22:12',
             ],
             [
                 'id' => 2,
-                'namespace' => 'Cms',
+                'namespace' => 'System',
                 'path' => 'theme',
                 'value' => null,
                 'created' => '2025-05-12 08:22:12',
@@ -36,7 +36,7 @@ class SettingsFixture extends TestFixture
             ],
             [
                 'id' => 3,
-                'namespace' => 'Cms',
+                'namespace' => 'System',
                 'path' => 'defaultDashboard',
                 'value' => 'System',
                 'created' => '2025-05-12 08:22:12',
@@ -44,7 +44,7 @@ class SettingsFixture extends TestFixture
             ],
             [
                 'id' => 4,
-                'namespace' => 'Cms',
+                'namespace' => 'System',
                 'path' => 'maintenance.mode',
                 'value' => '0',
                 'created' => '2025-05-12 08:22:12',
@@ -52,7 +52,7 @@ class SettingsFixture extends TestFixture
             ],
             [
                 'id' => 5,
-                'namespace' => 'Cms',
+                'namespace' => 'System',
                 'path' => 'maintenance.allowedIps',
                 'value' => null,
                 'created' => '2025-05-12 08:22:12',
@@ -60,7 +60,7 @@ class SettingsFixture extends TestFixture
             ],
             [
                 'id' => 6,
-                'namespace' => 'Cms',
+                'namespace' => 'System',
                 'path' => 'maintenance.message',
                 'value' => null,
                 'created' => '2025-05-12 08:22:12',
@@ -68,7 +68,7 @@ class SettingsFixture extends TestFixture
             ],
             [
                 'id' => 7,
-                'namespace' => 'Cms',
+                'namespace' => 'System',
                 'path' => 'images.format',
                 'value' => 'jpeg',
                 'created' => '2025-05-12 08:22:12',
@@ -76,7 +76,7 @@ class SettingsFixture extends TestFixture
             ],
             [
                 'id' => 8,
-                'namespace' => 'Cms',
+                'namespace' => 'System',
                 'path' => 'images.quality',
                 'value' => '90',
                 'created' => '2025-05-12 08:22:12',

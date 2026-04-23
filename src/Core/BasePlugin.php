@@ -4,28 +4,29 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\Application;
-use Cake\Core\BasePlugin;
+use Cake\Core\BasePlugin as CakeBasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Routing\RouteBuilder;
+use Cake\Utility\Inflector;
 use Closure;
 use Override;
 
-class CmsPlugin extends BasePlugin
+abstract class BasePlugin extends CakeBasePlugin
 {
     /**
      * Application instance
      *
      * @var \App\Application
      */
-    protected Application $app;
+    protected ?Application $app = null;
 
     /**
      * The alias of this plugin
      *
      * @var string
      */
-    protected ?string $alias;
+    protected string $alias;
 
     /**
      * Constructor for the plugin.
@@ -36,7 +37,7 @@ class CmsPlugin extends BasePlugin
     {
         parent::__construct($options);
 
-        $this->alias = $options['alias'] ?? null;
+        $this->alias = $options['alias'] ?? Inflector::dasherize($this->getName());
     }
 
     /**
@@ -77,8 +78,9 @@ class CmsPlugin extends BasePlugin
         $languages = Configure::read('App.languages') ?? [];
         $pluginPath = '/' . $this->alias;
 
-        // Multilingual paths
+        // Register routes for each language, except the default one
         foreach ($languages as $i => $lang) {
+            // Skip the default language — it's handled by the base route below
             if ($i !== 0) {
                 $routes->plugin($this->name, ['path' => "/{$lang}{$pluginPath}", 'lang' => $lang], $callback);
             }

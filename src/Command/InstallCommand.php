@@ -224,7 +224,7 @@ class InstallCommand extends Command
     }
 
     /**
-     * Loads CMS default settings into DB.
+     * Loads System default settings into DB.
      *
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return void

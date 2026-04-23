@@ -454,7 +454,7 @@ class PluginsControllerTest extends TestCase
         $plugin->enabled = true;
         $table->save($plugin);
 
-        Configure::write('Cms.defaultDashboard', 'TestPlugin1');
+        Configure::write('System.defaultDashboard', 'TestPlugin1');
 
         $this->post('/admin/plugins/deactivate/1');
 
@@ -464,7 +464,7 @@ class PluginsControllerTest extends TestCase
         // Plugin should still be enabled — deactivation was blocked
         $this->assertTrue((bool)$table->get(1)->enabled);
 
-        Configure::delete('Cms.defaultDashboard');
+        Configure::delete('System.defaultDashboard');
     }
 
     /**
@@ -472,7 +472,7 @@ class PluginsControllerTest extends TestCase
      */
     public function testUninstallDefaultDashboardShowsError(): void
     {
-        Configure::write('Cms.defaultDashboard', 'TestPlugin1');
+        Configure::write('System.defaultDashboard', 'TestPlugin1');
 
         $this->mockService(PluginManager::class, function () {
             $mock = $this->createMock(PluginManager::class);
@@ -495,7 +495,7 @@ class PluginsControllerTest extends TestCase
         // Plugin record should still exist
         $this->assertTrue($this->fetchTable('Plugins')->exists(['name' => 'TestPlugin1']));
 
-        Configure::delete('Cms.defaultDashboard');
+        Configure::delete('System.defaultDashboard');
     }
 
     /**

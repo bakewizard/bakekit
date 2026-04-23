@@ -76,7 +76,7 @@ class AppController extends Controller
     #[Override]
     public function beforeRender(EventInterface $event)
     {
-        $this->viewBuilder()->setTheme($this->getConfig('Cms.theme'));
+        $this->viewBuilder()->setTheme($this->getConfig('System.theme'));
 
         $this->set('breadcrumbs', $this->_breadcrumbs);
     }

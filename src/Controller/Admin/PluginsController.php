@@ -49,7 +49,7 @@ class PluginsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $plugin = $this->Plugins->patchEntity($plugin, $this->request->getData());
             if ($this->Plugins->save($plugin)) {
-                Cache::delete('plugins', 'cms');
+                Cache::delete('plugins', 'system');
                 $this->Flash->success(__('The plugin has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
@@ -138,7 +138,7 @@ class PluginsController extends AppController
                 if (!$this->Plugins->delete($plugin)) {
                     throw new Exception(__('The plugin data could not be deleted from database.'));
                 }
-                Cache::delete('plugins', 'cms');
+                Cache::delete('plugins', 'system');
                 Cache::clear('permissions');
             }
 
@@ -190,7 +190,7 @@ class PluginsController extends AppController
                 }
             }
 
-            Cache::delete('plugins', 'cms');
+            Cache::delete('plugins', 'system');
             Cache::clear('permissions');
             $this->Flash->success(__('The plugin has been activated.'));
         } catch (Exception $e) {
@@ -223,7 +223,7 @@ class PluginsController extends AppController
             $plugin->enabled = false;
 
             if ($this->Plugins->save($plugin)) {
-                Cache::delete('plugins', 'cms');
+                Cache::delete('plugins', 'system');
                 $this->Flash->success(__('The plugin has been deactivated.'));
             } else {
                 $this->Flash->error(__('The plugin could not be deactivated. Please, try again.'));
@@ -244,7 +244,7 @@ class PluginsController extends AppController
      */
     private function assertNotDefaultDashboard(?string $pluginName): void
     {
-        if ($pluginName !== null && $pluginName === $this->getConfig('Cms.defaultDashboard')) {
+        if ($pluginName !== null && $pluginName === $this->getConfig('System.defaultDashboard')) {
             throw new Exception(__(
                 'The plugin "{0}" cannot be modified. Its dashboard is set as the default one.',
                 $pluginName,

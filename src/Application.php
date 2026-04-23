@@ -112,7 +112,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         if (!Cache::getConfig('menus')) {
             Cache::setConfig('menus', [
                 'className' => FileEngine::class,
-                'path' => CACHE . 'cms' . DS . 'menus' . DS,
+                'path' => CACHE . 'system' . DS . 'menus' . DS,
                 'duration' => '+1 years',
                 'prefix' => 'menu_',
                 'serialize' => true,
@@ -122,17 +122,17 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         if (!Cache::getConfig('permissions')) {
             Cache::setConfig('permissions', [
                 'className' => FileEngine::class,
-                'path' => CACHE . 'cms' . DS . 'permissions' . DS,
+                'path' => CACHE . 'system' . DS . 'permissions' . DS,
                 'duration' => '+1 years',
                 'prefix' => 'perm_',
                 'serialize' => true,
             ]);
         }
 
-        if (!Cache::getConfig('cms')) {
-            Cache::setConfig('cms', [
+        if (!Cache::getConfig('system')) {
+            Cache::setConfig('system', [
                 'className' => FileEngine::class,
-                'path' => CACHE . 'cms' . DS,
+                'path' => CACHE . 'system' . DS,
                 'duration' => '+1 years',
                 'prefix' => null,
                 'serialize' => true,
@@ -140,8 +140,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         }
 
         try {
-            Configure::config('db', new DbConfig($this->tableLocator->get('Settings'), 'cms'));
-            Configure::load('Cms', 'db');
+            Configure::config('db', new DbConfig($this->tableLocator->get('Settings'), 'system'));
+            Configure::load('System', 'db');
 
             $this->loadTheme();
             $this->loadPlugins();
@@ -268,7 +268,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
         $routes->prefix('Admin', function (RouteBuilder $builder): void {
             $builder->applyMiddleware('auth');
-            $defaultDashboard = Configure::read('Cms.defaultDashboard');
+            $defaultDashboard = Configure::read('System.defaultDashboard');
             $plugin = $defaultDashboard === 'System' ? null : $defaultDashboard;
             $builder->connect('/', ['plugin' => $plugin, 'controller' => 'Dashboard']);
             $builder->fallbacks(DashedRoute::class);
@@ -295,7 +295,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $middlewareQueue
 
             // Maintenance middleware
-            ->add(new MaintenanceMiddleware((array)Configure::read('Cms.maintenance', [])))
+            ->add(new MaintenanceMiddleware((array)Configure::read('System.maintenance', [])))
 
             // Catch any exceptions in the lower layers,
             // and make an error page/response
@@ -360,7 +360,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      */
     private function loadTheme(): void
     {
-        $theme = Configure::read('Cms.theme');
+        $theme = Configure::read('System.theme');
         if ($theme) {
             $this->addPlugin($theme, [
                 'path' => ROOT . DS . 'themes' . DS . $theme . DS,
@@ -379,7 +379,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         /** @var array<\App\Model\Entity\Plugin> $plugins */
         $plugins = $table->find()
             ->where(['enabled' => true])
-            ->cache('plugins', 'cms')
+            ->cache('plugins', 'system')
             ->toArray();
 
         foreach ($plugins as $plugin) {

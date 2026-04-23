@@ -95,7 +95,7 @@ class ThemesControllerTest extends TestCase
             return $mock;
         });
 
-        Configure::write('Cms.theme', 'DefaultTheme');
+        Configure::write('System.theme', 'DefaultTheme');
 
         $this->get('/admin/themes');
         $this->assertResponseOk();
@@ -193,7 +193,7 @@ class ThemesControllerTest extends TestCase
 
     public function testUninstallSuccess(): void
     {
-        Configure::write('Cms.theme', 'DefaultTheme');
+        Configure::write('System.theme', 'DefaultTheme');
 
         $this->mockService(ThemeManager::class, function () {
             $mock = $this->getMockBuilder(ThemeManager::class)
