@@ -156,43 +156,44 @@
             <!-- Content Header (Page header) -->
             <div class="app-content-header">
                 <?php
-                $plugin = $this->request->getParam('plugin');
                 $controller = $this->request->getParam('controller');
-                $action = $this->request->getParam('action');
                 ?>
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6">
                             <h3 class="mb-0">
                                 <span class="me-2"><?= $this->fetch('page') ?: preg_replace('/([A-Z])/', ' ' . '$1', $controller) ?></span>
-                                <?php if ($action === 'view') : ?>
+                                <?php $previousCrumb = $breadcrumbs[count($breadcrumbs) - 2] ?? null; ?>
+                                <?php if ($previousCrumb) : ?>
                                     <?=
-                                    $this->Html->link('<i class="fa-solid fa-arrow-left"></i> ' . __('Back'), [
-                                        'plugin' => $plugin,
-                                        'controller' => $controller,
-                                        'action' => 'index',
-                                        '?' => $this->request->getQueryParams(),
-                                    ], ['class' => 'btn btn-outline-danger', 'escape' => false])
+                                    $this->Html->link(
+                                        '<i class="fa-solid fa-arrow-left"></i> ' . __('Back'),
+                                        $previousCrumb['url'],
+                                        ['class' => 'btn btn-outline-danger', 'escape' => false]
+                                    )
                                     ?>
                                 <?php endif; ?>
                             </h3>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">
-                                <?php if (isset($plugin) || $controller !== 'Dashboard') : ?>
-                                    <li class="breadcrumb-item">
-                                        <a href="<?= $this->Url->build(['plugin' => false, 'controller' => 'Dashboard']); ?>">
-                                            <i class="fa-solid fa-tachometer-alt"></i>
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
-                                <?php foreach ($breadcrumbs as $crumb) : ?>
-                                    <li class="breadcrumb-item">
-                                        <a href="<?= $crumb['url'] ?>"><?= $crumb['title'] ?></a>
-                                    </li>
+                                <?php $last_key = array_key_last($breadcrumbs); ?>
+
+                                <?php foreach ($breadcrumbs as $key => $crumb) : ?>
+                                    <?php if ($key === $last_key) : ?>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            <?= $crumb['title'] ?>
+                                        </li>
+                                    <?php else : ?>
+                                        <li class="breadcrumb-item">
+                                            <a href="<?= $this->Url->build($crumb['url']); ?>">
+                                                <?= $crumb['title'] ?>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
                                 <?php endforeach; ?>
                             </ol>
-                        </div><!-- /.col -->
+                        </div>
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
             </div>

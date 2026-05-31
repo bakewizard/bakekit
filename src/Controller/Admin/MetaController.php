@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Attribute\Resource;
+use Cake\Event\EventInterface;
 
 /**
  * Meta Controller
@@ -16,6 +17,26 @@ use App\Attribute\Resource;
  */
 class MetaController extends AppController
 {
+    /**
+     * @inheritDoc
+     */
+    public function beforeFilter(EventInterface $event)
+    {
+        parent::beforeFilter($event);
+
+        $action = $this->request->getParam('action');
+
+        $this->addCrumb('Meta', [
+            'prefix' => 'Admin',
+            'plugin' => null,
+            'controller' => 'Meta',
+            'action' => 'index',
+        ]);
+        if (in_array($action, ['add', 'edit'])) {
+            $this->addCrumb($action);
+        }
+    }
+
     /**
      * Index method
      *

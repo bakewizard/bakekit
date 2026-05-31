@@ -12,21 +12,12 @@ use Override;
 
 /**
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\HasMany $MenuLinks
- * @method \App\Model\Entity\Menu newEmptyEntity()
- * @method \App\Model\Entity\Menu newEntity(array $data, array $options = [])
- * @method array<\App\Model\Entity\Menu> newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Menu get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\Menu findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @method \App\Model\Entity\Menu patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method array<\App\Model\Entity\Menu> patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\Menu|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Menu saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Menu>|false saveMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Menu> saveManyOrFail(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Menu>|false deleteMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Menu> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Search\Model\Behavior\SearchBehavior
- * @extends \Cake\ORM\Table<array{Search: \Search\Model\Behavior\SearchBehavior}>
+ * @extends \Cake\ORM\Table<array{}, \App\Model\Entity\Menu>
  */
 class MenusTable extends Table
 {

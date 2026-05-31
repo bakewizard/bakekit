@@ -26,8 +26,17 @@ class RolesController extends AppController
     {
         parent::beforeFilter($event);
 
+        $action = $this->request->getParam('action');
+
+        $this->addCrumb('Roles', [
+            'prefix' => 'Admin',
+            'plugin' => null,
+            'controller' => 'Roles',
+            'action' => 'index',
+        ]);
+
         $request = $this->getRequest();
-        if ($request->getParam('action') !== 'index') {
+        if ($action !== 'index') {
             $id = $request->getParam('pass.0');
             $role = isset($id) ? $this->Roles->get($id) : $this->Roles->newEmptyEntity();
             $this->Authorization->authorize($role);
@@ -61,6 +70,8 @@ class RolesController extends AppController
     {
         $role = $this->Roles->get($id, contain: ['Users']);
 
+        $this->addCrumb('view');
+
         $this->set('role', $role);
     }
 
@@ -83,6 +94,9 @@ class RolesController extends AppController
         }
 
         $parentRoles = $this->Roles->ParentRoles->find('treeList', spacer: '-', limit: 200);
+
+        $this->addCrumb('add');
+
         $this->set(compact('role', 'parentRoles'));
     }
 
@@ -107,6 +121,9 @@ class RolesController extends AppController
         }
 
         $parentRoles = $this->Roles->ParentRoles->find('treeList', spacer: '-', limit: 200);
+
+        $this->addCrumb('edit');
+
         $this->set(compact('role', 'parentRoles'));
     }
 
@@ -155,6 +172,8 @@ class RolesController extends AppController
         $role = $this->Roles->get($id);
 
         $resources = $this->Roles->Permissions->getPermissions($role->id);
+
+        $this->addCrumb('permissions');
 
         $this->set(compact('role', 'resources'));
     }

@@ -23,7 +23,6 @@ use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\Form\Form;
 use Cake\Http\Response;
-use Cake\Http\ServerRequest;
 use Cake\I18n\I18n;
 use Cake\Routing\Router;
 use League\Flysystem\Filesystem;
@@ -49,9 +48,9 @@ class AppController extends Controller
     /**
      * Breadcrumbs array
      *
-     * @var array<int, array{title: string, url: string|null}>
+     * @var array<int, array{title: string, url: array<mixed>|string|null}>
      */
-    private array $_breadcrumbs = [];
+    private array $breadcrumbs = [];
 
     /**
      * @inheritDoc
@@ -85,6 +84,33 @@ class AppController extends Controller
     {
         $this->setLocale();
 
+        $this->addCrumb(
+            '<i class="fa-solid fa-tachometer-alt"></i>',
+            [
+                'prefix' => 'Admin',
+                'plugin' => null,
+                'controller' => 'Dashboard',
+                'action' => 'index',
+            ],
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[Override]
+    public function beforeRender(EventInterface $event)
+    {
+        if ($this->request->is('ajax')) {
+            $this->viewBuilder()->setClassName('Ajax');
+
+            return;
+        }
+
+        $this->viewBuilder()->setLayout('admin');
+
+        $this->set('breadcrumbs', $this->breadcrumbs);
+
         $this->set('config', $this->getConfig());
     }
 
@@ -115,30 +141,6 @@ class AppController extends Controller
             $url['?'] = $queryParams;
         }
         $event->setResult($response->withLocation(Router::url($url, true)));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    #[Override]
-    public function beforeRender(EventInterface $event)
-    {
-        if ($this->request->is('ajax')) {
-            $this->viewBuilder()->setClassName('Ajax');
-
-            return;
-        }
-
-        $this->viewBuilder()->setLayout('admin');
-
-        $plugin = $this->request->getParam('plugin');
-        $controller = $this->request->getParam('controller');
-        $action = $this->request->getParam('action');
-
-        $this->addPluginBreadcrumb($plugin);
-        $this->addControllerBreadcrumb($plugin, $controller, $action);
-
-        $this->set('breadcrumbs', $this->_breadcrumbs);
     }
 
     /**
@@ -222,75 +224,8 @@ class AppController extends Controller
      */
     protected function addCrumb(string $title, string|array|null $url = null)
     {
-        $this->_breadcrumbs[] = ['title' => $title, 'url' => Router::url($url, true)];
-    }
-
-    /**
-     * Adds a breadcrumb for the plugin, if applicable.
-     *
-     * @param string|null $plugin The name of the plugin.
-     * @return void
-     */
-    protected function addPluginBreadcrumb(?string $plugin): void
-    {
-        if ($plugin !== null && $plugin !== 'Pages' && $this->request->getParam('controller') !== 'Dashboard') {
-            $pluginName = preg_replace('/([A-Z])/', ' $1', $plugin);
-            $this->addCrumb(
-                $pluginName ?? 'Undefined',
-                [
-                    'plugin' => $plugin,
-                    'controller' => 'Dashboard',
-                    'action' => 'index',
-                ],
-            );
-        }
-    }
-
-    /**
-     * Adds breadcrumbs based on the controller and action.
-     *
-     * @param string|null $plugin     The name of the plugin.
-     * @param string      $controller The name of the controller.
-     * @param string      $action     The name of the current action.
-     * @return void
-     */
-    protected function addControllerBreadcrumb(?string $plugin, string $controller, string $action): void
-    {
-        $referer = $this->request->referer();
-        if ($referer) {
-            $refererParams = Router::parseRequest(new ServerRequest(['url' => $referer]));
-
-            if ($refererParams['action'] === 'view' && !in_array($action, ['view', 'index'])) {
-                $this->addCrumb(
-                    preg_replace('/([A-Z])/', ' $1', $refererParams['controller']),
-                    ['plugin' => $refererParams['plugin'], 'controller' => $refererParams['controller'], 'action' => 'index'],
-                );
-                $controllerName = preg_replace('/([A-Z])/', ' $1', $controller);
-                $this->addCrumb(
-                    $controllerName ?? 'Undefined',
-                    [
-                        'plugin' => $plugin,
-                        'controller' => $refererParams['controller'],
-                        'action' => $refererParams['action'],
-                        $refererParams['pass'][0] ?? null,
-                    ],
-                );
-
-                return;
-            }
-        }
-
-        if ($action !== 'index') {
-            $controllerName = preg_replace('/([A-Z])/', ' $1', $controller);
-            $this->addCrumb(
-                $controllerName ?? 'Undefined',
-                [
-                    'plugin' => $plugin,
-                    'controller' => $controller,
-                    'action' => 'index',
-                ],
-            );
-        }
+        //Router::url($url, true)
+        $this->breadcrumbs[] = ['title' => $title, 'url' => $url];
     }
 
     /**
@@ -356,7 +291,8 @@ class AppController extends Controller
         $currentLanguage = $this->request->getAttribute('params')['lang'] ?? null;
 
         if ($locale && ($this->{$modelClass}->hasBehavior('Translate'))) {
-            $this->{$modelClass}->setLocale($locale);
+            $behavior = $this->{$modelClass}->getBehavior('Translate');
+            $behavior->setLocale($locale);
         }
 
         if (isset($languages)) {

@@ -25,7 +25,7 @@
         <?= $this->Form->control('title'); ?>
         <?= $this->Form->control('description'); ?>
         <?= $this->Form->control('region_id', ['options' => $regions]); ?>
-        <?php if (!$block->hasValue('cell')) : ?>
+        <?php if ($block->hasValue('cell')) : ?>
             <?=
             $this->Form->control('cell', [
                 'append' => $this->Form->button('...', [
@@ -38,8 +38,8 @@
                 'readonly' => true,
             ]);
             ?>
+            <?= $this->Form->control('template'); ?>
         <?php endif; ?>
-        <?= $this->Form->control('template'); ?>
         <?php if (!$block->hasValue('cell')) : ?>
             <?= $this->Form->control('params', ['label' => 'Content', 'type' => 'textarea']); ?>
         <?php endif; ?>

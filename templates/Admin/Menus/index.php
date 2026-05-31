@@ -1,7 +1,6 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var mixed $_isSearch
  * @var array<\App\Model\Entity\Menu>|\Cake\Collection\CollectionInterface<\App\Model\Entity\Menu> $menus
  */
 ?>

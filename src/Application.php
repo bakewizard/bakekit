@@ -26,6 +26,7 @@ use App\Lib\ResourcesExplorer;
 use App\Lib\ThemeManager;
 use App\Middleware\HostHeaderMiddleware;
 use App\Middleware\MaintenanceMiddleware;
+use App\Model\Table\RegionsTable;
 use App\Model\Table\ResourcesTable;
 use App\Model\Table\SettingsTable;
 use App\Policy\RequestPolicy;
@@ -340,7 +341,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         $container->add(Migrations::class);
 
         $container->add(ThemeManager::class)
-            ->addArgument(ExtensionHandler::class);
+            ->addArgument(ExtensionHandler::class)
+            ->addArgument(RegionsTable::class);
 
         $container->add(PluginManager::class)
             ->addArgument(ExtensionHandler::class)

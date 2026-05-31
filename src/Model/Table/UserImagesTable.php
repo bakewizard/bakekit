@@ -11,19 +11,11 @@ use Cake\Validation\Validator;
  * UserImages Model
  *
  * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
- * @method \App\Model\Entity\UserImage newEmptyEntity()
- * @method \App\Model\Entity\UserImage newEntity(array $data, array $options = [])
- * @method array<\App\Model\Entity\UserImage> newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\UserImage get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\UserImage findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @method \App\Model\Entity\UserImage patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method array<\App\Model\Entity\UserImage> patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\UserImage|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\UserImage saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\UserImage>|false saveMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\UserImage> saveManyOrFail(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\UserImage>|false deleteMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\UserImage> deleteManyOrFail(iterable $entities, array $options = [])
+ * @extends \Cake\ORM\Table<array{}, \App\Model\Entity\UserImage>
  */
 class UserImagesTable extends Table
 {

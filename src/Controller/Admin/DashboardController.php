@@ -59,6 +59,8 @@ class DashboardController extends AppController
             $plugins[$plugin] = $plugin;
         }
 
+        $this->addCrumb('Settings');
+
         $this->set(compact('plugins'));
     }
 }

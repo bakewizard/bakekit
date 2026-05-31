@@ -22,23 +22,14 @@ use ReflectionClass;
  * Blocks Model
  *
  * @property \App\Model\Table\RegionsTable&\Cake\ORM\Association\BelongsTo $Regions
- * @method \App\Model\Entity\Block get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\Block newEntity(array $data, array $options = [])
- * @method array<\App\Model\Entity\Block> newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Block|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Block saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Block patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method array<\App\Model\Entity\Block> patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\Block findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $BlocksI18n
- * @method \App\Model\Entity\Block newEmptyEntity()
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Block>|false saveMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Block> saveManyOrFail(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Block>|false deleteMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Block> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \ADmad\Sequence\Model\Behavior\SequenceBehavior
  * @mixin \Cake\ORM\Behavior\TranslateBehavior
- * @extends \Cake\ORM\Table<array{Sequence: \ADmad\Sequence\Model\Behavior\SequenceBehavior, Translate: \Cake\ORM\Behavior\TranslateBehavior}>
+ * @extends \Cake\ORM\Table<array{Sequence: \ADmad\Sequence\Model\Behavior\SequenceBehavior, Translate: \Cake\ORM\Behavior\TranslateBehavior}, \App\Model\Entity\Block>
  */
 class BlocksTable extends Table
 {

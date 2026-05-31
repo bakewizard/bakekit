@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Lib;
 
+use App\Model\Table\RegionsTable;
 use Exception;
 use Psr\Http\Message\UploadedFileInterface;
 
@@ -26,13 +27,21 @@ class ThemeManager
     private ExtensionHandler $extensionHandler;
 
     /**
+     * RegionsTable instance
+     *
+     * @var \App\Model\Table\RegionsTable
+     */
+    private RegionsTable $regionsTable;
+
+    /**
      * ThemeManager constructor
      *
      * Sets themes dir
      */
-    public function __construct(ExtensionHandler $extensionHandler)
+    public function __construct(ExtensionHandler $extensionHandler, RegionsTable $regionsTable)
     {
         $this->extensionHandler = $extensionHandler;
+        $this->regionsTable = $regionsTable;
         $this->themesDir = ROOT . DS . 'themes' . DS;
     }
 
@@ -66,7 +75,10 @@ class ThemeManager
      */
     public function install(UploadedFileInterface $file): string
     {
-        return $this->extensionHandler->load($file, $this->themesDir);
+        $name = $this->extensionHandler->load($file, $this->themesDir);
+        $this->addRegions($name);
+
+        return $name;
     }
 
     /**
@@ -81,6 +93,50 @@ class ThemeManager
         if ($isActive) {
             throw new Exception(__('Cannot uninstall active theme. Deactivate it first.'));
         }
+
+        $this->deleteRegions($theme);
         $this->extensionHandler->unload($theme, $this->themesDir);
+    }
+
+    /**
+     * Adds regions defined in the theme's config file to the database.
+     *
+     * @param string $theme Theme name to add regions for.
+     * @return void
+     */
+    private function addRegions(string $theme): void
+    {
+        $configFile = $this->themesDir . $theme . DS . 'config' . DS . 'regions.php';
+
+        if (!file_exists($configFile)) {
+            return;
+        }
+
+        $regions = include $configFile;
+
+        if (!is_array($regions)) {
+            return;
+        }
+
+        foreach ($regions as $alias => $description) {
+            $this->regionsTable->saveOrFail(
+                $this->regionsTable->newEntity([
+                    'alias' => $alias,
+                    'description' => $description,
+                    'theme' => $theme,
+                ]),
+            );
+        }
+    }
+
+    /**
+     * Deletes regions associated with a theme from the database.
+     *
+     * @param string $theme Theme name to delete regions for.
+     * @return void
+     */
+    private function deleteRegions(string $theme): void
+    {
+        $this->regionsTable->deleteAll(['theme' => $theme]);
     }
 }

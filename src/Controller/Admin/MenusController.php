@@ -27,6 +27,18 @@ class MenusController extends AppController
     {
         parent::beforeFilter($event);
 
+        $action = $this->request->getParam('action');
+
+        $this->addCrumb('Menus', [
+            'prefix' => 'Admin',
+            'plugin' => null,
+            'controller' => 'Menus',
+            'action' => 'index',
+        ]);
+        if (in_array($action, ['add', 'edit', 'view'])) {
+            $this->addCrumb($action);
+        }
+
         if (!$this->request->is('get') && $this->request->getParam('action') !== 'add') {
             Cache::clear('menus');
         }

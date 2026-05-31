@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -12,19 +13,11 @@ use Override;
  * Regions Model
  *
  * @property \App\Model\Table\BlocksTable&\Cake\ORM\Association\HasMany $Blocks
- * @method \App\Model\Entity\Region get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\Region newEntity(array $data, array $options = [])
- * @method array<\App\Model\Entity\Region> newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Region|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Region saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Region patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method array<\App\Model\Entity\Region> patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\Region findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @method \App\Model\Entity\Region newEmptyEntity()
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Region>|false saveMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Region> saveManyOrFail(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Region>|false deleteMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Region> deleteManyOrFail(iterable $entities, array $options = [])
+ * @extends \Cake\ORM\Table<array{}, \App\Model\Entity\Region>
  */
 class RegionsTable extends Table
 {
@@ -55,20 +48,25 @@ class RegionsTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-                ->nonNegativeInteger('id')
-                ->allowEmptyString('id', null, 'create');
+            ->nonNegativeInteger('id')
+            ->allowEmptyString('id', null, 'create');
 
         $validator
-                ->scalar('alias')
-                ->maxLength('alias', 100)
-                ->requirePresence('alias', 'create')
-                ->notEmptyString('alias')
-                ->add('alias', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->scalar('alias')
+            ->maxLength('alias', 100)
+            ->requirePresence('alias', 'create')
+            ->notEmptyString('alias');
 
         $validator
-                ->scalar('description')
-                ->maxLength('description', 255)
-                ->allowEmptyString('description');
+            ->scalar('theme')
+            ->maxLength('theme', 100)
+            ->requirePresence('theme', 'create')
+            ->notEmptyString('theme');
+
+        $validator
+            ->scalar('description')
+            ->maxLength('description', 255)
+            ->allowEmptyString('description');
 
         return $validator;
     }
@@ -83,8 +81,19 @@ class RegionsTable extends Table
     #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->isUnique(['alias']));
+        $rules->add($rules->isUnique(['alias', 'theme']));
 
         return $rules;
+    }
+
+    /**
+     * Returns regions for the active theme.
+     *
+     * @param string $theme Active theme name.
+     * @return \Cake\ORM\Query\SelectQuery
+     */
+    public function findByTheme(string $theme): SelectQuery
+    {
+        return $this->find()->where(['theme' => $theme]);
     }
 }

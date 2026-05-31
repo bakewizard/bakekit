@@ -24,8 +24,20 @@ class UsersController extends AppController
         parent::beforeFilter($event);
         $this->Authentication->allowUnauthenticated(['login']);
 
+        $action = $this->request->getParam('action');
+
+        $this->addCrumb('Users', [
+            'prefix' => 'Admin',
+            'plugin' => null,
+            'controller' => 'Users',
+            'action' => 'index',
+        ]);
+        if (in_array($action, ['add', 'edit'])) {
+            $this->addCrumb($action);
+        }
+
         $request = $this->getRequest();
-        if (in_array($request->getParam('action'), ['add', 'edit', 'delete'])) {
+        if (in_array($action, ['add', 'edit', 'delete'])) {
             $images = $this->getConfig('System.images');
 
             $fileHandler = new ImageFileHandler($this->getStorage(WWW_ROOT . 'media'), [

@@ -17,12 +17,6 @@
         </a>
     </li>
     <li class="nav-item">
-        <a href="<?= $this->Url->build(['plugin' => false, 'controller' => 'Regions', 'action' => 'index']) ?>" class="nav-link">
-            <i class="nav-icon fa-solid fa-cubes fa-fw"></i>
-            <p>Regions & Blocks</p>
-        </a>
-    </li>
-    <li class="nav-item">
         <a href="<?= $this->Url->build(['plugin' => false, 'controller' => 'Menus', 'action' => 'index']) ?>" class="nav-link">
             <i class="nav-icon fa-solid fa-sitemap fa-fw"></i>
             <p>Menus</p>

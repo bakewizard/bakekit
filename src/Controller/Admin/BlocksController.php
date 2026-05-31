@@ -6,6 +6,8 @@ namespace App\Controller\Admin;
 use App\Attribute\Resource;
 use App\Lib\ResourcesExplorer;
 use Cake\Core\App;
+use Cake\Core\Configure;
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
 
 /**
@@ -19,6 +21,31 @@ use Cake\Http\Response;
  */
 class BlocksController extends AppController
 {
+    /**
+     * @inheritDoc
+     */
+    public function beforeFilter(EventInterface $event)
+    {
+        parent::beforeFilter($event);
+
+        $action = $this->request->getParam('action');
+
+        if (in_array($action, ['add', 'edit', 'config'])) {
+            $this->addCrumb('Themes', [
+                'prefix' => 'Admin',
+                'plugin' => null,
+                'controller' => 'Themes',
+            ]);
+            $this->addCrumb('Blocks', [
+                'prefix' => 'Admin',
+                'plugin' => null,
+                'controller' => 'Themes',
+                'action' => 'blocks',
+            ]);
+            $this->addCrumb($action);
+        }
+    }
+
     /**
      * Add method
      *
@@ -63,7 +90,8 @@ class BlocksController extends AppController
             }
             $this->Flash->error(__('The block could not be saved. Please, try again.'));
         }
-        $regions = $this->Blocks->Regions->find('list', limit: 200);
+        $theme = Configure::read('System.theme');
+        $regions = $this->Blocks->Regions->find('list', limit: 200)->where(['theme' => $theme]);
         $this->set(compact('block', 'regions'));
     }
 

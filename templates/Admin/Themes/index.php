@@ -55,16 +55,17 @@
                                         'Delete',
                                         ['action' => 'uninstall', $theme['name']],
                                         [
-                                                'block' => true,
-                                                'confirm' => __('Are you sure you want to uninstall {0} theme?', $theme['name']),
-                                                'class' => 'btn btn-sm btn-danger',
-                                                'data-bs-toggle' => 'modal',
-                                                'data-bs-target' => '#confirm-modal',
-                                            ],
+                                            'block' => true,
+                                            'confirm' => __('Are you sure you want to uninstall {0} theme?', $theme['name']),
+                                            'class' => 'btn btn-sm btn-danger',
+                                            'data-bs-toggle' => 'modal',
+                                            'data-bs-target' => '#confirm-modal',
+                                        ],
                                     )
                                     ?>
                                 <?php else : ?>
                                     <?= $this->Form->postLink('Deactivate', ['action' => 'activate'], ['class' => 'btn btn-sm btn-warning']) ?>
+                                    <?= $this->Html->link(__('Blocks'), ['action' => 'blocks'], ['escape' => false, 'class' => 'btn btn-sm btn-primary']) ?>
                                 <?php endif; ?>
                             </td>
                         </tr>

@@ -16,22 +16,13 @@ use Override;
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\BelongsTo $ParentMenuLinks
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\HasMany $ChildMenuLinks
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $MenuLinksI18n
- * @method \App\Model\Entity\MenuLink newEmptyEntity()
- * @method \App\Model\Entity\MenuLink newEntity(array $data, array $options = [])
- * @method array<\App\Model\Entity\MenuLink> newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\MenuLink get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\MenuLink findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @method \App\Model\Entity\MenuLink patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method array<\App\Model\Entity\MenuLink> patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\MenuLink|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\MenuLink saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink>|false saveMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink> saveManyOrFail(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink>|false deleteMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TreeBehavior
  * @mixin \Cake\ORM\Behavior\TranslateBehavior
- * @extends \Cake\ORM\Table<array{Translate: \Cake\ORM\Behavior\TranslateBehavior, Tree: \Cake\ORM\Behavior\TreeBehavior}>
+ * @extends \Cake\ORM\Table<array{Translate: \Cake\ORM\Behavior\TranslateBehavior, Tree: \Cake\ORM\Behavior\TreeBehavior}, \App\Model\Entity\MenuLink>
  */
 class MenuLinksTable extends Table
 {

@@ -217,13 +217,18 @@ class AppMigration extends BaseMigration
                 'limit' => 100,
                 'null' => false,
             ])
+            ->addColumn('theme', 'string', [
+                'default' => null,
+                'limit' => 100,
+                'null' => false,
+            ])
             ->addColumn('description', 'string', [
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
             ])
             ->addPrimaryKey('id')
-            ->addIndex('alias', ['unique' => true])
+            ->addIndex(['alias', 'theme'], ['unique' => true])
             ->create();
 
         $this->table('menus')

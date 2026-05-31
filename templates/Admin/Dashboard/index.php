@@ -19,11 +19,6 @@
                 ['escape' => false, 'class' => 'text-decoration-none'],
             ) ?></li>
             <li><?= $this->Html->link(
-                '<i class="fa-solid fa-fw fa-cubes"></i> ' . __('Add some regions and blocks'),
-                ['controller' => 'Regions'],
-                ['escape' => false, 'class' => 'text-decoration-none'],
-            ) ?></li>
-            <li><?= $this->Html->link(
                 '<i class="fa-solid fa-fw fa-sitemap"></i> ' . __('Add menus'),
                 ['controller' => 'Menus'],
                 ['escape' => false, 'class' => 'text-decoration-none'],

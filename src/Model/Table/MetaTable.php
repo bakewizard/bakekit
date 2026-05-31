@@ -13,22 +13,13 @@ use Override;
  * Meta Model
  *
  * @property \App\Model\Table\PluginsTable&\Cake\ORM\Association\BelongsTo $Plugins
- * @method \App\Model\Entity\Metum newEmptyEntity()
- * @method \App\Model\Entity\Metum newEntity(array $data, array $options = [])
- * @method array<\App\Model\Entity\Metum> newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Metum get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \App\Model\Entity\Metum findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @method \App\Model\Entity\Metum patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method array<\App\Model\Entity\Metum> patchEntities(iterable $entities, array $data, array $options = [])
- * @method \App\Model\Entity\Metum|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
- * @method \App\Model\Entity\Metum saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum>|false saveMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum> saveManyOrFail(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum>|false deleteMany(iterable $entities, array $options = [])
  * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum> deleteManyOrFail(iterable $entities, array $options = [])
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $MetaI18n
  * @mixin \Cake\ORM\Behavior\TranslateBehavior
- * @extends \Cake\ORM\Table<array{Translate: \Cake\ORM\Behavior\TranslateBehavior}>
+ * @extends \Cake\ORM\Table<array{Translate: \Cake\ORM\Behavior\TranslateBehavior}, \App\Model\Entity\Metum>
  */
 class MetaTable extends Table
 {

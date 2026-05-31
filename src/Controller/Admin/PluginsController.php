@@ -7,6 +7,7 @@ use App\Attribute\Resource;
 use App\Lib\ComposerManager;
 use App\Lib\PluginManager;
 use Cake\Cache\Cache;
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\Utility\Inflector;
 use Exception;
@@ -20,6 +21,26 @@ use Laminas\Diactoros\UploadedFile;
  */
 class PluginsController extends AppController
 {
+    /**
+     * @inheritDoc
+     */
+    public function beforeFilter(EventInterface $event)
+    {
+        parent::beforeFilter($event);
+
+        $action = $this->request->getParam('action');
+
+        $this->addCrumb('Plugins', [
+            'prefix' => 'Admin',
+            'plugin' => null,
+            'controller' => 'Plugins',
+            'action' => 'index',
+        ]);
+        if (in_array($action, ['add', 'edit'])) {
+            $this->addCrumb($action);
+        }
+    }
+
     /**
      * Index method
      *

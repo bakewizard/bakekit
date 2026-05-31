@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Event;
 
 use Cake\Cache\Cache;
+use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\I18n\I18n;
@@ -21,6 +22,7 @@ class RegionChangeListener implements EventListenerInterface
         return [
             'Model.afterSave' => 'createCache',
             'Model.afterDelete' => 'createCache',
+            'Region.rebuild' => 'createCache',
         ];
     }
 
@@ -48,8 +50,11 @@ class RegionChangeListener implements EventListenerInterface
             $regions = $table;
         }
 
+        $theme = $event->getData('theme') ?? Configure::read('System.theme');
+
         $cache = $regions
             ->find()
+            ->where(['theme' => $theme])
             ->contain('Blocks', function (SelectQuery $q) {
                 return $q->find('translations')
                     ->where(['Blocks.enabled' => 1])

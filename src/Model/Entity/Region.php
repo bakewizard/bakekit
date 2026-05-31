@@ -11,6 +11,7 @@ use Cake\Utility\Text;
  *
  * @property int $id
  * @property string $alias
+ * @property string $theme
  * @property string|null $description
  *
  * @property array<\App\Model\Entity\Block> $blocks
@@ -22,6 +23,7 @@ class Region extends Entity
      */
     protected array $_accessible = [
         'alias' => true,
+        'theme' => true,
         'description' => true,
         'blocks' => true,
     ];

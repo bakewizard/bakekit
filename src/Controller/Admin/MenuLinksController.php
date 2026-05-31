@@ -29,6 +29,16 @@ class MenuLinksController extends AppController
     {
         parent::beforeFilter($event);
 
+        $action = $this->request->getParam('action');
+
+        if (in_array($action, ['add', 'edit'])) {
+            $this->addCrumb('Menus', [
+                'prefix' => 'Admin',
+                'plugin' => null,
+                'controller' => 'Menus',
+            ]);
+        }
+
         if (!$this->request->is('get')) {
             Cache::clear('menus');
         }
@@ -55,6 +65,16 @@ class MenuLinksController extends AppController
 
             $this->Flash->error(__('There were errors while adding menu link. Please, try again.'));
         }
+
+        $this->addCrumb('Links', [
+            'prefix' => 'Admin',
+            'plugin' => null,
+            'controller' => 'Menus',
+            'action' => 'view',
+            $id,
+        ]);
+        $this->addCrumb(__('Add'));
+
         $parentMenuLinks = $this->MenuLinks->ParentMenuLinks->find('treeList', spacer: '---', limit: 200)->where(['menu_id' => $id]);
         $targets = ['_self' => __('This tab'), '_blank' => __('New tab')];
         $this->set(compact('menuLink', 'targets', 'parentMenuLinks'));
@@ -81,6 +101,16 @@ class MenuLinksController extends AppController
 
             $this->Flash->error(__('The menu link could not be saved. Please, try again.'));
         }
+
+        $this->addCrumb('Links', [
+            'prefix' => 'Admin',
+            'plugin' => null,
+            'controller' => 'Menus',
+            'action' => 'view',
+            $menuLink->menu_id,
+        ]);
+        $this->addCrumb(__('Edit'));
+
         $parentMenuLinks = $this->MenuLinks->ParentMenuLinks->find('treeList', spacer: '---', limit: 200)->where(['menu_id' => $menuLink->menu_id]);
         $targets = ['_self' => __('This tab'), '_blank' => __('New tab')];
         $this->set(compact('menuLink', 'targets', 'parentMenuLinks'));

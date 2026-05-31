@@ -7,6 +7,8 @@ use App\Attribute\Resource;
 use App\Lib\ComposerManager;
 use App\Lib\ThemeManager;
 use Cake\Core\Configure;
+use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Exception;
 use Laminas\Diactoros\UploadedFile;
@@ -20,6 +22,26 @@ use Laminas\Diactoros\UploadedFile;
  */
 class ThemesController extends AppController
 {
+    /**
+     * @inheritDoc
+     */
+    public function beforeFilter(EventInterface $event)
+    {
+        parent::beforeFilter($event);
+
+        $action = $this->request->getParam('action');
+
+        $this->addCrumb('Themes', [
+            'prefix' => 'Admin',
+            'plugin' => null,
+            'controller' => 'Themes',
+            'action' => 'index',
+        ]);
+        if (in_array($action, ['view', 'blocks'])) {
+            $this->addCrumb($action);
+        }
+    }
+
     /**
      * Index method
      *
@@ -140,6 +162,29 @@ class ThemesController extends AppController
         Configure::write('theme', $name);
         Configure::dump('System', 'db', ['theme']);
 
+        if ($name) {
+            $regionsTable = $this->fetchTable('Regions');
+            $regionsTable->getEventManager()->dispatch(new Event('Region.rebuild', $regionsTable, ['theme' => $name]));
+        }
+
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Regions method
+     *
+     * @return \Cake\Http\Response|void
+     */
+    #[Resource(label: 'View theme blocks')]
+    public function blocks()
+    {
+        $activeTheme = $this->getConfig('System.theme');
+
+        $regions = $this->fetchTable('Regions')
+            ->findByTheme($activeTheme)
+            ->contain(['Blocks' => fn($q) => $q->orderByAsc('position')])
+            ->all();
+
+        $this->set(compact('regions', 'activeTheme'));
     }
 }
