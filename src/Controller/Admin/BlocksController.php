@@ -62,7 +62,7 @@ class BlocksController extends AppController
             if ($this->Blocks->save($block)) {
                 $this->Flash->success(__('The block has been saved.'));
 
-                return $this->redirect(['controller' => 'Regions', 'action' => 'view', $id]);
+                return $this->redirect(['controller' => 'Themes', 'action' => 'blocks']);
             }
 
             $this->Flash->error(__('The block could not be saved. Please, try again.'));
@@ -86,7 +86,7 @@ class BlocksController extends AppController
             if ($this->Blocks->save($block)) {
                 $this->Flash->success(__('The block has been saved.'));
 
-                return $this->redirect(['controller' => 'Regions', 'action' => 'view', $block->region_id]);
+                return $this->redirect(['controller' => 'Themes', 'action' => 'blocks']);
             }
             $this->Flash->error(__('The block could not be saved. Please, try again.'));
         }
@@ -113,7 +113,7 @@ class BlocksController extends AppController
             $this->Flash->error(__('The block could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['controller' => 'Regions', 'action' => 'view', $block->region_id]);
+        return $this->redirect(['controller' => 'Themes', 'action' => 'blocks']);
     }
 
     /**
@@ -136,7 +136,7 @@ class BlocksController extends AppController
             $this->Flash->error('The Block could not be moved up. Please, try again.');
         }
 
-        return $this->redirect(['controller' => 'Regions', 'action' => 'view', $block->region_id]);
+        return $this->redirect(['controller' => 'Themes', 'action' => 'blocks']);
     }
 
     /**
@@ -159,7 +159,7 @@ class BlocksController extends AppController
             $this->Flash->error('The Block could not be moved down. Please, try again.');
         }
 
-        return $this->redirect(['controller' => 'Regions', 'action' => 'view', $block->region_id]);
+        return $this->redirect(['controller' => 'Themes', 'action' => 'blocks']);
     }
 
     /**
@@ -182,7 +182,7 @@ class BlocksController extends AppController
                 if ($this->Blocks->save($block)) {
                     $this->Flash->success(__('Configuration saved'));
 
-                    return $this->redirect(['controller' => 'Regions', 'action' => 'view', $block->region_id]);
+                    return $this->redirect(['controller' => 'Themes', 'action' => 'blocks']);
                 }
                 $this->Flash->error(__('Configuration could not be saved. Please, try again.'));
             } else {

@@ -290,8 +290,22 @@ class ExtensionHandler
             RecursiveIteratorIterator::CHILD_FIRST,
         );
 
+        /** @var \SplFileInfo $item */
         foreach ($items as $item) {
-            $item->isDir() ? rmdir($item->getRealPath()) : unlink($item->getRealPath());
+            $realPath = $item->getRealPath();
+            if ($realPath === false) {
+                throw new Exception(__('Failed to resolve path for "{0}".', $item->getPathname()));
+            }
+
+            if ($item->isDir()) {
+                if (!rmdir($realPath)) {
+                    throw new Exception(__('Failed to remove directory "{0}".', $realPath));
+                }
+            } else {
+                if (!unlink($realPath)) {
+                    throw new Exception(__('Failed to remove file "{0}".', $realPath));
+                }
+            }
         }
 
         if (!rmdir($path)) {

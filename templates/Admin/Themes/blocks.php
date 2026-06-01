@@ -1,31 +1,24 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var array<\App\Model\Entity\Region>|\Cake\Collection\CollectionInterface<\App\Model\Entity\Region> $regions
+ * @var \Cake\Collection\CollectionInterface<\App\Model\Entity\Region>|array<\App\Model\Entity\Region> $regions
  * @var string $activeTheme
  */
 ?>
-<div class="card card-outline card-secondary mb-3">
+<div class="card card-outline card-primary mb-3">
     <div class="card-header">
         <div class="card-title">
-            <i class="fa-solid fa-palette me-2"></i>
+            <i class="fa-solid fa-images me-2"></i>
             <strong><?= h($activeTheme) ?></strong>
-        </div>
-        <div class="card-tools">
-            <?= $this->Html->link(
-                '<i class="fa-solid fa-arrow-left me-1"></i>' . __('Themes'),
-                ['action' => 'index'],
-                ['escape' => false, 'class' => 'btn btn-sm btn-outline-secondary'],
-            ) ?>
         </div>
     </div>
 </div>
 
 <?php foreach ($regions as $region) : ?>
-    <div class="card card-primary card-outline mb-3">
+    <div class="card card-success card-outline mb-3">
         <div class="card-header">
             <div class="card-title">
-                <i class="fa-solid fa-layer-group me-2"></i>
+                <i class="fa-solid fa-cubes me-2"></i>
                 <strong><?= h($region->alias) ?></strong>
                 <?php if ($region->description) : ?>
                     <small class="text-muted ms-2"><?= h($region->description) ?></small>

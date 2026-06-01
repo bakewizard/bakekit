@@ -169,7 +169,7 @@
                                     $this->Html->link(
                                         '<i class="fa-solid fa-arrow-left"></i> ' . __('Back'),
                                         $previousCrumb['url'],
-                                        ['class' => 'btn btn-outline-danger', 'escape' => false]
+                                        ['class' => 'btn btn-outline-danger', 'escape' => false],
                                     )
                                     ?>
                                 <?php endif; ?>

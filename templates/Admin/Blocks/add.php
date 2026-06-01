@@ -27,18 +27,19 @@
                 'title' => __('Select Cell'),
                 'data-url' => $this->Url->build(['controller' => 'Blocks', 'action' => 'getCells']),
             ]),
-            'readonly' => true]);
+            'readonly' => true,
+        ]);
         ?>
         <?= $this->Form->control('template'); ?>
         <?= $this->Form->control('enabled', ['switch' => true]); ?>
     </div>
     <div class="card-footer">
         <?= $this->element('form/save_buttons') ?>
-        <?php if (isset($block->region_id)) : ?>
-            <?= $this->Html->link('<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'), ['controller' => 'Regions', 'action' => 'view', $block->region_id, '?' => $this->request->getQueryParams()], ['class' => 'btn btn-outline-danger', 'escape' => false]) ?>
-        <?php else : ?>
-            <?= $this->Html->link('<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'), $this->request->referer(), ['class' => 'btn btn-outline-danger', 'escape' => false]) ?>
-        <?php endif; ?>
+        <?= $this->Html->link('<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'), [
+            'controller' => 'Themes',
+            'action' => 'blocks',
+            '?' => $this->request->getQueryParams(),
+        ], ['class' => 'btn btn-outline-danger', 'escape' => false]) ?>
     </div>
     <?= $this->Form->end() ?>
 </div>
