@@ -215,13 +215,14 @@ class PermissionsTable extends Table
             $perms = [];
 
             $resources = $this->Resources->find()
-                ->orderByAsc('lft')
-                ->enableHydration(false)
-                ->all()
-                ->toList();
+            ->orderByAsc('lft')
+            ->enableHydration(false)
+            ->all()
+            ->toList();
+            /** @var list<array{id: int, parent_id: int|null, alias: string, label: string}> $resources */
 
             $path = $this->Roles->find('path', for: $role)
-                ->contain('Resources')
+            ->contain('Resources')
                 ->formatResults(function (CollectionInterface $results) {
                     return $results->map(function ($row) {
                         if (!empty($row['resources'])) {
@@ -235,6 +236,7 @@ class PermissionsTable extends Table
                 })
                 ->enableHydration(false)
                 ->toArray();
+            /** @var list<array{id: int, resources: array<int, array{id: int, _joinData: array{allowed: bool}}>}> $path */
 
             // array_reverse so index 0 = current role, 1 = parent, 2 = grandparent, ...
             $roles = array_reverse($path);

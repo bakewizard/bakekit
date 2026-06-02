@@ -85,7 +85,7 @@ class AppController extends Controller
         $this->setLocale();
 
         $this->addCrumb(
-            '<i class="fa-solid fa-tachometer-alt"></i>',
+            '<i class="fa-solid fa-tachometer-alt"></i> Dashboard',
             [
                 'prefix' => 'Admin',
                 'plugin' => null,

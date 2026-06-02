@@ -163,12 +163,15 @@
                         <div class="col-sm-6">
                             <h3 class="mb-0">
                                 <span class="me-2"><?= $this->fetch('page') ?: preg_replace('/([A-Z])/', ' ' . '$1', $controller) ?></span>
-                                <?php $previousCrumb = $breadcrumbs[count($breadcrumbs) - 2] ?? null; ?>
-                                <?php if ($previousCrumb) : ?>
+                                <?php
+                                $previousCrumb = $breadcrumbs[count($breadcrumbs) - 2] ?? null;
+                                $backUrl = $previousCrumb['url'] ?? null;
+                                ?>
+                                <?php if ($backUrl) : ?>
                                     <?=
                                     $this->Html->link(
                                         '<i class="fa-solid fa-arrow-left"></i> ' . __('Back'),
-                                        $previousCrumb['url'],
+                                        $backUrl,
                                         ['class' => 'btn btn-outline-danger', 'escape' => false],
                                     )
                                     ?>

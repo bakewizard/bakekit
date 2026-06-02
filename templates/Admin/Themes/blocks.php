@@ -5,6 +5,7 @@
  * @var string $activeTheme
  */
 ?>
+<?php $this->assign('page', 'Blocks'); ?>
 <div class="card card-outline card-primary mb-3">
     <div class="card-header">
         <div class="card-title">
