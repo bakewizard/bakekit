@@ -12,7 +12,7 @@
         <link rel="prev" href="../plugins/">
       
       
-        <link rel="next" href="../regions-blocks/">
+        <link rel="next" href="../menus/">
       
       
       <link rel="icon" href="../images/favicon.ico">
@@ -421,6 +421,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Themes
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -431,26 +442,134 @@
 
       </a>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../regions-blocks/" class="md-nav__link">
         
-  
-  <span class="md-ellipsis">
-    Regions & Blocks
-  </span>
-  
 
-      </a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installing-a-theme" class="md-nav__link">
+    📦 Installing a Theme
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#activating-a-theme" class="md-nav__link">
+    ✅ Activating a Theme
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstalling-a-theme" class="md-nav__link">
+    🗑️ Uninstalling a Theme
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-theme" class="md-nav__link">
+    🏗️ Creating a Theme
+  </a>
+  
+    <nav class="md-nav" aria-label="🏗️ Creating a Theme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#composerjson" class="md-nav__link">
+    composer.json
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configregionsphp" class="md-nav__link">
+    config/regions.php
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regions-blocks" class="md-nav__link">
+    🧩 Regions &amp; Blocks
+  </a>
+  
+    <nav class="md-nav" aria-label="🧩 Regions & Blocks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defining-regions-in-templates" class="md-nav__link">
+    Defining Regions in Templates
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-a-block" class="md-nav__link">
+    Adding a Block
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#block-settings" class="md-nav__link">
+    🔧 Block Settings
+  </a>
+  
+    <nav class="md-nav" aria-label="🔧 Block Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-settings-form" class="md-nav__link">
+    1. Settings Form
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-settings-template" class="md-nav__link">
+    2. Settings Template
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learn-more" class="md-nav__link">
+    📚 Learn More
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -522,21 +641,174 @@
 
 
 <h1 id="themes">🎨 Themes<a class="headerlink" href="#themes" title="Permanent link">&para;</a></h1>
-<p>Themes are handled similarly:</p>
+<p>Themes control the look and feel of your BakeKit frontend. They package templates, assets, and region definitions together in one place.</p>
+<hr />
+<h2 id="installing-a-theme">📦 Installing a Theme<a class="headerlink" href="#installing-a-theme" title="Permanent link">&para;</a></h2>
+<p>Themes are distributed as <strong>ZIP archives</strong> and installed through the Admin Panel.</p>
+<ol>
+<li>Go to: <code>SITE MANAGEMENT</code> → <strong>Themes</strong></li>
+<li>Click <strong>Upload Theme</strong> and select a <code>.zip</code> file.</li>
+<li>BakeKit extracts the archive into the <code>themes/</code> directory.</li>
+<li>Regions defined in the theme's <code>config/regions.php</code> are <strong>automatically created</strong> in the database.</li>
+<li>Click <strong>Activate</strong> to make the theme live.</li>
+</ol>
+<hr />
+<h2 id="activating-a-theme">✅ Activating a Theme<a class="headerlink" href="#activating-a-theme" title="Permanent link">&para;</a></h2>
+<p>Click <strong>Activate</strong> next to any installed theme. BakeKit will:</p>
+<ol>
+<li>Save the theme name to the <code>System</code> configuration (persisted to the database).</li>
+<li>Dispatch a <code>Region.rebuild</code> event to keep regions in sync with the active theme.</li>
+</ol>
+<hr />
+<h2 id="uninstalling-a-theme">🗑️ Uninstalling a Theme<a class="headerlink" href="#uninstalling-a-theme" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Deactivate</strong> the theme first.</li>
+<li>Click <strong>Uninstall</strong> next to the theme.</li>
+</ol>
+<blockquote>
+<p>⚠️ You cannot uninstall the currently active theme. Deactivate it first.</p>
+</blockquote>
+<p>When a theme is uninstalled, all <strong>regions and blocks belonging to that theme</strong> are automatically removed from the database.</p>
+<hr />
+<h2 id="creating-a-theme">🏗️ Creating a Theme<a class="headerlink" href="#creating-a-theme" title="Permanent link">&para;</a></h2>
+<p>A minimal theme has this structure:</p>
+<div class="highlight"><pre><span></span><code>themes/
+└── MyTheme/
+    ├── composer.json          ← theme metadata
+    ├── config/
+    │   └── regions.php        ← region definitions (optional)
+    └── templates/
+        └── layout/
+            └── default.php    ← main layout template
+</code></pre></div>
+<h3 id="composerjson">composer.json<a class="headerlink" href="#composerjson" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vendor/customtheme&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;My custom BakeKit theme&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;license&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MIT&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cakephp-plugin&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;keywords&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;cakephp&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;theme&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;bakekit&quot;</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;require&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;php&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&gt;=8.3&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;cakephp/cakephp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.3.*&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;bakewizard/bakekit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^2.0&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;autoload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;psr-4&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;CustomTheme\\&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="configregionsphp">config/regions.php<a class="headerlink" href="#configregionsphp" title="Permanent link">&para;</a></h3>
+<p>Declares the regions your theme provides. Must return a plain PHP array where keys are <strong>aliases</strong> and values are <strong>descriptions</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="k">return</span> <span class="p">[</span>
+    <span class="s1">&#39;header&#39;</span>  <span class="o">=&gt;</span> <span class="s1">&#39;Top of the page header area&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sidebar&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Right-hand sidebar&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;footer&#39;</span>  <span class="o">=&gt;</span> <span class="s1">&#39;Bottom footer area&#39;</span><span class="p">,</span>
+<span class="p">];</span>
+</code></pre></div>
+<p>When a theme is installed via ZIP, these regions are automatically inserted into the database. When the theme is uninstalled, they are automatically deleted.</p>
+<hr />
+<h2 id="regions-blocks">🧩 Regions &amp; Blocks<a class="headerlink" href="#regions-blocks" title="Permanent link">&para;</a></h2>
+<p>Regions are placeholders inside your templates where dynamic content appears. Blocks are the actual content assigned to those placeholders.</p>
+<h3 id="defining-regions-in-templates">Defining Regions in Templates<a class="headerlink" href="#defining-regions-in-templates" title="Permanent link">&para;</a></h3>
+<p>Add a region placeholder anywhere in your layout:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">region</span><span class="p">(</span><span class="s1">&#39;header&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
+</code></pre></div>
+<p>The alias must exactly match the key defined in <code>config/regions.php</code>. The placeholder renders nothing until at least one block is assigned to the region.</p>
+<h3 id="adding-a-block">Adding a Block<a class="headerlink" href="#adding-a-block" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Go to: <code>SITE MANAGEMENT</code> → <strong>Themes</strong></li>
+<li>Click <strong>Blocks</strong> button in the active theme row.</li>
+<li>Click <strong>➕</strong> in the corresponding region to add a new block.</li>
+<li>
+<p>Fill in the following fields:</p>
 <ul>
-<li>Upload ZIPs containing themes or manually copy folders to the <code>themes/</code> directory.</li>
-<li>Activate the theme in <code>Site Management → Themes</code>.</li>
+<li><strong>Alias</strong> — unique internal identifier.</li>
+<li><strong>Title</strong> — optional heading shown on the frontend.</li>
+<li><strong>Description</strong> — admin-only notes.</li>
+<li><strong>Cell</strong> — click <code>...</code> to pick a CakePHP cell from any installed plugin.</li>
+<li><strong>Enabled</strong> — check to make the block visible.</li>
 </ul>
-<p>Themes support <strong>regions</strong>:</p>
+</li>
+</ol>
+<blockquote>
+<p>💡 Leave the <strong>Cell</strong> field empty and fill in the <strong>Content</strong> field to create a plain HTML/text block.</p>
+<p>💡 Leave the template field blank to use the cell's default template automatically (e.g. <code>recent.php</code> for a <code>recent</code> action).</p>
+<p>🔧 Cells appear in the cell picker only when their methods carry the <code>#[Link]</code> attribute. See <a href="../plugins/#cell-widgets">Plugins</a> for details.</p>
+</blockquote>
+<hr />
+<h2 id="block-settings">🔧 Block Settings<a class="headerlink" href="#block-settings" title="Permanent link">&para;</a></h2>
+<p>If a cell supports configurable settings, a <strong>⚙️</strong> button appears in the block list. Clicking it opens a settings form specific to that cell.</p>
+<p>To add settings support to a cell, create two files:</p>
+<h3 id="1-settings-form">1. Settings Form<a class="headerlink" href="#1-settings-form" title="Permanent link">&para;</a></h3>
+<p><code>plugins/YourPlugin/src/Form/Cell/ArticleCellConfigForm.php</code></p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="k">namespace</span> <span class="nx">Blogger\Form\Cell</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Cake\Form\Form</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Cake\Form\Schema</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Cake\Validation\Validator</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ArticleCellConfigForm</span> <span class="k">extends</span> <span class="nx">Form</span>
+<span class="p">{</span>
+    <span class="p">#[</span><span class="nd">\Override</span><span class="p">]</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">_buildSchema</span><span class="p">(</span><span class="nx">Schema</span> <span class="nv">$schema</span><span class="p">)</span><span class="o">:</span> <span class="nx">Schema</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$schema</span><span class="o">-&gt;</span><span class="na">addField</span><span class="p">(</span><span class="s1">&#39;numberOfArticlesToShow&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">]);</span>
+    <span class="p">}</span>
+
+    <span class="p">#[</span><span class="nd">\Override</span><span class="p">]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">validationDefault</span><span class="p">(</span><span class="nx">Validator</span> <span class="nv">$validator</span><span class="p">)</span><span class="o">:</span> <span class="nx">Validator</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$validator</span>
+            <span class="o">-&gt;</span><span class="na">nonNegativeInteger</span><span class="p">(</span><span class="s1">&#39;numberOfArticlesToShow&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">requirePresence</span><span class="p">(</span><span class="s1">&#39;numberOfArticlesToShow&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="2-settings-template">2. Settings Template<a class="headerlink" href="#2-settings-template" title="Permanent link">&para;</a></h3>
+<p><code>plugins/YourPlugin/templates/Admin/CellConfig/Article/recent.php</code></p>
+<div class="highlight"><pre><span></span><code><span class="x">&lt;div class=&quot;card card-success card-outline&quot;&gt;</span>
+<span class="x">    &lt;div class=&quot;card-header&quot;&gt;</span>
+<span class="x">        &lt;div class=&quot;card-title&quot;&gt;</span>
+<span class="x">            &lt;i class=&quot;fa-solid fa-edit me-2&quot;&gt;&lt;/i&gt;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nx">__</span><span class="p">(</span><span class="s1">&#39;Article cell&#39;</span><span class="p">)</span> <span class="cp">?&gt;</span>
+<span class="x">        &lt;/div&gt;</span>
+<span class="x">    &lt;/div&gt;</span>
+<span class="x">    </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Form</span><span class="o">-&gt;</span><span class="na">create</span><span class="p">(</span><span class="nv">$settings</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;align&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;horizontal&#39;</span><span class="p">])</span> <span class="cp">?&gt;</span>
+<span class="x">    &lt;div class=&quot;card-body&quot;&gt;</span>
+<span class="x">        </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Form</span><span class="o">-&gt;</span><span class="na">control</span><span class="p">(</span><span class="s1">&#39;numberOfArticlesToShow&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
+<span class="x">    &lt;/div&gt;</span>
+<span class="x">    &lt;div class=&quot;card-footer&quot;&gt;</span>
+<span class="x">        </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Form</span><span class="o">-&gt;</span><span class="na">button</span><span class="p">(</span>
+            <span class="s1">&#39;&lt;i class=&quot;fa-solid fa-save&quot;&gt;&lt;/i&gt; &#39;</span> <span class="o">.</span> <span class="nx">__</span><span class="p">(</span><span class="s1">&#39;Save&#39;</span><span class="p">),</span>
+            <span class="p">[</span><span class="s1">&#39;class&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;btn-success float-end&#39;</span><span class="p">,</span> <span class="s1">&#39;escapeTitle&#39;</span> <span class="o">=&gt;</span> <span class="k">false</span><span class="p">]</span>
+        <span class="p">)</span> <span class="cp">?&gt;</span>
+<span class="x">        </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Html</span><span class="o">-&gt;</span><span class="na">link</span><span class="p">(</span>
+            <span class="s1">&#39;&lt;i class=&quot;fa-solid fa-times-circle&quot;&gt;&lt;/i&gt; &#39;</span> <span class="o">.</span> <span class="nx">__</span><span class="p">(</span><span class="s1">&#39;Cancel&#39;</span><span class="p">),</span>
+            <span class="p">[</span><span class="s1">&#39;controller&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Regions&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span> <span class="nv">$block</span><span class="o">-&gt;</span><span class="na">region_id</span><span class="p">],</span>
+            <span class="p">[</span><span class="s1">&#39;class&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;btn btn-outline-danger&#39;</span><span class="p">,</span> <span class="s1">&#39;escape&#39;</span> <span class="o">=&gt;</span> <span class="k">false</span><span class="p">]</span>
+        <span class="p">)</span> <span class="cp">?&gt;</span>
+<span class="x">    &lt;/div&gt;</span>
+<span class="x">    </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Form</span><span class="o">-&gt;</span><span class="na">end</span><span class="p">()</span> <span class="cp">?&gt;</span>
+<span class="x">&lt;/div&gt;</span>
+</code></pre></div>
+<hr />
+<h2 id="learn-more">📚 Learn More<a class="headerlink" href="#learn-more" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Regions are placeholders inside template files, defined using:
-  <div class="highlight"><pre><span></span><code><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">region</span><span class="p">(</span><span class="s1">&#39;region-name&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
-</code></pre></div></li>
-<li>Regions only output content if they are created and populated in the Admin Panel under "Site Management → Regions &amp; Blocks".</li>
-<li>Blocks are content containers that are assigned to regions</li>
-<li>A block can either render a block content (CakePHP cell) or static text</li>
+<li><a href="../plugins/">Plugins</a> — extend BakeKit with installable plugins</li>
+<li><a href="https://book.cakephp.org/5/en/views/themes.html">CakePHP 5 Themes</a></li>
+<li><a href="https://book.cakephp.org/5/en/views/cells.html">CakePHP 5 Cells</a></li>
+<li><a href="https://book.cakephp.org/5/en/core-libraries/form.html">CakePHP 5 Forms</a></li>
 </ul>
-<p>This makes layout customization flexible and theme development modular.</p>
 
 
 

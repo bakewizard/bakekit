@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../regions-blocks/">
+        <link rel="prev" href="../themes/">
       
       
         <link rel="next" href="../access-control/">
@@ -430,26 +430,6 @@
                 
   
   
-  
-    <li class="md-nav__item">
-      <a href="../regions-blocks/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Regions & Blocks
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -609,9 +589,8 @@
 <h2 id="rendering-menus-in-theme">🧱 Rendering Menus in Theme<a class="headerlink" href="#rendering-menus-in-theme" title="Permanent link">&para;</a></h2>
 <p>To display a menu, you must:</p>
 <ol>
-<li>Create a region in <a href="https://github.com/bakewizard/bakekit/blob/develop/docs/regions-blocks.md"><strong>Regions &amp; Blocks</strong></a> with <strong>Alias</strong> that matches the placeholder in your theme (<code>custom-menu</code>)</li>
-<li>Add a block with a <code>Menu cell</code> to that region</li>
-<li>Select the created menu in Block Settings (e.g. <code>Main Navigation</code>)</li>
+<li>Add a block in a region with <code>Menu cell</code>.</li>
+<li>Select the created menu in Block Settings (e.g. <code>Main Navigation</code>).</li>
 </ol>
 <p>In your theme layout, use:</p>
 <div class="highlight"><pre><span></span><code><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">region</span><span class="p">(</span><span class="s1">&#39;custom-menu&#39;</span><span class="p">);</span> <span class="cp">?&gt;</span>
