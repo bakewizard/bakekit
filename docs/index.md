@@ -23,6 +23,5 @@ Here’s a quick overview to help you get started:
 - **[Quick Start](quick-start.md)** — Learn the basics in minutes
 - **[Plugins](plugins.md)** — Extend functionality with ZIP-powered plugins
 - **[Themes](themes.md)** — Customize the frontend look and feel
-- **[Regions & Blocks](regions-blocks.md)** — Control dynamic content placement in your themes
 - **[Menus](menus.md)** - Build and manage site navigation with ease
 - **[Access control](access-control.md)** - Manage users, roles, and permissions easily

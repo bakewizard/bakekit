@@ -27,9 +27,8 @@ Click **Activate** next to any installed theme. BakeKit will:
 
 ## 🗑️ Uninstalling a Theme
 
-1. **Deactivate** the theme first by activating a different one.
-2. Go to: `SITE MANAGEMENT` → **Themes**
-3. Click **Uninstall** next to the theme.
+1. **Deactivate** the theme first.
+2. Click **Uninstall** next to the theme.
 
 > ⚠️ You cannot uninstall the currently active theme. Deactivate it first.
 
@@ -116,11 +115,11 @@ The alias must exactly match the key defined in `config/regions.php`. The placeh
 3. Click **➕** in the corresponding region to add a new block.
 4. Fill in the following fields:
 
-- **Alias** — unique internal identifier.
-- **Title** — optional heading shown on the frontend.
-- **Description** — admin-only notes.
-- **Cell** — click `...` to pick a CakePHP cell from any installed plugin.
-- **Enabled** — check to make the block visible.
+    - **Alias** — unique internal identifier.
+    - **Title** — optional heading shown on the frontend.
+    - **Description** — admin-only notes.
+    - **Cell** — click `...` to pick a CakePHP cell from any installed plugin.
+    - **Enabled** — check to make the block visible.
 
 > 💡 Leave the **Cell** field empty and fill in the **Content** field to create a plain HTML/text block.
 

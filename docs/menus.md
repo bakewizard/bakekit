@@ -39,9 +39,8 @@ Your new menu will now appear in the Menus list.
 
 To display a menu, you must:
 
-1. Create a region in [**Regions & Blocks**](https://github.com/bakewizard/bakekit/blob/develop/docs/regions-blocks.md) with **Alias** that matches the placeholder in your theme (`custom-menu`)
-2. Add a block with a `Menu cell` to that region
-3. Select the created menu in Block Settings (e.g. `Main Navigation`)
+1. Add a block in a region with `Menu cell`.
+2. Select the created menu in Block Settings (e.g. `Main Navigation`).
 
 In your theme layout, use:
 

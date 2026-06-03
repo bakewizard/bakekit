@@ -41,12 +41,12 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th><?= __('Alias') ?></th>
-                                <th><?= __('Title') ?></th>
-                                <th><?= __('Cell') ?></th>
-                                <th><?= __('Enabled') ?></th>
-                                <th></th>
-                                <th class="actions text-center"><?= __('Actions') ?></th>
+                                <th class="col-2"><?= __('Alias') ?></th>
+                                <th class="col-3"><?= __('Title') ?></th>
+                                <th class="col-2"><?= __('Cell') ?></th>
+                                <th class="col-1"><?= __('Enabled') ?></th>
+                                <th class="col-2"></th>
+                                <th class="actions text-center col-2"><?= __('Actions') ?></th>
                             </tr>
                         </thead>
                         <tbody>

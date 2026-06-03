@@ -19,7 +19,7 @@ There are two predefined menus:
 
 To begin configuring your site, click the ⚙️ **cogs icon** in the top-right corner of the dashboard to access the **Site Management Panel**, where you can:
 
-- Manage Plugins, Themes, Regions, Menus, Roles, Users, Meta, and Settings
+- Manage Plugins, Themes, Menus, Roles, Users, Meta, and Settings
 
 ![Site management](images/management.png "Site management")
 
@@ -68,8 +68,6 @@ To install and activate a new theme:
 1. Go to the **Themes** page.
 2. Click **Browse** and select the theme `.zip` file.
 3. Click **Install**, then **Activate**.
-
-> 💡 Alternatively, unzip a theme manually into the /themes directory. It will appear in the theme list for activation.
 
 ---
 

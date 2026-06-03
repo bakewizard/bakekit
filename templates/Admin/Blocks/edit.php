@@ -49,7 +49,7 @@
         <?= $this->element('form/save_buttons') ?>
         <?= $this->Html->link(
             '<i class="fa-solid fa-times-circle"></i> ' . __('Cancel'),
-            ['controller' => 'Regions', 'action' => 'view', $block->region_id, '?' => $this->request->getQueryParams()],
+            ['controller' => 'Themes', 'action' => 'blocks'],
             ['class' => 'btn btn-outline-danger', 'escape' => false],
         ) ?>
     </div>
