@@ -11,7 +11,6 @@ Menus in **BakeKit** allow you to create navigational structures for both the ba
 3. Fill in:
    * **Name**: Display name for admins (e.g. `Main Navigation`)
    * **Description**: Optional helper for admins
-   * **Client**: Choose `Frontend` or `Backend`
    * **Enabled**: ✅ Checked to activate
 4. Click **Save & Close**
 

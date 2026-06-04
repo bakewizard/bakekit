@@ -30,7 +30,7 @@ class SettingsFixture extends TestFixture
                 'id' => 2,
                 'namespace' => 'System',
                 'path' => 'theme',
-                'value' => null,
+                'value' => 'DefaultTheme',
                 'created' => '2025-05-12 08:22:12',
                 'modified' => '2025-05-12 08:22:12',
             ],

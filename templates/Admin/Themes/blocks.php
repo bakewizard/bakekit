@@ -41,27 +41,16 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th class="col-2"><?= __('Alias') ?></th>
-                                <th class="col-3"><?= __('Title') ?></th>
-                                <th class="col-2"><?= __('Cell') ?></th>
+                                <th class="col-1"></th>
+                                <th class="col-4"><?= __('Title') ?></th>
+                                <th class="col-4"><?= __('Cell') ?></th>
                                 <th class="col-1"><?= __('Enabled') ?></th>
-                                <th class="col-2"></th>
                                 <th class="actions text-center col-2"><?= __('Actions') ?></th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($region->blocks as $block) : ?>
                                 <tr>
-                                    <td><?= h($block->alias) ?></td>
-                                    <td><?= h($block->title) ?></td>
-                                    <td class="text-center">
-                                        <strong><?= $block->cell ?? '-----Text content-----' ?></strong>
-                                    </td>
-                                    <td class="text-center">
-                                        <?= $block->enabled
-                                            ? '<i class="fa-solid fa-check text-success fa-lg"></i>'
-                                            : '<i class="fa-solid fa-xmark text-danger fa-lg"></i>' ?>
-                                    </td>
                                     <td class="text-center">
                                         <?= $this->Form->postLink(
                                             '<i class="fa-solid fa-arrow-down"></i>',
@@ -73,6 +62,17 @@
                                             ['controller' => 'Blocks', 'action' => 'moveUp', $block->id],
                                             ['escape' => false, 'class' => 'btn btn-outline-secondary'],
                                         ) ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <strong><?= $block->title ?? '-----No title-----' ?></strong>
+                                    </td>
+                                    <td class="text-center">
+                                        <strong><?= $block->cell ?? '-----Text content-----' ?></strong>
+                                    </td>
+                                    <td class="text-center">
+                                        <?= $block->enabled
+                                            ? '<i class="fa-solid fa-check text-success fa-lg"></i>'
+                                            : '<i class="fa-solid fa-xmark text-danger fa-lg"></i>' ?>
                                     </td>
                                     <td class="actions text-center">
                                         <?php if ($block->hasValue('cell') && $block->hasConfig()) : ?>

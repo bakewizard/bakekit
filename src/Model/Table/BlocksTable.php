@@ -81,13 +81,6 @@ class BlocksTable extends Table
                 ->allowEmptyString('id', null, 'create');
 
         $validator
-                ->scalar('alias')
-                ->maxLength('alias', 255)
-                ->requirePresence('alias', 'create')
-                ->notEmptyString('alias')
-                ->add('alias', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
-
-        $validator
                 ->scalar('title')
                 ->maxLength('title', 255)
                 ->allowEmptyString('title');
@@ -143,7 +136,6 @@ class BlocksTable extends Table
     #[Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->isUnique(['alias']));
         $rules->add($rules->existsIn(['region_id'], 'Regions'));
 
         return $rules;

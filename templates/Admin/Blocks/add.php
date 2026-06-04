@@ -14,7 +14,6 @@
     </div>
     <?= $this->Form->create($block, ['align' => 'horizontal']) ?>
     <div class="card-body">
-        <?= $this->Form->control('alias'); ?>
         <?= $this->Form->control('title'); ?>
         <?= $this->Form->control('description'); ?>
         <?= $this->Form->control('region_id', ['type' => 'hidden']); ?>

@@ -6,13 +6,11 @@ namespace App\Model\Entity;
 use Cake\Core\App;
 use Cake\ORM\Behavior\Translate\TranslateTrait;
 use Cake\ORM\Entity;
-use Cake\Utility\Text;
 
 /**
  * Block Entity
  *
  * @property int $id
- * @property string $alias
  * @property string|null $title
  * @property string|null $description
  * @property int $region_id
@@ -37,7 +35,6 @@ class Block extends Entity
      * @inheritDoc
      */
     protected array $_accessible = [
-        'alias' => true,
         'title' => true,
         'description' => true,
         'region_id' => true,
@@ -62,18 +59,6 @@ class Block extends Entity
         $class = App::classname($this->_getCellFullName() . 'CellConfig', 'Form/Cell', 'Form');
 
         return is_null($class) ? false : true;
-    }
-
-    /**
-     * Sets the alias, converting it to lowercase and creating a slug.
-     *
-     * @param string $alias The alias to set.
-     * @return string The processed alias.
-     * @see \App\Model\Entity\Block::$alias
-     */
-    protected function _setAlias(string $alias): string
-    {
-        return strtolower(Text::slug($alias));
     }
 
     /**

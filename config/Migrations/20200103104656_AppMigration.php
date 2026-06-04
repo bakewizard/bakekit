@@ -317,11 +317,6 @@ class AppMigration extends BaseMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('alias', 'string', [
-                'default' => null,
-                'limit' => 255,
-                'null' => false,
-            ])
             ->addColumn('title', 'string', [
                 'default' => null,
                 'limit' => 255,
@@ -367,7 +362,6 @@ class AppMigration extends BaseMigration
             ])
             ->addPrimaryKey('id')
             ->addForeignKey('region_id', 'regions', 'id', ['update' => 'CASCADE', 'delete' => 'CASCADE'])
-            ->addIndex('alias', ['unique' => true])
             ->addIndex('region_id')
             ->create();
 

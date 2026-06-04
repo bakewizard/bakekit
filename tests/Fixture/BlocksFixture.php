@@ -20,7 +20,6 @@ class BlocksFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'alias' => 'header-main-menu',
                 'title' => null,
                 'description' => 'Header main menu',
                 'region_id' => 3,
@@ -34,7 +33,6 @@ class BlocksFixture extends TestFixture
             ],
             [
                 'id' => 2,
-                'alias' => 'footer-text',
                 'title' => 'Footer Text',
                 'description' => 'Copyright text',
                 'region_id' => 4,

@@ -40,7 +40,7 @@
                         ),
                     ]);
                     ?>
-                    <?php if (!empty($user->files)): ?>
+                    <?php if (!empty($user->files)) : ?>
                         <?= $this->Form->hidden('files.0.id', [
                             'value' => $user->files[0]->id,
                             'id' => 'hidden-input',

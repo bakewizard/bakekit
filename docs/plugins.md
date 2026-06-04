@@ -37,7 +37,7 @@ Each plugin **must** contain a valid `composer.json`, for example:
     "require": {
         "php": ">=8.3",
         "cakephp/cakephp": "5.3.*",
-        "bakewizard/bakekit": "^1.0"
+        "bakewizard/bakekit": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.5.3 || ^12.1.3 || ^13.0"
