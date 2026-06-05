@@ -59,7 +59,7 @@ class DashboardController extends AppController
             $plugins[$plugin] = $plugin;
         }
 
-        $this->addCrumb('Settings');
+        $this->addBreadcrumb('Settings');
 
         $this->set(compact('plugins'));
     }

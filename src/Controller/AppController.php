@@ -40,7 +40,7 @@ class AppController extends Controller
      *
      * @var array<array<string, mixed>>
      */
-    private array $_breadcrumbs = [];
+    private array $breadcrumbs = [];
 
     /**
      * @inheritDoc
@@ -78,7 +78,7 @@ class AppController extends Controller
     {
         $this->viewBuilder()->setTheme($this->getConfig('System.theme'));
 
-        $this->set('breadcrumbs', $this->_breadcrumbs);
+        $this->set('breadcrumbs', $this->breadcrumbs);
     }
 
     /**
@@ -115,9 +115,9 @@ class AppController extends Controller
      * @param array<mixed, mixed>|string|null $url The URL of the breadcrumb. If null, it will not be a link.
      * @return void
      */
-    protected function addCrumb(string $title, array|string|null $url = null): void
+    protected function addBreadcrumb(string $title, array|string|null $url = null): void
     {
-        $this->_breadcrumbs[] = ['title' => $title, 'url' => Router::url($url, true)];
+        $this->breadcrumbs[] = ['title' => $title, 'url' => Router::url($url, true)];
     }
 
     /**

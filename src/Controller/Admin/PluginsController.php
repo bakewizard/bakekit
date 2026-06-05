@@ -30,14 +30,14 @@ class PluginsController extends AppController
 
         $action = $this->request->getParam('action');
 
-        $this->addCrumb('Plugins', [
+        $this->addBreadcrumb('Plugins', [
             'prefix' => 'Admin',
             'plugin' => null,
             'controller' => 'Plugins',
             'action' => 'index',
         ]);
         if (in_array($action, ['add', 'edit'])) {
-            $this->addCrumb($action);
+            $this->addBreadcrumb($action);
         }
     }
 

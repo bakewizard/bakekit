@@ -29,14 +29,14 @@ class MenusController extends AppController
 
         $action = $this->request->getParam('action');
 
-        $this->addCrumb('Menus', [
+        $this->addBreadcrumb('Menus', [
             'prefix' => 'Admin',
             'plugin' => null,
             'controller' => 'Menus',
             'action' => 'index',
         ]);
         if (in_array($action, ['add', 'edit', 'view'])) {
-            $this->addCrumb($action);
+            $this->addBreadcrumb($action);
         }
 
         if (!$this->request->is('get') && $this->request->getParam('action') !== 'add') {

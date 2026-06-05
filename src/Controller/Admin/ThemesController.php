@@ -31,14 +31,14 @@ class ThemesController extends AppController
 
         $action = $this->request->getParam('action');
 
-        $this->addCrumb('Themes', [
+        $this->addBreadcrumb('Themes', [
             'prefix' => 'Admin',
             'plugin' => null,
             'controller' => 'Themes',
             'action' => 'index',
         ]);
         if (in_array($action, ['view', 'blocks'])) {
-            $this->addCrumb($action);
+            $this->addBreadcrumb($action);
         }
     }
 

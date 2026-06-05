@@ -26,14 +26,14 @@ class UsersController extends AppController
 
         $action = $this->request->getParam('action');
 
-        $this->addCrumb('Users', [
+        $this->addBreadcrumb('Users', [
             'prefix' => 'Admin',
             'plugin' => null,
             'controller' => 'Users',
             'action' => 'index',
         ]);
         if (in_array($action, ['add', 'edit'])) {
-            $this->addCrumb($action);
+            $this->addBreadcrumb($action);
         }
 
         $request = $this->getRequest();

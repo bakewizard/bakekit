@@ -84,7 +84,7 @@ class AppController extends Controller
     {
         $this->setLocale();
 
-        $this->addCrumb(
+        $this->addBreadcrumb(
             '<i class="fa-solid fa-tachometer-alt"></i> Dashboard',
             [
                 'prefix' => 'Admin',
@@ -222,7 +222,7 @@ class AppController extends Controller
      * @param array<mixed, mixed>|string|null $url The URL of the breadcrumb. If null, it will not be a link.
      * @return void
      */
-    protected function addCrumb(string $title, string|array|null $url = null)
+    protected function addBreadcrumb(string $title, string|array|null $url = null)
     {
         //Router::url($url, true)
         $this->breadcrumbs[] = ['title' => $title, 'url' => $url];

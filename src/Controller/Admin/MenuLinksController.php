@@ -32,7 +32,7 @@ class MenuLinksController extends AppController
         $action = $this->request->getParam('action');
 
         if (in_array($action, ['add', 'edit'])) {
-            $this->addCrumb('Menus', [
+            $this->addBreadcrumb('Menus', [
                 'prefix' => 'Admin',
                 'plugin' => null,
                 'controller' => 'Menus',
@@ -66,14 +66,14 @@ class MenuLinksController extends AppController
             $this->Flash->error(__('There were errors while adding menu link. Please, try again.'));
         }
 
-        $this->addCrumb('Links', [
+        $this->addBreadcrumb('Links', [
             'prefix' => 'Admin',
             'plugin' => null,
             'controller' => 'Menus',
             'action' => 'view',
             $id,
         ]);
-        $this->addCrumb(__('Add'));
+        $this->addBreadcrumb('Add');
 
         $parentMenuLinks = $this->MenuLinks->ParentMenuLinks->find('treeList', spacer: '---', limit: 200)->where(['menu_id' => $id]);
         $targets = ['_self' => __('This tab'), '_blank' => __('New tab')];
@@ -102,14 +102,14 @@ class MenuLinksController extends AppController
             $this->Flash->error(__('The menu link could not be saved. Please, try again.'));
         }
 
-        $this->addCrumb('Links', [
+        $this->addBreadcrumb('Links', [
             'prefix' => 'Admin',
             'plugin' => null,
             'controller' => 'Menus',
             'action' => 'view',
             $menuLink->menu_id,
         ]);
-        $this->addCrumb(__('Edit'));
+        $this->addBreadcrumb('Edit');
 
         $parentMenuLinks = $this->MenuLinks->ParentMenuLinks->find('treeList', spacer: '---', limit: 200)->where(['menu_id' => $menuLink->menu_id]);
         $targets = ['_self' => __('This tab'), '_blank' => __('New tab')];

@@ -28,7 +28,7 @@ class RolesController extends AppController
 
         $action = $this->request->getParam('action');
 
-        $this->addCrumb('Roles', [
+        $this->addBreadcrumb('Roles', [
             'prefix' => 'Admin',
             'plugin' => null,
             'controller' => 'Roles',
@@ -70,7 +70,7 @@ class RolesController extends AppController
     {
         $role = $this->Roles->get($id, contain: ['Users']);
 
-        $this->addCrumb('view');
+        $this->addBreadcrumb('view');
 
         $this->set('role', $role);
     }
@@ -95,7 +95,7 @@ class RolesController extends AppController
 
         $parentRoles = $this->Roles->ParentRoles->find('treeList', spacer: '-', limit: 200);
 
-        $this->addCrumb('add');
+        $this->addBreadcrumb('add');
 
         $this->set(compact('role', 'parentRoles'));
     }
@@ -122,7 +122,7 @@ class RolesController extends AppController
 
         $parentRoles = $this->Roles->ParentRoles->find('treeList', spacer: '-', limit: 200);
 
-        $this->addCrumb('edit');
+        $this->addBreadcrumb('edit');
 
         $this->set(compact('role', 'parentRoles'));
     }
@@ -173,7 +173,7 @@ class RolesController extends AppController
 
         $resources = $this->Roles->Permissions->getPermissions($role->id);
 
-        $this->addCrumb('permissions');
+        $this->addBreadcrumb('permissions');
 
         $this->set(compact('role', 'resources'));
     }

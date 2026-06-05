@@ -31,18 +31,18 @@ class BlocksController extends AppController
         $action = $this->request->getParam('action');
 
         if (in_array($action, ['add', 'edit', 'config'])) {
-            $this->addCrumb('Themes', [
+            $this->addBreadcrumb('Themes', [
                 'prefix' => 'Admin',
                 'plugin' => null,
                 'controller' => 'Themes',
             ]);
-            $this->addCrumb('Blocks', [
+            $this->addBreadcrumb('Blocks', [
                 'prefix' => 'Admin',
                 'plugin' => null,
                 'controller' => 'Themes',
                 'action' => 'blocks',
             ]);
-            $this->addCrumb($action);
+            $this->addBreadcrumb($action);
         }
     }
 

@@ -26,14 +26,14 @@ class MetaController extends AppController
 
         $action = $this->request->getParam('action');
 
-        $this->addCrumb('Meta', [
+        $this->addBreadcrumb('Meta', [
             'prefix' => 'Admin',
             'plugin' => null,
             'controller' => 'Meta',
             'action' => 'index',
         ]);
         if (in_array($action, ['add', 'edit'])) {
-            $this->addCrumb($action);
+            $this->addBreadcrumb($action);
         }
     }
 
