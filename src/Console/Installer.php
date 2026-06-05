@@ -41,7 +41,6 @@ class Installer
      * @var list<string>
      */
     public const WRITABLE_DIRS = [
-        'themes',
         'logs',
         'tmp',
         'tmp/cache',
