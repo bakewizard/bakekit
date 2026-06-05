@@ -5,7 +5,7 @@ namespace App\Form\Cell;
 
 use Cake\Form\Form;
 use Cake\Form\Schema;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Validation\Validator;
 use Override;
 
@@ -14,6 +14,8 @@ use Override;
  */
 class MenuCellConfigForm extends Form
 {
+    use LocatorAwareTrait;
+
     /**
      * Menus
      *
@@ -27,8 +29,10 @@ class MenuCellConfigForm extends Form
     public function __construct()
     {
         parent::__construct();
-        $labels = TableRegistry::getTableLocator()->get('Menus');
-        $this->menus = $labels->find('list')->toArray();
+        $labels = $this->fetchTable('Menus');
+        $this->menus = $labels->find('list')
+            ->where(['id NOT IN' => [1, 2]])
+            ->toArray();
     }
 
     /**
