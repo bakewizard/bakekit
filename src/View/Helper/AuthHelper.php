@@ -11,6 +11,8 @@ use Override;
 
 /**
  * Auth helper
+ *
+ * @extends \Cake\View\Helper<\Cake\View\View>
  */
 class AuthHelper extends Helper
 {

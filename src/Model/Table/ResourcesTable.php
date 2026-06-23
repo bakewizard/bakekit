@@ -14,10 +14,10 @@ use Override;
  * @property \App\Model\Table\ResourcesTable&\Cake\ORM\Association\HasMany $ChildResources
  * @property \App\Model\Table\PermissionsTable&\Cake\ORM\Association\HasMany $Permissions
  * @property \App\Model\Table\RolesTable&\Cake\ORM\Association\BelongsToMany $Roles
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Resource>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Resource> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Resource>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Resource> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource>|false saveMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource>|false deleteMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TreeBehavior
  * @extends \Cake\ORM\Table<array{Tree: \Cake\ORM\Behavior\TreeBehavior}, \App\Model\Entity\Resource>
  */

@@ -179,7 +179,7 @@ return [
             'Cake\Routing\Exception\MissingRouteException',
             'Cake\Http\Exception\NotFoundException',
             'Cake\Http\Exception\MissingControllerException',
-            'Cake\Datasource\Exception\RecordNotFoundException'
+            'Cake\Datasource\Exception\RecordNotFoundException',
         ],
         'log' => true,
         'trace' => true,

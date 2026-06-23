@@ -13,10 +13,10 @@ use Override;
  * Regions Model
  *
  * @property \App\Model\Table\BlocksTable&\Cake\ORM\Association\HasMany $Blocks
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Region>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Region> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Region>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Region> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region>|false saveMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region>|false deleteMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region> deleteManyOrFail(iterable $entities, array $options = [])
  * @extends \Cake\ORM\Table<array{}, \App\Model\Entity\Region>
  */
 class RegionsTable extends Table

@@ -16,10 +16,10 @@ use Override;
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\BelongsTo $ParentMenuLinks
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\HasMany $ChildMenuLinks
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $MenuLinksI18n
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\MenuLink> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink>|false saveMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink>|false deleteMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TreeBehavior
  * @mixin \Cake\ORM\Behavior\TranslateBehavior
  * @extends \Cake\ORM\Table<array{Translate: \Cake\ORM\Behavior\TranslateBehavior, Tree: \Cake\ORM\Behavior\TreeBehavior}, \App\Model\Entity\MenuLink>

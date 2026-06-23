@@ -13,10 +13,10 @@ use Override;
  * Meta Model
  *
  * @property \App\Model\Table\PluginsTable&\Cake\ORM\Association\BelongsTo $Plugins
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Metum> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Metum>|false saveMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Metum> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Metum>|false deleteMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Metum> deleteManyOrFail(iterable $entities, array $options = [])
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $MetaI18n
  * @mixin \Cake\ORM\Behavior\TranslateBehavior
  * @extends \Cake\ORM\Table<array{Translate: \Cake\ORM\Behavior\TranslateBehavior}, \App\Model\Entity\Metum>

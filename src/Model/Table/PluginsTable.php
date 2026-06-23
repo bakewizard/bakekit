@@ -12,10 +12,10 @@ use Override;
  * Plugins Model
  *
  * @property \App\Model\Table\MetaTable&\Cake\ORM\Association\HasMany $Meta
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Plugin> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin>|false saveMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin>|false deleteMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin> deleteManyOrFail(iterable $entities, array $options = [])
  * @extends \Cake\ORM\Table<array{}, \App\Model\Entity\Plugin>
  */
 class PluginsTable extends Table

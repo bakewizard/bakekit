@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \Cake\Collection\CollectionInterface<\App\Model\Entity\Region>|array<\App\Model\Entity\Region> $regions
+ * @var array<\App\Model\Entity\Region>|\Cake\Collection\CollectionInterface<\App\Model\Entity\Region> $regions
  * @var string $activeTheme
  */
 ?>

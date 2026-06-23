@@ -11,6 +11,8 @@ use const JSON_UNESCAPED_UNICODE;
 
 /**
  * JsonLD helper
+ *
+ * @extends \Cake\View\Helper<\Cake\View\View>
  */
 class SchemaHelper extends Helper
 {

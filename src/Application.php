@@ -135,7 +135,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 'className' => FileEngine::class,
                 'path' => CACHE . 'system' . DS,
                 'duration' => '+1 years',
-                'prefix' => null,
+                'prefix' => '',
                 'serialize' => true,
             ]);
         }

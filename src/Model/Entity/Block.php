@@ -21,10 +21,10 @@ use Cake\ORM\Entity;
  * @property bool $enabled
  *
  * @property \App\Model\Entity\Region $region
- * @property string $cell_full_name
- * @property string|false $cell_plugin
- * @property string $cell_name
- * @property string|null $cell_action
+ * @property-read string $cell_full_name
+ * @property-read string|false $cell_plugin
+ * @property-read string $cell_name
+ * @property-read string|null $cell_action
  * @property array<\Cake\ORM\Entity> $_i18n
  */
 class Block extends Entity

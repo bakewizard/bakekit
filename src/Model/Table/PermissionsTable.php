@@ -18,10 +18,10 @@ use Override;
  *
  * @property \App\Model\Table\RolesTable&\Cake\ORM\Association\BelongsTo $Roles
  * @property \App\Model\Table\ResourcesTable&\Cake\ORM\Association\BelongsTo $Resources
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Permission>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Permission> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Permission>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<\App\Model\Entity\Permission> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission>|false saveMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission>|false deleteMany(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission> deleteManyOrFail(iterable $entities, array $options = [])
  * @extends \Cake\ORM\Table<array{}, \App\Model\Entity\Permission>
  */
 class PermissionsTable extends Table

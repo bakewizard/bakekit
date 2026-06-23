@@ -10,6 +10,7 @@ use Cake\View\Helper;
  * Media helper
  *
  * @property \Cake\View\Helper\UrlHelper $Url
+ * @extends \Cake\View\Helper<\Cake\View\View>
  */
 class MediaHelper extends Helper
 {
