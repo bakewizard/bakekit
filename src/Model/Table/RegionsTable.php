@@ -13,11 +13,17 @@ use Override;
  * Regions Model
  *
  * @property \App\Model\Table\BlocksTable&\Cake\ORM\Association\HasMany $Blocks
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region>|false saveMany(iterable<\App\Model\Entity\Region> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region> saveManyOrFail(iterable<\App\Model\Entity\Region> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region>|false deleteMany(iterable<\App\Model\Entity\Region> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Region> deleteManyOrFail(iterable<\App\Model\Entity\Region> $entities, array<string, mixed> $options = [])
  * @extends \Cake\ORM\Table<array{}, \App\Model\Entity\Region>
+ * @method \App\Model\Entity\Region patchEntity(\App\Model\Entity\Region $entity, array<mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Region> patchEntities(iterable<\App\Model\Entity\Region> $entities, array<mixed> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Region|false save(\App\Model\Entity\Region $entity, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Region saveOrFail(\App\Model\Entity\Region $entity, array<string, mixed> $options = [])
+ * @method bool delete(\App\Model\Entity\Region $entity, array<string, mixed> $options = [])
+ * @method bool deleteOrFail(\App\Model\Entity\Region $entity, array<string, mixed> $options = [])
  */
 class RegionsTable extends Table
 {

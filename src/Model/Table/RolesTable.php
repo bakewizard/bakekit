@@ -12,10 +12,10 @@ use Override;
  * Roles Model
  *
  * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\HasMany $Users
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Role>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Role> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Role>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Role> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Role>|false saveMany(iterable<\App\Model\Entity\Role> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Role> saveManyOrFail(iterable<\App\Model\Entity\Role> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Role>|false deleteMany(iterable<\App\Model\Entity\Role> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Role> deleteManyOrFail(iterable<\App\Model\Entity\Role> $entities, array<string, mixed> $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \Cake\ORM\Behavior\TreeBehavior
  * @property \App\Model\Table\RolesTable&\Cake\ORM\Association\BelongsTo $ParentRoles
@@ -23,6 +23,12 @@ use Override;
  * @property \App\Model\Table\PermissionsTable&\Cake\ORM\Association\HasMany $Permissions
  * @property \App\Model\Table\ResourcesTable&\Cake\ORM\Association\BelongsToMany $Resources
  * @extends \Cake\ORM\Table<array{Timestamp: \Cake\ORM\Behavior\TimestampBehavior, Tree: \Cake\ORM\Behavior\TreeBehavior}, \App\Model\Entity\Role>
+ * @method \App\Model\Entity\Role patchEntity(\App\Model\Entity\Role $entity, array<mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Role> patchEntities(iterable<\App\Model\Entity\Role> $entities, array<mixed> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Role|false save(\App\Model\Entity\Role $entity, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Role saveOrFail(\App\Model\Entity\Role $entity, array<string, mixed> $options = [])
+ * @method bool delete(\App\Model\Entity\Role $entity, array<string, mixed> $options = [])
+ * @method bool deleteOrFail(\App\Model\Entity\Role $entity, array<string, mixed> $options = [])
  */
 class RolesTable extends Table
 {

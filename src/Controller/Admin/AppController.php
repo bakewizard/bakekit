@@ -101,6 +101,8 @@ class AppController extends Controller
     #[Override]
     public function beforeRender(EventInterface $event)
     {
+        $this->set('config', $this->getConfig());
+
         if ($this->request->is('ajax')) {
             $this->viewBuilder()->setClassName('Ajax');
 
@@ -110,8 +112,6 @@ class AppController extends Controller
         $this->viewBuilder()->setLayout('admin');
 
         $this->set('breadcrumbs', $this->breadcrumbs);
-
-        $this->set('config', $this->getConfig());
     }
 
     /**

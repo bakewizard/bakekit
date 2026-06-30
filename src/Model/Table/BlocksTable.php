@@ -23,13 +23,19 @@ use ReflectionClass;
  *
  * @property \App\Model\Table\RegionsTable&\Cake\ORM\Association\BelongsTo $Regions
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $BlocksI18n
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Block>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Block> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Block>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Block> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Block>|false saveMany(iterable<\App\Model\Entity\Block> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Block> saveManyOrFail(iterable<\App\Model\Entity\Block> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Block>|false deleteMany(iterable<\App\Model\Entity\Block> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Block> deleteManyOrFail(iterable<\App\Model\Entity\Block> $entities, array<string, mixed> $options = [])
  * @mixin \ADmad\Sequence\Model\Behavior\SequenceBehavior
  * @mixin \Cake\ORM\Behavior\TranslateBehavior
  * @extends \Cake\ORM\Table<array{Sequence: \ADmad\Sequence\Model\Behavior\SequenceBehavior, Translate: \Cake\ORM\Behavior\TranslateBehavior}, \App\Model\Entity\Block>
+ * @method \App\Model\Entity\Block patchEntity(\App\Model\Entity\Block $entity, array<mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Block> patchEntities(iterable<\App\Model\Entity\Block> $entities, array<mixed> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Block|false save(\App\Model\Entity\Block $entity, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Block saveOrFail(\App\Model\Entity\Block $entity, array<string, mixed> $options = [])
+ * @method bool delete(\App\Model\Entity\Block $entity, array<string, mixed> $options = [])
+ * @method bool deleteOrFail(\App\Model\Entity\Block $entity, array<string, mixed> $options = [])
  */
 class BlocksTable extends Table
 {

@@ -12,12 +12,18 @@ use Override;
 
 /**
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\HasMany $MenuLinks
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Menu>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Menu> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Menu>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Menu> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Menu>|false saveMany(iterable<\App\Model\Entity\Menu> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Menu> saveManyOrFail(iterable<\App\Model\Entity\Menu> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Menu>|false deleteMany(iterable<\App\Model\Entity\Menu> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Menu> deleteManyOrFail(iterable<\App\Model\Entity\Menu> $entities, array<string, mixed> $options = [])
  * @mixin \Search\Model\Behavior\SearchBehavior
  * @extends \Cake\ORM\Table<array{}, \App\Model\Entity\Menu>
+ * @method \App\Model\Entity\Menu patchEntity(\App\Model\Entity\Menu $entity, array<mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Menu> patchEntities(iterable<\App\Model\Entity\Menu> $entities, array<mixed> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Menu|false save(\App\Model\Entity\Menu $entity, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Menu saveOrFail(\App\Model\Entity\Menu $entity, array<string, mixed> $options = [])
+ * @method bool delete(\App\Model\Entity\Menu $entity, array<string, mixed> $options = [])
+ * @method bool deleteOrFail(\App\Model\Entity\Menu $entity, array<string, mixed> $options = [])
  */
 class MenusTable extends Table
 {

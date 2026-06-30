@@ -12,11 +12,17 @@ use Override;
  * Plugins Model
  *
  * @property \App\Model\Table\MetaTable&\Cake\ORM\Association\HasMany $Meta
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin>|false saveMany(iterable<\App\Model\Entity\Plugin> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin> saveManyOrFail(iterable<\App\Model\Entity\Plugin> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin>|false deleteMany(iterable<\App\Model\Entity\Plugin> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Plugin> deleteManyOrFail(iterable<\App\Model\Entity\Plugin> $entities, array<string, mixed> $options = [])
  * @extends \Cake\ORM\Table<array{}, \App\Model\Entity\Plugin>
+ * @method \App\Model\Entity\Plugin patchEntity(\App\Model\Entity\Plugin $entity, array<mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Plugin> patchEntities(iterable<\App\Model\Entity\Plugin> $entities, array<mixed> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Plugin|false save(\App\Model\Entity\Plugin $entity, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Plugin saveOrFail(\App\Model\Entity\Plugin $entity, array<string, mixed> $options = [])
+ * @method bool delete(\App\Model\Entity\Plugin $entity, array<string, mixed> $options = [])
+ * @method bool deleteOrFail(\App\Model\Entity\Plugin $entity, array<string, mixed> $options = [])
  */
 class PluginsTable extends Table
 {

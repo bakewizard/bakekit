@@ -16,10 +16,16 @@ use Override;
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @extends \Cake\ORM\Table<array{Timestamp: \Cake\ORM\Behavior\TimestampBehavior}, \App\Model\Entity\Setting>
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Setting>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Setting> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Setting>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Setting> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Setting>|false saveMany(iterable<\App\Model\Entity\Setting> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Setting> saveManyOrFail(iterable<\App\Model\Entity\Setting> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Setting>|false deleteMany(iterable<\App\Model\Entity\Setting> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Setting> deleteManyOrFail(iterable<\App\Model\Entity\Setting> $entities, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Setting patchEntity(\App\Model\Entity\Setting $entity, array<mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Setting> patchEntities(iterable<\App\Model\Entity\Setting> $entities, array<mixed> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Setting|false save(\App\Model\Entity\Setting $entity, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Setting saveOrFail(\App\Model\Entity\Setting $entity, array<string, mixed> $options = [])
+ * @method bool delete(\App\Model\Entity\Setting $entity, array<string, mixed> $options = [])
+ * @method bool deleteOrFail(\App\Model\Entity\Setting $entity, array<string, mixed> $options = [])
  */
 class SettingsTable extends Table
 {

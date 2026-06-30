@@ -14,12 +14,18 @@ use Override;
  * @property \App\Model\Table\ResourcesTable&\Cake\ORM\Association\HasMany $ChildResources
  * @property \App\Model\Table\PermissionsTable&\Cake\ORM\Association\HasMany $Permissions
  * @property \App\Model\Table\RolesTable&\Cake\ORM\Association\BelongsToMany $Roles
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource>|false saveMany(iterable<\App\Model\Entity\Resource> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource> saveManyOrFail(iterable<\App\Model\Entity\Resource> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource>|false deleteMany(iterable<\App\Model\Entity\Resource> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Resource> deleteManyOrFail(iterable<\App\Model\Entity\Resource> $entities, array<string, mixed> $options = [])
  * @mixin \Cake\ORM\Behavior\TreeBehavior
  * @extends \Cake\ORM\Table<array{Tree: \Cake\ORM\Behavior\TreeBehavior}, \App\Model\Entity\Resource>
+ * @method \App\Model\Entity\Resource patchEntity(\App\Model\Entity\Resource $entity, array<mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Resource> patchEntities(iterable<\App\Model\Entity\Resource> $entities, array<mixed> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Resource|false save(\App\Model\Entity\Resource $entity, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Resource saveOrFail(\App\Model\Entity\Resource $entity, array<string, mixed> $options = [])
+ * @method bool delete(\App\Model\Entity\Resource $entity, array<string, mixed> $options = [])
+ * @method bool deleteOrFail(\App\Model\Entity\Resource $entity, array<string, mixed> $options = [])
  */
 class ResourcesTable extends Table
 {

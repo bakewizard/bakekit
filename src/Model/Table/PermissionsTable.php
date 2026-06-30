@@ -18,11 +18,17 @@ use Override;
  *
  * @property \App\Model\Table\RolesTable&\Cake\ORM\Association\BelongsTo $Roles
  * @property \App\Model\Table\ResourcesTable&\Cake\ORM\Association\BelongsTo $Resources
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission>|false saveMany(iterable<\App\Model\Entity\Permission> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission> saveManyOrFail(iterable<\App\Model\Entity\Permission> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission>|false deleteMany(iterable<\App\Model\Entity\Permission> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Permission> deleteManyOrFail(iterable<\App\Model\Entity\Permission> $entities, array<string, mixed> $options = [])
  * @extends \Cake\ORM\Table<array{}, \App\Model\Entity\Permission>
+ * @method \App\Model\Entity\Permission patchEntity(\App\Model\Entity\Permission $entity, array<mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\Permission> patchEntities(iterable<\App\Model\Entity\Permission> $entities, array<mixed> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Permission|false save(\App\Model\Entity\Permission $entity, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\Permission saveOrFail(\App\Model\Entity\Permission $entity, array<string, mixed> $options = [])
+ * @method bool delete(\App\Model\Entity\Permission $entity, array<string, mixed> $options = [])
+ * @method bool deleteOrFail(\App\Model\Entity\Permission $entity, array<string, mixed> $options = [])
  */
 class PermissionsTable extends Table
 {

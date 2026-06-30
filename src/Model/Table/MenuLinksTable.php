@@ -16,13 +16,19 @@ use Override;
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\BelongsTo $ParentMenuLinks
  * @property \App\Model\Table\MenuLinksTable&\Cake\ORM\Association\HasMany $ChildMenuLinks
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $MenuLinksI18n
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink>|false saveMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink> saveManyOrFail(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink>|false deleteMany(iterable $entities, array $options = [])
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink> deleteManyOrFail(iterable $entities, array $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink>|false saveMany(iterable<\App\Model\Entity\MenuLink> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink> saveManyOrFail(iterable<\App\Model\Entity\MenuLink> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink>|false deleteMany(iterable<\App\Model\Entity\MenuLink> $entities, array<string, mixed> $options = [])
+ * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\MenuLink> deleteManyOrFail(iterable<\App\Model\Entity\MenuLink> $entities, array<string, mixed> $options = [])
  * @mixin \Cake\ORM\Behavior\TreeBehavior
  * @mixin \Cake\ORM\Behavior\TranslateBehavior
  * @extends \Cake\ORM\Table<array{Translate: \Cake\ORM\Behavior\TranslateBehavior, Tree: \Cake\ORM\Behavior\TreeBehavior}, \App\Model\Entity\MenuLink>
+ * @method \App\Model\Entity\MenuLink patchEntity(\App\Model\Entity\MenuLink $entity, array<mixed> $data, array<string, mixed> $options = [])
+ * @method array<\App\Model\Entity\MenuLink> patchEntities(iterable<\App\Model\Entity\MenuLink> $entities, array<mixed> $data, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\MenuLink|false save(\App\Model\Entity\MenuLink $entity, array<string, mixed> $options = [])
+ * @method \App\Model\Entity\MenuLink saveOrFail(\App\Model\Entity\MenuLink $entity, array<string, mixed> $options = [])
+ * @method bool delete(\App\Model\Entity\MenuLink $entity, array<string, mixed> $options = [])
+ * @method bool deleteOrFail(\App\Model\Entity\MenuLink $entity, array<string, mixed> $options = [])
  */
 class MenuLinksTable extends Table
 {
