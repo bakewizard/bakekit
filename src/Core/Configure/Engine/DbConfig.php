@@ -9,76 +9,79 @@ use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\Utility\Hash;
 use Override;
 
+/**
+ * Custom Database Configuration Engine for BakeKit.
+ *
+ * Reads flattened dynamic settings from the database and expands them
+ * into multi-dimensional arrays, blending them seamlessly into CakePHP's Configure.
+ * Fully optimized for PHP 8.3 static analysis (Intelephense & PHPStan).
+ */
 class DbConfig implements ConfigEngineInterface
 {
     /**
-     * The cache configuration name to use.
-     */
-    protected string $_cacheConfig;
-
-    /**
-     * Instance of the configurations table.
-     */
-    protected SettingsTable $_table;
-
-    /**
-     * Constructor to inject the table and define the cache configuration to use.
+     * Constructor using PHP 8.x Property Promotion.
+     * Automatically declares and injects the table and cache configuration.
      *
      * @param \App\Model\Table\SettingsTable $table SettingsTable instance.
-     * @param string $cacheConfig Cache config alias.
+     * @param string $cacheConfig Cache configuration alias (default: 'default').
      */
-    public function __construct(SettingsTable $table, string $cacheConfig = 'default')
-    {
-        $this->_table = $table;
-        $this->_cacheConfig = $cacheConfig;
+    public function __construct(
+        protected SettingsTable $table,
+        protected string $cacheConfig = 'default',
+    ) {
     }
 
     /**
      * Reads configuration information from the database.
      *
-     * @param string $key Key to read. Use '*' to read all settings.
-     * @return array<string, mixed> An array of data to merge into the runtime configuration.
+     * @param string $key The namespace key to read. Use '*' to fetch all configurations.
+     * @return array<string, mixed> An array of nested data to merge into the runtime configuration.
      */
     #[Override]
     public function read(string $key): array
     {
-        $query = $this->_table->find(
-            'list',
-            keyField: 'path',
-            valueField: 'value',
-            groupField: 'namespace',
-        );
+        $query = $this->table->find();
 
         if ($key !== '*') {
             $query->where([
-                $this->_table->aliasField('namespace') . ' IS' => $key,
+                $this->table->aliasField('namespace') . ' IS' => $key,
             ]);
         }
-        /** @var array<string, array<string, mixed>> $data */
-        $data = $query
-            ->cache($this->_cacheKey($key), $this->_cacheConfig)
-            ->formatResults(function ($results) {
-                $resultSet = $results->toArray();
-                // Promote empty namespace settings to the root level
-                if (isset($resultSet[''])) {
-                    $resultSet = $resultSet[''] + $resultSet; // Merge empty namespace settings first
-                    unset($resultSet['']);
-                }
 
-                return $resultSet;
-            })
-            ->toArray();
+        // 1. Disable hydration to fetch blazing-fast raw arrays instead of heavy entities.
+        // We iterate directly over the ResultSet to keep Intelephense (P1131) perfectly happy.
+        $results = $query
+            ->enableHydration(false)
+            ->cache($this->cacheKey($key), $this->cacheConfig)
+            ->all();
 
-        if (empty($data)) {
+        if ($results->isEmpty()) {
             return [];
         }
 
-        // When reading a specific key, we expect the data to be nested under that key.
-        // We also need to expand the flattened data back into a nested array.
+        // 2. Build the grouped array manually (100% type-safe, no functions called inside the loop)
+        /** @var array<string, array<string, mixed>> $data */
+        $data = [];
+        foreach ($results as $row) {
+            /** @var array<string, mixed> $row */
+            $namespace = (string)($row['namespace'] ?? '');
+            $path = (string)($row['path'] ?? '');
+
+            $data[$namespace][$path] = $row['value'] ?? null;
+        }
+
+        // 3. Promote empty namespace settings to the root level
+        if (isset($data[''])) {
+            $data = $data[''] + $data;
+            unset($data['']);
+        }
+
+        // 4. Expand the flattened dot-notation data back into a nested array structure
         if ($key !== '*' && array_key_exists($key, $data)) {
             return [$key => Hash::expand($data[$key])];
-        } elseif ($key === '*') {
-            // If reading all keys, expand each namespace's data
+        }
+
+        if ($key === '*') {
             $expandedData = [];
             foreach ($data as $namespace => $flatData) {
                 $expandedData[$namespace] = Hash::expand($flatData);
@@ -91,11 +94,11 @@ class DbConfig implements ConfigEngineInterface
     }
 
     /**
-     * Writes configuration data to the database.
+     * Writes configuration data from a namespace back to the database.
      *
-     * @param string $key The identifier to write to (namespace).
-     * @param array<string, mixed> $data The data to dump.
-     * @return bool True on success or false on failure.
+     * @param string $key The identifier to write to (the namespace).
+     * @param array<string, mixed> $data The multi-dimensional data to dump.
+     * @return bool True on success, false on failure.
      */
     #[Override]
     public function dump(string $key, array $data): bool
@@ -104,63 +107,57 @@ class DbConfig implements ConfigEngineInterface
             return false;
         }
 
+        // Flatten the multi-dimensional array into dot-notation paths (e.g., 'images.th')
         $flattenedData = Hash::flatten($data);
         $success = true;
 
         foreach ($flattenedData as $path => $value) {
-            if (!$this->_persist($key, $path, $value)) {
+            if (!$this->persist($key, $path, $value)) {
                 $success = false;
-                // Optionally, you might want to break here or log the failure
             }
         }
 
+        // Invalidate the cache namespace only if all rows were persisted successfully
         if ($success) {
-            // Invalidate only the specific namespace cache
-            Cache::delete($this->_cacheKey($key), $this->_cacheConfig);
+            Cache::delete($this->cacheKey($key), $this->cacheConfig);
         }
 
         return $success;
     }
 
     /**
-     * Persists a single configuration entry to the database.
+     * Persists or updates a single configuration entry in the database.
      *
-     * @param string $namespace The namespace for the setting.
-     * @param string $path The key path for the setting.
+     * @param string $namespace The setting's namespace (e.g., 'Shop').
+     * @param string $path The key path (e.g., 'productImages.th').
      * @param mixed $value The value to store.
      * @return bool True on success, false on failure.
      */
-    protected function _persist(string $namespace, string $path, mixed $value): bool
+    protected function persist(string $namespace, string $path, mixed $value): bool
     {
-        $table = $this->_table;
-
-        $entity = $table->find()
+        $entity = $this->table->find()
             ->where([
-                $table->aliasField('namespace') => $namespace,
-                $table->aliasField('path') => $path,
+                $this->table->aliasField('namespace') => $namespace,
+                $this->table->aliasField('path') => $path,
             ])
-            ->first();
+            ->first() ?? $this->table->newEmptyEntity();
 
-        if ($entity === null) {
-            $entity = $table->newEmptyEntity();
-        }
-
-        $entity = $table->patchEntity($entity, [
+        $entity = $this->table->patchEntity($entity, [
             'namespace' => $namespace,
             'path' => $path,
             'value' => $value,
         ]);
 
-        return (bool)$table->save($entity);
+        return (bool)$this->table->save($entity);
     }
 
     /**
-     * Generates a cache key based on the namespace.
+     * Generates a standardized cache key based on the namespace.
      *
-     * @param string $namespace The namespace to generate the cache key for.
+     * @param string $namespace The configuration namespace.
      * @return string The generated cache key.
      */
-    protected function _cacheKey(string $namespace): string
+    protected function cacheKey(string $namespace): string
     {
         return 'settings_' . strtolower($namespace);
     }
