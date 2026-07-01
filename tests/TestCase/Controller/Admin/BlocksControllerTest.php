@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Controller\Admin;
 
+use Cake\Core\Configure;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
@@ -33,6 +34,9 @@ class BlocksControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Configure::write('System.theme', 'DefaultTheme');
+
         $this->enableCsrfToken();
         $this->enableSecurityToken();
 

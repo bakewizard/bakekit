@@ -52,7 +52,7 @@ class TextAndJsonType extends BaseType
     public function toPHP(mixed $value, Driver $driver): mixed
     {
         if ($value === null || $value === '') {
-            return null;
+            return $value;
         }
 
         if (!is_string($value)) {
