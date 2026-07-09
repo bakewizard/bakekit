@@ -35,7 +35,8 @@ class MediaHelper extends Helper
             $image = $entity->files[$index] ?? $entity;
         }
 
-        $outputFormat = $this->getView()->get('config')['System']['images']['format'];
+        $config = $this->getView()->get('config');
+        $outputFormat = $config['System']['images']['format'] ?? 'jpeg';
 
         $imagePath = '/img/noimage.svg';
         if ($image) {
