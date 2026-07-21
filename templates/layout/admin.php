@@ -12,6 +12,7 @@
     <?= $this->Html->charset() ?>
     <?= $this->Html->meta('viewport', 'width=device-width, initial-scale=1') ?>
     <?= $this->Html->meta('icon') ?>
+    <?= $this->Html->meta('csrfToken', $this->request->getAttribute('csrfToken')) ?>
     <?= $this->fetch('meta') ?>
     <?= $this->Html->css('/backend/css/app') ?>
     <?= $this->fetch('css') ?>
