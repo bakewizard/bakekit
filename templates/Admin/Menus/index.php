@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var array<\App\Model\Entity\Menu>|\Cake\Collection\CollectionInterface<\App\Model\Entity\Menu> $menus
+ * @var array<\App\Model\Entity\Menu>|\Cake\Collection\CollectionInterface<int, \App\Model\Entity\Menu> $menus
  */
 ?>
 <div class="card">

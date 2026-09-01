@@ -41,7 +41,7 @@ abstract class BasePlugin extends CakeBasePlugin
     }
 
     /**
-     * @param \Cake\Core\PluginApplicationInterface<\App\Application> $app The application instance.
+     * @param \Cake\Core\PluginApplicationInterface $app The application instance.
      */
     #[Override]
     public function bootstrap(PluginApplicationInterface $app): void

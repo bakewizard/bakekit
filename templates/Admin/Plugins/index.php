@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var array<\App\Model\Entity\Plugin>|\Cake\Collection\CollectionInterface<\App\Model\Entity\Plugin> $plugins
+ * @var array<\App\Model\Entity\Plugin>|\Cake\Collection\CollectionInterface<int, \App\Model\Entity\Plugin> $plugins
  * @var array $installedPlugins
  */
 ?>

@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var array<\App\Model\Entity\Metum>|\Cake\Collection\CollectionInterface<\App\Model\Entity\Metum> $meta
+ * @var array<\App\Model\Entity\Metum>|\Cake\Collection\CollectionInterface<int, \App\Model\Entity\Metum> $meta
  */
 ?>
 <div class="card">

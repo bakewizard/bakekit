@@ -95,11 +95,11 @@ class RegionsTable extends Table
     /**
      * Returns regions for the active theme.
      *
-     * @param string $theme Active theme name.
+     * @param string|null $theme Active theme name.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findByTheme(string $theme): SelectQuery
+    public function findByTheme(?string $theme): SelectQuery
     {
-        return $this->find()->where(['theme' => $theme]);
+        return $this->find()->where(['theme IS' => $theme]);
     }
 }

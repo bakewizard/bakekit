@@ -12,7 +12,7 @@ use Override;
  * Menus Controller
  *
  * @property \App\Model\Table\MenusTable $Menus
- * @method \Cake\Datasource\ResultSetInterface<int, \App\Model\Entity\Menu> paginate(\Cake\Datasource\RepositoryInterface|\Cake\Datasource\QueryInterface|string|null $object = null, array<string, mixed> $settings = [])
+ * @method \Cake\Datasource\Paging\PaginatedInterface<int, \App\Model\Entity\Menu> paginate(\Cake\Datasource\RepositoryInterface|\Cake\Datasource\QueryInterface|string|null $object = null, array<string, mixed> $settings = [])
  * @property \Search\Controller\Component\SearchComponent $Search
  * @property \Authentication\Controller\Component\AuthenticationComponent $Authentication
  * @property \Authorization\Controller\Component\AuthorizationComponent $Authorization

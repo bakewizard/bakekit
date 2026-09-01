@@ -91,7 +91,7 @@ class BlocksController extends AppController
             $this->Flash->error(__('The block could not be saved. Please, try again.'));
         }
         $theme = Configure::read('System.theme');
-        $regions = $this->Blocks->Regions->find('list', limit: 200)->where(['theme' => $theme]);
+        $regions = $this->Blocks->Regions->find('list', limit: 200)->where(['theme IS' => $theme]);
         $this->set(compact('block', 'regions'));
     }
 

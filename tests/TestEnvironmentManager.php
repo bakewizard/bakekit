@@ -79,7 +79,7 @@ final class TestEnvironmentManager
         }
 
         if ($testSuite === self::APP_SUITE_NAME) {
-            return [[]]; // тільки app
+            return [[]]; // only app
         }
 
         if (self::pluginExists($testSuite)) {

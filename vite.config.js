@@ -8,7 +8,7 @@ const DEST_ROOT = 'webroot/backend';
 export default defineConfig(({ command }) => ({
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, `${SRC_ROOT}/scripts`)
+            '@': path.resolve(import.meta.dirname, `${SRC_ROOT}/scripts`)
         }
     },
     base: command === 'build' ? `/${THEME_NAME}/` : '/',

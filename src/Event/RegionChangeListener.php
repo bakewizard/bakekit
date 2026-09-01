@@ -54,7 +54,7 @@ class RegionChangeListener implements EventListenerInterface
 
         $cache = $regions
             ->find()
-            ->where(['theme' => $theme])
+            ->where(['theme IS' => $theme])
             ->contain('Blocks', function (SelectQuery $q) {
                 return $q->find('translations')
                     ->where(['Blocks.enabled' => 1])
